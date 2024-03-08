@@ -1,5 +1,6 @@
 <script setup>
 import Sidebar from "@/components/Sidebar.vue";
+import Header from "@/components/Header.vue";
 </script>
 
 <template>
@@ -7,8 +8,23 @@ import Sidebar from "@/components/Sidebar.vue";
     <!--    sidebar -->
     <Sidebar></Sidebar>
     <!--  main -->
-    <div class="h-[100px] w-full flex items-center">
-      <h1 class="text-3xl font-arial px-10 font-bold">Profile</h1>
+    <div class="grid grid-cols-1 relative h-screen w-screen">
+      <Header :title="pageTitle"></Header>
     </div>
   </div>
 </template>
+
+<script>
+import PageHeader from '../components/Header.vue';
+
+export default {
+  components: {
+    PageHeader
+  },
+  data() {
+    return {
+      pageTitle: 'My Profile'
+    }
+  }
+}
+</script>

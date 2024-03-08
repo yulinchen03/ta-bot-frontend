@@ -5,11 +5,18 @@ import profile from '../pages/Profile.vue'
 import notifications from '../pages/Notifications.vue'
 import settings from '../pages/Settings.vue'
 import help from '../pages/Help.vue'
+import login from '../pages/Login.vue'
 
 const routes = [
     {
-        name:'Dashboard',
+        name:'Login',
         path:'/',
+        alias: '/login',
+        component:login
+    },
+    {
+        name:'Dashboard',
+        path:'/dashboard',
         component:dashboard
     },
     {
