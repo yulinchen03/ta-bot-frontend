@@ -19,6 +19,12 @@
               <Notebook/>
             </el-icon>
             <h3 class="px-5 font-arial">Courses</h3>
+            <div
+                v-if="courseCount > 0"
+                class="absolute right-5 bg-ut-pink rounded-md text-white text-xs w-5 h-5 flex items-center justify-center"
+            >
+              {{ courseCount }}
+            </div>
           </router-link>
           <router-link to="/profile"
                        class="inline-flex relative items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
@@ -79,7 +85,8 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      confirmLogout: false
+      confirmLogout: false,
+      courseCount: 3,
     };
   },
   methods: {

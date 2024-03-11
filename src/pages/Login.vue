@@ -17,8 +17,7 @@
               <div class="grid grid-rows-6">
                 <span class="font-arial font-bold text-3xl row-start-2 row-end-3">Login with UT Credentials</span>
                 <div class="space-x-8 flex items-center justify-center row-start-5 row-end-6">
-                  <el-button color="#cf0072" size="large" @click="studentLogin">as Student</el-button>
-                  <el-button color="#cf0072" size="large" @click="staffLogin">as Teacher</el-button>
+                  <el-button color="#cf0072" size="large" @click="login"><el-icon class="mx-1" :size="25"><Pointer /></el-icon><span class="text-lg">Log in</span></el-button>
                 </div>
               </div>
             </div>
@@ -32,14 +31,10 @@
 <script>
   export default {
     methods: {
-      studentLogin(){
+      login(){
         console.log('Student logging in...')
         this.$router.push('/dashboard');
       },
-      staffLogin(){
-        console.log('Staff logging in...')
-        this.$router.push('/dashboard');
-      }
     }
   }
 </script>

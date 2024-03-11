@@ -6,6 +6,7 @@ import notifications from '../pages/Notifications.vue'
 import settings from '../pages/Settings.vue'
 import help from '../pages/Help.vue'
 import login from '../pages/Login.vue'
+import course from "@/pages/Course.vue";
 
 const routes = [
     {
@@ -49,6 +50,12 @@ const routes = [
         path:'/help',
         component:help
     },
+    {
+        name:'course',
+        path:'/course',
+        component:course
+
+    }
 ];
 const router = Router();
 export default router;
