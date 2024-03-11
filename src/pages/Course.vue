@@ -53,7 +53,7 @@
                 </template>
               </el-table-column>
               <el-table-column width="600" prop="question" label="Question"></el-table-column>
-              <el-table-column label="Open" width="150">
+              <el-table-column label="Open">
                 <template v-slot:default="scope">
                   <el-button>
                     <el-icon class="mr-2">
@@ -64,7 +64,7 @@
                   <!--                    TODO GET THIS TO WORK-->
                 </template>
               </el-table-column>
-              <el-table-column prop="completed" label="Mark as Complete" width="150">
+              <el-table-column prop="completed" label="Mark as Complete">
                 <template v-slot:default="scope">
                   <el-checkbox v-model="scope.row" label="Complete" size="large" border/>
                   <!--                    TODO GET THIS TO WORK-->
