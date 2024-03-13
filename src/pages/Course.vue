@@ -42,7 +42,7 @@
           <div v-show="activeIndex === i"
                class="bg-white px-8 py-6 grid grid-cols-1 relative h-full w-full overflow-auto">
             <el-table :data="item.questions">
-              <el-table-column width="100" label="Complete">
+              <el-table-column width="150" label="Complete">
                 <template v-slot:default="scope">
                   <el-icon v-if="scope.row.completed" color="green" size="large">
                     <Check/>
@@ -52,21 +52,21 @@
                   </el-icon>
                 </template>
               </el-table-column>
-              <el-table-column width="600" prop="question" label="Question"></el-table-column>
+              <el-table-column width="650" prop="question" label="Question"></el-table-column>
               <el-table-column label="Open">
                 <template v-slot:default="scope">
                   <el-button>
                     <el-icon class="mr-2">
-                      <VideoPlay/>
+                      <Edit />
                     </el-icon>
-                    Start
+                    View / Edit
                   </el-button>
                   <!--                    TODO GET THIS TO WORK-->
                 </template>
               </el-table-column>
-              <el-table-column prop="completed" label="Mark as Complete">
+              <el-table-column prop="completed" label="Publish" width="150">
                 <template v-slot:default="scope">
-                  <el-checkbox v-model="scope.row" label="Complete" size="large" border/>
+                  <el-checkbox v-model="scope.row" size="large" border><el-icon size="20"><Check /></el-icon></el-checkbox>
                   <!--                    TODO GET THIS TO WORK-->
                 </template>
               </el-table-column>
@@ -122,6 +122,23 @@ export default {
             completed: false
           }, {question: 'Question 3', completed: false},
             {question: 'Question 4', completed: true}]
+        },
+        {
+          title: 'Assignment 5',
+          questions: [{question: 'Question 1', completed: true}, {
+            question: 'Question 2',
+            completed: false
+          }, {question: 'Question 3', completed: false},
+            {question: 'Question 4', completed: true},
+            {question: 'Question 5', completed: false}]
+        },{
+          title: 'Assignment 6',
+          questions: [{question: 'Question 1', completed: true}, {
+            question: 'Question 2',
+            completed: false
+          }, {question: 'Question 3', completed: false},
+            {question: 'Question 4', completed: true},
+            {question: 'Question 5', completed: false}]
         },]
     }
   },

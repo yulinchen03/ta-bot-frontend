@@ -33,7 +33,7 @@
     methods: {
       login(){
         console.log('Student logging in...')
-        this.$router.push('/dashboard');
+        this.$router.push('/courses');
       },
     }
   }

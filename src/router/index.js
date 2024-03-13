@@ -1,5 +1,4 @@
 import {createRouter, createWebHistory} from "vue-router";
-import dashboard from '../pages/Dashboard.vue'
 import courses from '../pages/Courses.vue'
 import profile from '../pages/Profile.vue'
 import notifications from '../pages/Notifications.vue'
@@ -14,11 +13,6 @@ const routes = [
         path:'/',
         alias: '/login',
         component:login
-    },
-    {
-        name:'Dashboard',
-        path:'/dashboard',
-        component:dashboard
     },
     {
         name:'Courses',
