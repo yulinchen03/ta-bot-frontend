@@ -3,6 +3,7 @@ import courses from '../pages/Courses.vue'
 import profile from '../pages/Profile.vue'
 import notifications from '../pages/Notifications.vue'
 import settings from '../pages/Settings.vue'
+import helpCenter from '../pages/HelpCenter.vue'
 import help from '../pages/Help.vue'
 import login from '../pages/Login.vue'
 import course from "@/pages/Course.vue";
@@ -38,6 +39,11 @@ const routes = [
         name:'Settings',
         path:'/settings',
         component:settings
+    },
+    {
+        name:'HelpCenter',
+        path:'/helpcenter',
+        component:helpCenter
     },
     {
         name:'Help',

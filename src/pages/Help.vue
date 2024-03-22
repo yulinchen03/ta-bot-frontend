@@ -1,31 +1,28 @@
-<script setup>
-import Sidebar from "@/components/Sidebar.vue";
-import Header from "@/components/Header.vue";
-</script>
-
 <template>
-  <div class="w-screen h-screen flex bg-gray-200">
-    <!--    sidebar -->
-    <Sidebar></Sidebar>
-    <!--  main -->
-    <div class="grid grid-cols-1 relative h-screen w-screen">
-      <Header :title="pageTitle"></Header>
-      <div class="absolute bottom-0 bg-ut-pink w-full h-12 flex justify-center items-center text-white font-bold"><h2>Work in progress...</h2></div>
-    </div>
-  </div>
+<div class="absolute inset-x-0 inset-y-0">
+  <h1 class="font-arial font-bold">This is where you will find specific help on topic {{helpid}}</h1>
+  <div class="absolute bottom-0 bg-ut-pink w-full h-12 flex justify-center items-center text-white font-bold"><h2>Work in progress...</h2></div>
+</div>
 </template>
 
 <script>
-import PageHeader from '../components/Header.vue';
-
 export default {
-  components: {
-    PageHeader
+  created() {
+    this.fetchData();
   },
   data() {
     return {
-      pageTitle: 'Help'
+      helpid: -1
     }
+  },
+  watch: {
+    '$route': 'fetchData'
+  },
+  methods: {
+    fetchData() {
+      this.helpid = this.$route.query.id;
+      // Query your database with helpid
+    },
   }
 }
 </script>

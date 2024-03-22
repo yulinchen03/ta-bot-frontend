@@ -11,14 +11,14 @@ import Header from "@/components/Header.vue";
     <!-- Main content -->
     <div class="grid grid-cols-1 relative h-screen w-screen">
       <Header :title="pageTitle"></Header>
-      <div class="mx-10 overflow-y-auto w-[calc(100vw-300px)] h-[calc(100vh-100px)]">
+      <div class="mx-20 overflow-y-auto w-[calc(100vw-120px)] h-[calc(100vh-100px)]">
         <!-- Dynamic rows -->
         <div v-for="(row, rowIndex) in coursesRows" :key="rowIndex" class="flex justify-start">
           <Itemcard
               v-for="item in row"
               :key="item.id"
               :course-data="item"
-              class="w-[calc(25vw-120px)]"
+              class="w-[calc(25vw-100px)]"
               @courseSelected="openCourse(item.id)"
           />
         </div>
