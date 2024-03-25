@@ -1,9 +1,6 @@
 <template>
   <div class="h-[100px] w-full flex justify-between items-center">
     <h1 class="text-3xl font-arial px-10 font-bold">{{ title }}</h1>
-    <div class="pr-10">
-      <el-button @click="open1" :type="'info'" circle :size="'large'" class="hover:scale-101 hover:shadow-glow border-ut-pink"><el-icon :size=24><Bell /></el-icon></el-button>
-    </div>
   </div>
 </template>
 

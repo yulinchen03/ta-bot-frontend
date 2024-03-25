@@ -24,43 +24,46 @@
           </div>
 <!--          Create assignment modal-->
           <el-button size="large" class="custom-button" @click="dialogFormVisible = true"><el-icon class="mr-2" :size="20"><Plus /></el-icon>Create Assignment</el-button>
-          <el-dialog v-model="dialogFormVisible" title="Create Assignment" width="500">
-            <el-form :model="assignmentForm">
-              <el-form-item label="Assignment Name:">
-                <el-input v-model="assignmentForm.name" autocomplete="off" />
-              </el-form-item>
-              <el-form-item label="Number of Questions">
-                <el-input-number v-model="assignmentForm.number_of_questions" :min="1" :max="99" />
-              </el-form-item>
-            </el-form>
-            <template #footer>
-              <div class="dialog-footer flex items-center justify-center">
-                <el-button @click="dialogFormVisible = false">Cancel</el-button>
-                <el-button class="custom-button" @click="createAssignment">
-                  Confirm
-                </el-button>
-              </div>
-            </template>
-          </el-dialog>
 <!--          -->
         </div>
       </div>
+      <el-dialog v-model="dialogFormVisible" title="Create Assignment" width="500">
+        <el-form :model="assignmentForm">
+          <el-form-item label="Assignment Name:">
+            <el-input v-model="assignmentForm.name" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="Number of Questions">
+            <el-input-number v-model="assignmentForm.number_of_questions" :min="1" :max="99" />
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <div class="dialog-footer flex items-center justify-center">
+            <el-button @click="dialogFormVisible = false">Cancel</el-button>
+            <el-button class="custom-button" @click="createAssignment">
+              Confirm
+            </el-button>
+          </div>
+        </template>
+      </el-dialog>
       <div class="mx-10 py-5 h-[calc(100vh-150px)]">
         <div v-for="(item, i) in assignments" :key="i"
              class="bg-black border-ut-pink border-l-4 border-r-4 rounded-lg my-5 font-arial">
-          <button @click="toggle(i)" class="w-full px-8 py-6 text-left">
-            <h2 class="text-white font-semibold">{{ item.title }}</h2>
-            <h2 class="text-white font-semibold absolute right-36">Questions: {{ item.questions.length }}</h2>
-            <svg :class="{'transform rotate-180': activeIndex === i}" class="fill-ut-pink shrink-0 ml-8" width="16"
-                 height="16" xmlns="http://www.w3.org/2000/svg">
-              <rect y="7" width="16" height="2" rx="1"
-                    class="transform origin-center transition duration-200 ease-out"/>
-              <rect y="7" width="16" height="2" rx="1"
-                    class="transform origin-center rotate-90 transition duration-200 ease-out"/>
+          <button @click="toggle(i)" class="w-full px-8 py-6">
+            <svg :class="{'transform rotate-180': activeIndex === i}" class="fill-ut-pink shrink-0" width="16"
+                 height="16" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 256 256" id="Flat">
+              <path d="M128,188a11.96187,11.96187,0,0,1-8.48535-3.51465l-80-80a12.0001,12.0001,0,0,1,16.9707-16.9707L128,159.0293l71.51465-71.51465a12.0001,12.0001,0,0,1,16.9707,16.9707l-80,80A11.96187,11.96187,0,0,1,128,188Z"/>
             </svg>
+            <h2 class="text-ut-pink font-semibold absolute left-32">{{ item.title }}</h2>
+            <h2 class="text-white font-semibold absolute right-36">Questions: {{ item.questions.length }}</h2>
           </button>
           <div v-show="activeIndex === i"
                class="bg-white px-8 py-6 grid grid-cols-1 relative h-full w-full overflow-auto">
+            <el-button class="add_question-button">
+              <div @click="createQuestion(i)" class="absolute inset-x-0 flex justify-center items-center">
+                <el-icon class="mr-4"><Plus/></el-icon>
+                <b>Add Question</b>
+              </div>
+            </el-button>
             <el-table :data="item.questions" >
               <el-table-column label="Complete">
                 <template v-slot:default="scope">
@@ -85,18 +88,23 @@
                 </template>
               </el-table-column>
               <el-table-column prop="completed" label="Publish">
-                <template v-slot:default="scope">
-                  <el-checkbox v-model="scope.row" size="large" border><el-icon sizeq="20"><Check /></el-icon></el-checkbox>
+                <template #default="scope">
+                  <el-button
+                      size="large"
+                      type="Default"
+                      @click="publish(scope.$index, scope.row)">
+                    <el-icon><Promotion /></el-icon></el-button
+                  >
                   <!--                    TODO GET THIS TO WORK-->
                 </template>
               </el-table-column>
               <el-table-column label="Remove">
                 <template #default="scope">
                   <el-button
-                      size="default"
+                      size="large"
                       type="danger"
-                      @click="handleDelete(scope.$index, scope.row)"
-                  >Delete</el-button
+                      @click="handleDelete(i, scope.$index)"
+                  ><el-icon><Delete /></el-icon></el-button
                   >
                 </template>
               </el-table-column>
@@ -174,9 +182,16 @@ export default {
       }
       // todo Query your database with courseId
     },
+
+    createQuestion(assignment_id) {
+      this.assignments[assignment_id].questions.push({question: 'Question ' + (this.assignments[assignment_id].questions.length + 1), completed: false})
+      // todo API
+    },
+
     toggle(i) {
       this.activeIndex = this.activeIndex === i ? null : i;
     },
+
     createAssignment() {
       let questionsList = [];
       for(let i = 1; i <= this.assignmentForm.number_of_questions; i++) {
@@ -191,11 +206,17 @@ export default {
       this.dialogFormVisible = false;
       this.loadSuccessMessage()
     },
+
     loadSuccessMessage() {
       ElMessage({
         message: 'Assignment successfully created.',
         type: 'success',
       })
+    },
+
+    handleDelete(assignment_idx, question_idx) {
+      this.assignments[assignment_idx].questions.splice(question_idx, 1)
+      // todo API
     }
   },
 }
@@ -226,6 +247,16 @@ svg {
   background-color: white;
   color: black;
   border-color: #cf0072;
+}
+
+.add_question-button {
+  font-weight: bold;
+}
+
+.add_question-button:hover {
+  border-color: #cf0072;
+  color: black;
+  background-color: white;
 }
 
 </style>

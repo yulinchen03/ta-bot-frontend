@@ -30,6 +30,20 @@
               </div>
             </div>
           </router-link>
+          <el-badge :value="messageCount" class="item">
+            <router-link to="/messages">
+              <div class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
+                <div class="grid grid-cols-1">
+                  <div class="flex justify-center mb-1">
+                    <el-icon :size="30">
+                      <Comment />
+                    </el-icon>
+                  </div>
+                  <h3 class="font-arial">Messages</h3>
+                </div>
+              </div>
+            </router-link>
+          </el-badge>
           <router-link to="/helpcenter">
             <div class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
               <div class="grid grid-cols-1">
@@ -86,6 +100,7 @@ export default {
       dialogVisible: false,
       confirmLogout: false,
       courseCount: 3,
+      messageCount: 12
     };
   },
   methods: {
