@@ -62,6 +62,7 @@
               :preview-src-list="srcList"
               :initial-index="0"
               fit="contain"
+              :hide-on-click-modal="true"
           />
         </div>
       </div>

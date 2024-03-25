@@ -11,7 +11,7 @@ import Header from "@/components/Header.vue";
     <!-- Main content -->
     <div class="grid grid-cols-1 relative h-screen w-screen">
       <Header :title="pageTitle"></Header>
-      <div class="mx-20 overflow-y-auto w-[calc(100vw-120px)] h-[calc(100vh-100px)]">
+      <div class="mx-20 overflow-y-auto w-[calc(100vw-200px)] h-[calc(100vh-100px)]">
         <!-- Dynamic rows -->
         <div v-for="(row, rowIndex) in coursesRows" :key="rowIndex" class="flex justify-start">
           <Itemcard

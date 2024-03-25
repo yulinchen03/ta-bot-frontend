@@ -22,7 +22,27 @@
               <h2>Unfinished Questions: {{ todo }}</h2>
             </div>
           </div>
-          <el-button size="large" class="custom-button"><el-icon class="mr-2" :size="20"><Plus /></el-icon>Create Assignment</el-button>
+<!--          Create assignment modal-->
+          <el-button size="large" class="custom-button" @click="dialogFormVisible = true"><el-icon class="mr-2" :size="20"><Plus /></el-icon>Create Assignment</el-button>
+          <el-dialog v-model="dialogFormVisible" title="Create Assignment" width="500">
+            <el-form :model="assignmentForm">
+              <el-form-item label="Assignment Name:">
+                <el-input v-model="assignmentForm.name" autocomplete="off" />
+              </el-form-item>
+              <el-form-item label="Number of Questions">
+                <el-input-number v-model="assignmentForm.number_of_questions" :min="1" :max="99" />
+              </el-form-item>
+            </el-form>
+            <template #footer>
+              <div class="dialog-footer flex items-center justify-center">
+                <el-button @click="dialogFormVisible = false">Cancel</el-button>
+                <el-button class="custom-button" @click="createAssignment">
+                  Confirm
+                </el-button>
+              </div>
+            </template>
+          </el-dialog>
+<!--          -->
         </div>
       </div>
       <div class="mx-10 py-5 h-[calc(100vh-150px)]">
@@ -41,8 +61,8 @@
           </button>
           <div v-show="activeIndex === i"
                class="bg-white px-8 py-6 grid grid-cols-1 relative h-full w-full overflow-auto">
-            <el-table :data="item.questions">
-              <el-table-column width="150" label="Complete">
+            <el-table :data="item.questions" >
+              <el-table-column label="Complete">
                 <template v-slot:default="scope">
                   <el-icon v-if="scope.row.completed" color="green" size="large">
                     <Check/>
@@ -52,7 +72,7 @@
                   </el-icon>
                 </template>
               </el-table-column>
-              <el-table-column width="650" prop="question" label="Question"></el-table-column>
+              <el-table-column prop="question" label="Question"></el-table-column>
               <el-table-column label="Open">
                 <template v-slot:default="scope">
                   <el-button>
@@ -64,10 +84,20 @@
                   <!--                    TODO GET THIS TO WORK-->
                 </template>
               </el-table-column>
-              <el-table-column prop="completed" label="Publish" width="150">
+              <el-table-column prop="completed" label="Publish">
                 <template v-slot:default="scope">
-                  <el-checkbox v-model="scope.row" size="large" border><el-icon size="20"><Check /></el-icon></el-checkbox>
+                  <el-checkbox v-model="scope.row" size="large" border><el-icon sizeq="20"><Check /></el-icon></el-checkbox>
                   <!--                    TODO GET THIS TO WORK-->
+                </template>
+              </el-table-column>
+              <el-table-column label="Remove">
+                <template #default="scope">
+                  <el-button
+                      size="default"
+                      type="danger"
+                      @click="handleDelete(scope.$index, scope.row)"
+                  >Delete</el-button
+                  >
                 </template>
               </el-table-column>
             </el-table>
@@ -80,6 +110,8 @@
 
 
 <script>
+import {ElMessage} from "element-plus";
+
 export default {
   created() {
     this.fetchData();
@@ -89,9 +121,9 @@ export default {
       courseid: -1,
       pageTitle: '',
       instructor: '',
-      assignmentCount: -1,
-      questionCount: -1,
-      todo: -1,
+      assignmentCount: 0,
+      questionCount: 0,
+      todo: 0,
       activeIndex: null,
       assignments: [
         {
@@ -114,32 +146,12 @@ export default {
             question: 'Question 2',
             completed: true
           }, {question: 'Question 3', completed: false}]
-        },
-        {
-          title: 'Assignment 4',
-          questions: [{question: 'Question 1', completed: true}, {
-            question: 'Question 2',
-            completed: false
-          }, {question: 'Question 3', completed: false},
-            {question: 'Question 4', completed: true}]
-        },
-        {
-          title: 'Assignment 5',
-          questions: [{question: 'Question 1', completed: true}, {
-            question: 'Question 2',
-            completed: false
-          }, {question: 'Question 3', completed: false},
-            {question: 'Question 4', completed: true},
-            {question: 'Question 5', completed: false}]
-        },{
-          title: 'Assignment 6',
-          questions: [{question: 'Question 1', completed: true}, {
-            question: 'Question 2',
-            completed: false
-          }, {question: 'Question 3', completed: false},
-            {question: 'Question 4', completed: true},
-            {question: 'Question 5', completed: false}]
-        },]
+        }],
+      assignmentForm: {
+        name: '',
+        number_of_questions: ''
+      },
+      dialogFormVisible: false
     }
   },
   watch: {
@@ -148,16 +160,43 @@ export default {
   methods: {
     fetchData() {
       this.courseid = this.$route.query.id;
-      this.pageTitle = 'Service-Oriented Architecture Web Serv. (2023-2A)'
-      this.instructor = 'Luis Ferreira Pires'
-      this.assignmentCount = 4
-      this.questionCount = 20
-      this.todo = 17
-      // Query your database with courseId
+      this.pageTitle = 'Service-Oriented Architecture Web Serv. (2023-2A)';
+      this.instructor = 'Luis Ferreira Pires';
+      this.assignmentCount = this.assignments.length;
+      for(let i = 0; i < this.assignmentCount; i++) {
+        let questions = this.assignments[i].questions
+        this.questionCount += questions.length
+        for(let i = 0; i < questions.length; i++) {
+          if(!questions[i].completed){
+            this.todo += 1
+          }
+        }
+      }
+      // todo Query your database with courseId
     },
     toggle(i) {
       this.activeIndex = this.activeIndex === i ? null : i;
     },
+    createAssignment() {
+      let questionsList = [];
+      for(let i = 1; i <= this.assignmentForm.number_of_questions; i++) {
+        questionsList.push({question: 'Question ' + i, completed: false});
+      }
+      this.assignments.push({title: this.assignmentForm.name, questions: questionsList});
+      console.log(this.assignments)
+      this.assignmentCount += 1
+      this.questionCount += this.assignmentForm.number_of_questions
+      this.todo += this.assignmentForm.number_of_questions
+      // todo replace with API call
+      this.dialogFormVisible = false;
+      this.loadSuccessMessage()
+    },
+    loadSuccessMessage() {
+      ElMessage({
+        message: 'Assignment successfully created.',
+        type: 'success',
+      })
+    }
   },
 }
 </script>
@@ -180,7 +219,6 @@ svg {
 .custom-button {
   background-color: #cf0072; /* This is for pink background */
   color: white; /* This is for white text */
-  border-radius: 10px;
   font-weight: bold;
 }
 
