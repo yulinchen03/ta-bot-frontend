@@ -16,10 +16,10 @@
               <h2>Assignments: {{ assignmentCount }}</h2>
             </div>
             <div class="text-center">
-              <h2>Total Questions: {{ questionCount }}</h2>
+              <h2>Total Exercises: {{ exerciseCount }}</h2>
             </div>
             <div class="text-center">
-              <h2>Unfinished Questions: {{ todo }}</h2>
+              <h2>Unpublished Exercises: {{ todo }}</h2>
             </div>
           </div>
 <!--          Create assignment modal-->
@@ -32,8 +32,8 @@
           <el-form-item label="Assignment Name:">
             <el-input v-model="assignmentForm.name" autocomplete="off" />
           </el-form-item>
-          <el-form-item label="Number of Questions">
-            <el-input-number v-model="assignmentForm.number_of_questions" :min="1" :max="99" />
+          <el-form-item label="Number of Exercises">
+            <el-input-number v-model="assignmentForm.number_of_exercises" :min="1" :max="99" />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -54,17 +54,17 @@
               <path d="M128,188a11.96187,11.96187,0,0,1-8.48535-3.51465l-80-80a12.0001,12.0001,0,0,1,16.9707-16.9707L128,159.0293l71.51465-71.51465a12.0001,12.0001,0,0,1,16.9707,16.9707l-80,80A11.96187,11.96187,0,0,1,128,188Z"/>
             </svg>
             <h2 class="text-ut-pink font-semibold absolute left-32">{{ item.title }}</h2>
-            <h2 class="text-white font-semibold absolute right-36">Questions: {{ item.questions.length }}</h2>
+            <h2 class="text-white font-semibold absolute right-36">Exercises: {{ item.exercises.length }}</h2>
           </button>
           <div v-show="activeIndex === i"
                class="bg-white px-8 py-6 grid grid-cols-1 relative h-full w-full overflow-auto">
-            <el-button class="add_question-button">
-              <div @click="createQuestion(i)" class="absolute inset-x-0 flex justify-center items-center">
+            <el-button class="add_exercise-button">
+              <div @click="createExercise(i)" class="absolute inset-x-0 flex justify-center items-center">
                 <el-icon class="mr-4"><Plus/></el-icon>
-                <b>Add Question</b>
+                <b>Add Exercise</b>
               </div>
             </el-button>
-            <el-table :data="item.questions" >
+            <el-table :data="item.exercises" >
               <el-table-column label="Complete">
                 <template v-slot:default="scope">
                   <el-icon v-if="scope.row.completed" color="green" size="large">
@@ -75,10 +75,14 @@
                   </el-icon>
                 </template>
               </el-table-column>
-              <el-table-column prop="question" label="Question"></el-table-column>
+              <el-table-column prop="exercise" label="Exercise"></el-table-column>
               <el-table-column label="Open">
                 <template v-slot:default="scope">
-                  <el-button>
+                  <el-button
+                      size="large"
+                      type="Default"
+                      @click="edit(scope.$index, i)"
+                  >
                     <el-icon class="mr-2">
                       <Edit />
                     </el-icon>
@@ -130,34 +134,34 @@ export default {
       pageTitle: '',
       instructor: '',
       assignmentCount: 0,
-      questionCount: 0,
+      exerciseCount: 0,
       todo: 0,
       activeIndex: null,
       assignments: [
         {
           title: 'Assignment 1',
-          questions: [{question: 'Question 1', completed: false}, {
-            question: 'Question 2',
+          exercises: [{exercise: 'Exercise 1', completed: false}, {
+            exercise: 'Exercise 2',
             completed: false
-          }, {question: 'Question 3', completed: false}]
+          }, {exercise: 'Exercise 3', completed: false}]
         },
         {
           title: 'Assignment 2',
-          questions: [{question: 'Question 1', completed: true}, {
-            question: 'Question 2',
+          exercises: [{exercise: 'Exercise 1', completed: true}, {
+            exercise: 'Exercise 2',
             completed: false
-          }, {question: 'Question 3', completed: false}]
+          }, {exercise: 'Exercise 3', completed: false}]
         },
         {
           title: 'Assignment 3',
-          questions: [{question: 'Question 1', completed: true}, {
-            question: 'Question 2',
+          exercises: [{exercise: 'Exercise 1', completed: true}, {
+            exercise: 'Exercise 2',
             completed: true
-          }, {question: 'Question 3', completed: false}]
+          }, {exercise: 'Exercise 3', completed: false}]
         }],
       assignmentForm: {
         name: '',
-        number_of_questions: ''
+        number_of_exercises: ''
       },
       dialogFormVisible: false
     }
@@ -172,10 +176,10 @@ export default {
       this.instructor = 'Luis Ferreira Pires';
       this.assignmentCount = this.assignments.length;
       for(let i = 0; i < this.assignmentCount; i++) {
-        let questions = this.assignments[i].questions
-        this.questionCount += questions.length
-        for(let i = 0; i < questions.length; i++) {
-          if(!questions[i].completed){
+        let exercises = this.assignments[i].exercises
+        this.exerciseCount += exercises.length
+        for(let i = 0; i < exercises.length; i++) {
+          if(!exercises[i].completed){
             this.todo += 1
           }
         }
@@ -183,8 +187,8 @@ export default {
       // todo Query your database with courseId
     },
 
-    createQuestion(assignment_id) {
-      this.assignments[assignment_id].questions.push({question: 'Question ' + (this.assignments[assignment_id].questions.length + 1), completed: false})
+    createExercise(assignment_id) {
+      this.assignments[assignment_id].exercises.push({exercise: 'Exercise ' + (this.assignments[assignment_id].exercises.length + 1), completed: false})
       // todo API
     },
 
@@ -193,15 +197,15 @@ export default {
     },
 
     createAssignment() {
-      let questionsList = [];
-      for(let i = 1; i <= this.assignmentForm.number_of_questions; i++) {
-        questionsList.push({question: 'Question ' + i, completed: false});
+      let exerciseList = [];
+      for(let i = 1; i <= this.assignmentForm.number_of_exercises; i++) {
+        exerciseList.push({exercise: 'Exercise ' + i, completed: false});
       }
-      this.assignments.push({title: this.assignmentForm.name, questions: questionsList});
+      this.assignments.push({title: this.assignmentForm.name, exercises: exerciseList});
       console.log(this.assignments)
       this.assignmentCount += 1
-      this.questionCount += this.assignmentForm.number_of_questions
-      this.todo += this.assignmentForm.number_of_questions
+      this.exerciseCount += this.assignmentForm.number_of_exercises
+      this.todo += this.assignmentForm.number_of_exercises
       // todo replace with API call
       this.dialogFormVisible = false;
       this.loadSuccessMessage()
@@ -214,9 +218,13 @@ export default {
       })
     },
 
-    handleDelete(assignment_idx, question_idx) {
-      this.assignments[assignment_idx].questions.splice(question_idx, 1)
+    handleDelete(assignment_idx, exercise_idx) {
+      this.assignments[assignment_idx].exercises.splice(exercise_idx, 1)
       // todo API
+    },
+
+    edit(exercise_idx, assignment_idx) {
+      this.$router.push({path: 'editor', query: {c: this.courseid, a: assignment_idx, e: exercise_idx}});
     }
   },
 }
@@ -249,11 +257,11 @@ svg {
   border-color: #cf0072;
 }
 
-.add_question-button {
+.add_exercise-button {
   font-weight: bold;
 }
 
-.add_question-button:hover {
+.add_exercise-button:hover {
   border-color: #cf0072;
   color: black;
   background-color: white;

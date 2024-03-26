@@ -7,6 +7,7 @@ import helpCenter from '../pages/HelpCenter.vue'
 import help from '../pages/Help.vue'
 import login from '../pages/Login.vue'
 import course from "@/pages/Course.vue";
+import editor from "@/pages/DecisionTreeEditor.vue";
 
 const routes = [
     {
@@ -18,7 +19,7 @@ const routes = [
     {
         name:'Courses',
         path:'/courses',
-        component:courses
+        component:courses,
     },
     {
         name:'Messages',
@@ -53,12 +54,42 @@ const routes = [
     {
         name:'course',
         path:'/course',
-        component:course
+        component:course,
+        beforeEnter: (to, from, next) => {
+            console.log(to.path)
+            console.log(from.path)
+            // Check if the navigation is from the /courses route
+            if (from.path === '/courses' || from.path.includes('/editor')) {
+                // If true, allow navigation
+                next();
+            } else {
+                // If false, redirect to /courses
+                next('/courses');
+            }
+        }
+    },
+    {
+        name:'editor',
+        path:'/editor',
+        component: editor,
+        beforeEnter: (to, from, next) => {
+            console.log(to.path)
+            console.log(from.path)
+            // Check if the navigation is from the /courses route
+            if (from.path.includes('/course') || (from.path === '/' && to.path.includes('/editor'))) {
+                // If true, allow navigation
+                next();
+            } else {
+                // If false, redirect to /courses
+                next('/courses');
+            }
+        },
 
     }
 ];
 const router = Router();
 export default router;
+let isAuthenticated = true; // todo implement login authentication
 
 function Router() {
     const router = new createRouter({
@@ -67,3 +98,26 @@ function Router() {
     });
     return router;
 }
+
+// Prevents back navigation back to login
+// router.beforeEach((to, from, next) => {
+//     // Redirect if user is disallowed to view the page
+//     const isLogged = !! store.getters.getUser
+//     if (isLogged && to.meta.disallowAuthed) {
+//         return router.push('/my-redirect-page')
+//     }
+//
+//     return next()
+// })
+
+router.beforeEach(async (to, from) => {
+    if (
+        // make sure the user is authenticated
+        !isAuthenticated &&
+        // ❗️ Avoid an infinite redirect
+        to.name !== 'Login'
+    ) {
+        // redirect the user to the login page
+        return { name: 'Login' }
+    }
+})

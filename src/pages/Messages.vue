@@ -1,5 +1,6 @@
 <script setup>
 import Sidebar from "@/components/Sidebar.vue";
+import Header from "@/components/Header.vue";
 </script>
 
 <template>
@@ -7,11 +8,28 @@ import Sidebar from "@/components/Sidebar.vue";
     <!--    sidebar -->
     <Sidebar></Sidebar>
     <!--  main -->
-    <div class="grid grid-cols-1 relative h-full w-full overflow-auto">
-      <div class="h-[100px] w-full flex items-center">
-        <h1 class="text-3xl font-arial px-10 font-bold">Messages</h1>
+    <div class="grid grid-cols-1 relative h-screen w-screen">
+      <Header :title="pageTitle"></Header>
+      <div class="flex items-center justify-center">
+        <div class="w-1/2 h-[50vh]">
+          <el-table></el-table>
+        </div>
       </div>
-      <el-table></el-table>
     </div>
   </div>
 </template>
+
+<script>
+import PageHeader from '../components/Header.vue';
+
+export default {
+  components: {
+    PageHeader
+  },
+  data() {
+    return {
+      pageTitle: 'My Messages'
+    }
+  }
+}
+</script>
