@@ -7,6 +7,7 @@ import helpCenter from '../pages/HelpCenter.vue'
 import help from '../pages/Help.vue'
 import login from '../pages/Login.vue'
 import course from "@/pages/Course.vue";
+import bot from "@/pages/Bot.vue";
 
 const routes = [
     {
@@ -55,6 +56,11 @@ const routes = [
         path:'/course',
         component:course
 
+    },
+    {
+        name: 'bot',
+        path: '/bot',
+        component: bot
     }
 ];
 const router = Router();
