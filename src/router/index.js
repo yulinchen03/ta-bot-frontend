@@ -1,7 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
 import courses from '../pages/Courses.vue'
 import profile from '../pages/Profile.vue'
-import messages from '../pages/Messages.vue'
+import notifications from '../pages/Notifications.vue'
 import settings from '../pages/Settings.vue'
 import helpCenter from '../pages/HelpCenter.vue'
 import help from '../pages/Help.vue'
@@ -22,9 +22,9 @@ const routes = [
         component:courses,
     },
     {
-        name:'Messages',
-        path:'/messages',
-        component:messages
+        name:'Notifications',
+        path:'/notifications',
+        component:notifications
     },
     {
         name:'Profile',

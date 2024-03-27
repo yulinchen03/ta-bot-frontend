@@ -3,7 +3,7 @@
     <!-- sidebar -->
     <Sidebar></Sidebar>
     <!--  main -->
-    <div class="grid grid-cols-1 relative h-full w-full overflow-auto">
+    <div class="grid grid-cols-1 relative h-full w-full overflow-y-auto">
       <div class="relative grid grid-cols-1 overflow-visible bg-cover bg-no-repeat h-[25vh] w-full"
            style="background-image: url('https://cdn.rit.edu/images/program/2020-06/ai-banner.jpg');">
         <Header :title="pageTitle" class="text-gray-200 italic font-semibold"></Header>
@@ -189,7 +189,7 @@ export default {
 
     createExercise(assignment_id) {
       this.assignments[assignment_id].exercises.push({exercise: 'Exercise ' + (this.assignments[assignment_id].exercises.length + 1), completed: false})
-      // todo API
+      // todo API use this.$myUrl as base url
     },
 
     toggle(i) {
