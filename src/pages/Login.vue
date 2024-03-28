@@ -29,12 +29,30 @@
 </template>
 
 <script>
-  export default {
-    methods: {
-      login(){
-        console.log('Student logging in...')
-        this.$router.push('/courses');
-      },
-    }
+import authService from "@/services/authService.js";
+import { mapStores } from 'pinia'
+import useUserStore from '@/stores/user.js'
+export default {
+  data: () => ({
+    email: 'denis@teacher.utwente.nl',
+    password: 'password'
+  }),
+  computed: {
+    ...mapStores(useUserStore)
+  },
+  methods: {
+    async login(){
+      console.log('Logging in...')
+      try{
+      await this.userStore.login(this.email, this.password);
+      }
+      catch(err) {
+        //TODO handle error
+        console.log(err);
+      }
+      console.log('Student logging in...')
+      this.$router.push('/courses');
+    },
   }
+}
 </script>

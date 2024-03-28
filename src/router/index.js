@@ -7,6 +7,7 @@ import helpCenter from '../pages/HelpCenter.vue'
 import help from '../pages/Help.vue'
 import login from '../pages/Login.vue'
 import course from "@/pages/Course.vue";
+import useUserStore from "@/stores/user";
 
 const routes = [
     {
@@ -58,6 +59,21 @@ const routes = [
     }
 ];
 const router = Router();
+
+router.beforeEach(async (to, from, next) => {
+    const store = useUserStore()
+
+    const publicPages = ['/login']
+    const authRequired = !publicPages.includes(to.path)
+    let loggedIn = !!store.token
+
+    if (authRequired && !loggedIn) {
+        return next({ name: 'login' })
+    }
+
+    next()
+})
+
 export default router;
 
 function Router() {
