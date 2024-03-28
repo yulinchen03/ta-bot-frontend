@@ -4,9 +4,9 @@
       <img class="h-36 w-full object-cover" src="https://upload.wikimedia.org/wikipedia/commons/5/51/Computer_Science_Word_Cloud.png">
     </div>
     <div class="p-8">
-      <div class="uppercase tracking-wide text-sm text-ut-pink font-semibold">{{ courseTitle }}</div>
-      <p class="block mt-1 text-lg leading-tight font-medium text-black">{{ code }}</p>
-      <p class="mt-2 text-gray-500">{{assignments}} assignments</p>
+      <div class="uppercase tracking-wide text-sm text-ut-pink font-semibold">{{ courseData.access_id }}</div>
+      <p class="block mt-1 text-lg leading-tight font-medium text-black">{{ courseData.name }}</p>
+<!--      <p class="mt-2 text-gray-500">{{assignments}} assignments</p>-->
     </div>
   </div>
 </template>
@@ -14,6 +14,7 @@
 <script>
 
 export default {
+  props: ['courseData'],
   mounted() {
     this.loadData()
   },
@@ -33,9 +34,6 @@ export default {
     emitClickEvent() {
       this.$emit('courseSelected');
     }
-  },
-  props: {
-    courseData: Object
   },
 }
 </script>

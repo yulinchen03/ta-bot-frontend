@@ -30,6 +30,8 @@ import Header from "@/components/Header.vue";
 
 <script>
 import PageHeader from '../components/Header.vue';
+import courseService from "@/services/courseService.js";
+import assignmentsService from "@/services/assignmentsService.js";
 
 export default {
   components: {
@@ -56,8 +58,19 @@ export default {
     }
   },
   methods: {
-    getCourses() {
+    async getCourses() {
       // TODO get course data
+      try {
+        const res = await courseService.getCourses();
+        const courses = res.data.data;
+        this.courses = courses;
+        const assignments = await assignmentsService.getAssignments();
+        console.log(res)
+      }
+      catch(err){
+        // TODO handle error
+        console.log(err)
+      }
     },
     openCourse(id) {
       this.$router.push({path: 'course', query: {id: id}});
@@ -74,5 +87,8 @@ export default {
       return rows;
     },
   },
+  mounted() {
+    this.getCourses()
+  }
 }
 </script>
