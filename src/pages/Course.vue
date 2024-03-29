@@ -6,8 +6,14 @@
     <div class="grid grid-cols-1 relative h-full w-full overflow-y-auto">
       <div class="relative grid grid-cols-1 overflow-visible bg-cover bg-no-repeat h-[25vh] w-full"
            style="background-image: url('https://cdn.rit.edu/images/program/2020-06/ai-banner.jpg');">
-        <Header :title="pageTitle" class="text-gray-200 italic font-semibold"></Header>
+        <Header :title="pageTitle" class="text-gray-200 italic font-semibold">
+        </Header>
         <div class="text-gray-200 xl:text-lg 2xl:text-2xl font-arial px-10 font-semibold">
+          <div class="flex items-center mb-3">
+            <h2 class="mr-3">Invite code: {{ invite_code }}</h2>
+            <el-alert v-if="showCopySuccess" title="Success alert" type="success" show-icon @close="showCopySuccess=false"/>
+            <el-button :size="'small'" round class="custom-button" @click="copy()" :plain="true">Copy</el-button>
+          </div>
           <h2>Instructor: {{ instructor }}</h2>
         </div>
         <div class="flex space-x-10 justify-between items-center text-gray-200 font-arial px-10 font-semibold xl:text-lg 2xl:text-2xl">
@@ -131,6 +137,7 @@ export default {
   data() {
     return {
       courseid: -1,
+      invite_code: '',
       pageTitle: '',
       instructor: '',
       assignmentCount: 0,
@@ -172,6 +179,7 @@ export default {
   methods: {
     fetchData() {
       this.courseid = this.$route.query.id;
+      this.invite_code = 'GRE322'
       this.pageTitle = 'Service-Oriented Architecture Web Serv. (2023-2A)';
       this.instructor = 'Luis Ferreira Pires';
       this.assignmentCount = this.assignments.length;
@@ -225,6 +233,13 @@ export default {
 
     edit(exercise_idx, assignment_idx) {
       this.$router.push({path: 'editor', query: {c: this.courseid, a: assignment_idx, e: exercise_idx}});
+    },
+    copy() {
+      navigator.clipboard.writeText(this.invite_code);
+      ElMessage({
+        message: 'Invite code copied to clipboard',
+        type: 'success'
+      })
     }
   },
 }
