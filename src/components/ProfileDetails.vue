@@ -52,7 +52,7 @@
            
         </div>
     <!-- </div> -->
-    <PopUp v-if="isNewPassword" @close="isNewPassword = false" />
+    <PopUp v-if="isNewPassword" @cancel="isNewPassword = false" @newPass="handleNewPassword" />
 </template>
 <script>
 import PopUp from "@/components/PopUp.vue";
@@ -78,13 +78,11 @@ export default {
             this.isEditing = true;
         },
         onSubmit() {
-            // check if it empty
             if (this.userDetails.name === '' || this.userDetails.surname === '' || this.userDetails.email === '') {
                 alert('Please fill in all fields');
                 return;
             }
             this.isEditing = false;
-            // Handle save logic here
         },
         onDelete() {
             console.log('Delete user');
@@ -93,6 +91,10 @@ export default {
             // Show the modal
             console.log('New Password');
             this.isNewPassword = true;
+        },
+        handleNewPassword(newPassword) {
+            console.log('New Password:', newPassword);
+            this.isNewPassword = false;
         },
     }
 };

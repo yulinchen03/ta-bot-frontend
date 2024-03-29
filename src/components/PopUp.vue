@@ -39,16 +39,20 @@ export default {
             showModal: false,
             oldPassword: '',
             newPassword: '',
-            // ...
+            
         };
     },
     methods: {
         changePassword() {
             // Handle password change with new password
-            this.$emit('close');    
+            if (this.newPassword == '' || this.oldPassword == '') {
+                alert('Please fill in all the fields.');
+                return;
+            }
+            this.$emit('newPass', this.newPassword);    
         },
         cancel() {
-            this.$emit('close');
+            this.$emit('cancel');
         },
     },
 };
