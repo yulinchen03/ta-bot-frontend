@@ -1,14 +1,6 @@
 
 <template>
     <div class="flex justify-center">
-        <!-- <div class="mt-4 bg-white rounded-xl shadow-md overflow-hidden mb-2
-                    md:max-w-2xl transition duration-500 ease-in-out transform
-                    hover:scale-105 hover:shadow-glow border-ut-pink
-                    transform-gpu origin-bottom
-                    "> -->
-            <!-- Existing content... -->
-
-            <!-- Form Section in a separate box -->
             <div class="px-5 py-2 bg-gray-200 mt-5 m:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4 mx-auto">
                 <form @submit.prevent="onSubmit">
                     <div class="mb-4">
@@ -39,7 +31,6 @@
                         <button v-else class="w-20 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
                             Save
                         </button>
-                        <!-- change password button-->
                         <button class="w-35 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" @click="onNewPassword">
                             New Password
                         </button>
@@ -51,14 +42,14 @@
             </div>
            
         </div>
-    <!-- </div> -->
-    <PopUp v-if="isNewPassword" @cancel="isNewPassword = false" @newPass="handleNewPassword" />
+    <NewPassword v-if="isNewPassword" @cancel="isNewPassword = false" @newPass="handleNewPassword" />
 </template>
 <script>
-import PopUp from "@/components/PopUp.vue";
+import NewPassword from "@/components/NewPassword.vue";
+import PopUp from "@/components/NewPassword.vue";
 export default {
     components: {
-        PopUp,
+        NewPassword,
     },
     name: 'UserDetails',
     data() {
@@ -66,10 +57,9 @@ export default {
             isEditing: false,
             isNewPassword: false,
             userDetails: {
-                name: 'John',
+                name: 'Jane',
                 surname: 'Doe',
-                email: 'john.doe@example.com',
-                password: '******', // You may want to keep this field empty or obscured
+                email: 'jane.doe@example.com',
             },
         };
     },
@@ -88,7 +78,6 @@ export default {
             console.log('Delete user');
         },
         onNewPassword() {
-            // Show the modal
             console.log('New Password');
             this.isNewPassword = true;
         },
@@ -100,6 +89,3 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Your existing styles... */
-</style>

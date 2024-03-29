@@ -28,7 +28,6 @@
             </div>
         </div>
     </div>
-    <!-- ... -->
 </template>
 
 <script>
@@ -44,7 +43,6 @@ export default {
     },
     methods: {
         changePassword() {
-            // Handle password change with new password
             if (this.newPassword == '' || this.oldPassword == '') {
                 alert('Please fill in all the fields.');
                 return;
