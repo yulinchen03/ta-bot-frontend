@@ -1,112 +1,84 @@
 <template>
     <div class="flex justify-center">
-        <div class="mt-4 bg-white rounded-xl shadow-md overflow-hidden mb-2
+        <!-- <div class="mt-4 bg-white rounded-xl shadow-md overflow-hidden mb-2
                     md:max-w-2xl transition duration-500 ease-in-out transform
                     hover:scale-105 hover:shadow-glow border-ut-pink
                     transform-gpu origin-bottom
-                    ">
-            <div class="flex flex-col justify-between h-full">
-                <div class="p-5 bg-white">
-                    <!-- User Info -->
-                    <div class="flex justify-between">
-                        <div class="w-1/2 pr-4">
-                            <div class="mb-2">
-                                <label class="font-bold text-xl">Name</label>
-                                <div>{{ userDetails.name }}</div>
-                            </div>
-                            <div class="mb-2">
-                                <label class="font-bold text-xl">Surname</label>
-                                <div>{{ userDetails.surname }}</div>
-                            </div>
-                            <div class="mb-2">
-                                <label class="font-bold text-xl">Email</label>
-                                <div>{{ userDetails.email }}</div>
-                            </div>
-                        </div>
-            
-                        <!-- Courses -->
-                        <div class="w-1/2 pl-4">
-                            <label class="font-bold text-xl">Courses</label>
-                            <div v-for="course in userDetails.courses" :key="course">
-                                <div class="flex justify-between mb-2">
-                                    <p class="block mt-1 whitespace-nowrap mr-4">{{ course }}</p>
-                                    <p class="text-gray-500 italic text-xs">{{ userDetails.courseCodes[course] }}</p>
-                                </div>
-                             </div>
-                        </div>
+                    "> -->
+            <!-- Existing content... -->
+
+            <!-- Form Section in a separate box -->
+            <div class="px-5 py-4 bg-gray-200 mt-5">
+                <form @submit.prevent="onSubmit">
+                    <div class="mb-4">
+                        <label for="name" class="block text-black text-lg font-bold mb-2">Name</label>
+                        <input type="text" id="name" v-model="userDetails.name" 
+                               class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight bg-gray-200"
+                               :disabled="!isEditing">
                     </div>
-                </div>
-                <!-- Buttons at the bottom -->
-                <div class="bg-white mb-4">
-                    <div class="flex justify-around">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" @click="newPassword">
-                            New Password
-                        </button>
-                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" @click="edit">
+                    <div class="mb-4">
+                        <label for="surname" class="block text-black text-lg font-bold mb-2">Surname</label>
+                        <input type="text" id="surname" v-model="userDetails.surname"
+                               class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight bg-gray-200"
+                               :disabled="!isEditing">
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-black text-lg font-bold mb-2">Email</label>
+                        <input type="email" id="email" v-model="userDetails.email"
+                               class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight bg-gray-200"
+                               :disabled="!isEditing">
+                    </div>
+                    <div class="mb-6">
+                        <label for="password" class="block text-black text-lg font-bold mb-2">Password</label>
+                        <input type="password" id="password" v-model="userDetails.password"
+                               class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 mb-3 leading-tight bg-gray-100"
+                               :disabled="!isEditing">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <button v-if="!isEditing" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" @click="edit">
                             Edit
                         </button>
-                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" @click="delete">
+                        <button v-else class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                            Save
+                        </button>
+                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" @click="onDelete">
                             Delete
                         </button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
-    </div>
+    <!-- </div> -->
 </template>
-  
-  <script>
-  export default {
+<script>
+export default {
     name: 'UserDetails',
     data() {
         return {
-         userDetails: {
-            name: 'Jane',
-            surname: 'Doe',
-            email: 'john.doe@example.com',
-            courses: ['Computer Science', 'Biology', 'Artificial Intelligence', 'Mathematics', 'Physics'],
-            courseCodes: {
-                'Computer Science': 'CS101',
-                'Biology': 'BIO101',
-                'Artificial Intelligence': 'AI101',
-                'Mathematics': 'MATH101',
-                'Physics': 'PHY101'
-                    }
-            }
-        }
+            isEditing: false,
+            userDetails: {
+                name: 'John',
+                surname: 'Doe',
+                email: 'john.doe@example.com',
+                password: '******', // You may want to keep this field empty or obscured
+            },
+        };
+    },
+    methods: {
+        edit() {
+            this.isEditing = true;
+        },
+        onSubmit() {
+            this.isEditing = false;
+            // Handle save logic here
+        },
+        onDelete() {
+            // Handle delete action
+        },
     }
-}
+};
+</script>
 
-  </script>
-  
-  <style scoped>
-
-  .hover\:shadow-glow:hover {
-  box-shadow: 0 0 5px , 0 0 5px #cf0072, 0 0 5px #cf0072, 0 0 5px #cf0072;
-}
-/*   
- .user-info, .courses {
-    width: 50%;
-  } 
-  
-  .field label {
-    font-weight: bold;
-  }
- .field div {
-    margin-bottom: 0.5em;
-  } 
-  
- .courses ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .courses label {
-    font-weight: bold;
-  }
-  
-  .courses li:not(:last-child) {
-    margin-bottom: 0.5em;
-  }
-  */
-  </style>
+<style scoped>
+/* Your existing styles... */
+</style>
