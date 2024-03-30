@@ -8,13 +8,49 @@ import help from '../pages/Help.vue'
 import login from '../pages/Login.vue'
 import course from "@/pages/Course.vue";
 import editor from "@/pages/DecisionTreeEditor.vue";
+import reset from "@/pages/Reset.vue"
+import signup from "@/pages/Signup.vue"
 
 const routes = [
     {
         name:'Login',
         path:'/',
         alias: '/login',
-        component:login
+        component:login,
+        beforeEnter: (to, from, next) => {
+            next()
+            //todo prevent access when user is already logged in
+        }
+    },
+    {
+        name:'Reset',
+        path:'/reset',
+        component: reset,
+        beforeEnter: (to, from, next) => {
+            // Check if the navigation is from the /courses route
+            if (from.path === '/login') {
+                // If true, allow navigation
+                next();
+            } else {
+                // If false, redirect to /courses
+                next('/login');
+            }
+        }
+    },
+    {
+        name:'Signup',
+        path:'/signup',
+        component: signup,
+        beforeEnter: (to, from, next) => {
+            // Check if the navigation is from the /courses route
+            if (from.path === '/login') {
+                // If true, allow navigation
+                next();
+            } else {
+                // If false, redirect to /courses
+                next('/login');
+            }
+        }
     },
     {
         name:'Courses',
@@ -56,8 +92,6 @@ const routes = [
         path:'/course',
         component:course,
         beforeEnter: (to, from, next) => {
-            console.log(to.path)
-            console.log(from.path)
             // Check if the navigation is from the /courses route
             if (from.path === '/courses' || from.path.includes('/editor')) {
                 // If true, allow navigation
