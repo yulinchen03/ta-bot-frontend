@@ -38,16 +38,6 @@
             <div v-show="activeIndex === i"
                  class="bg-white px-8 py-6 grid grid-cols-1 relative h-full w-full overflow-auto">
               <el-table :data="item.questions" >
-                <el-table-column label="Complete">
-                  <template v-slot:default="scope">
-                    <el-icon v-if="scope.row.completed" color="green" size="large">
-                      <Check/>
-                    </el-icon>
-                    <el-icon v-else color="red" size="large">
-                      <Close/>
-                    </el-icon>
-                  </template>
-                </el-table-column>
                 <el-table-column prop="question" label="Question"></el-table-column>
                 <el-table-column label="Open">
                   <template v-slot:default="scope">
@@ -55,30 +45,17 @@
                       <el-icon class="mr-2">
                         <View />
                       </el-icon>
-                      View
+                        View
                     </el-button>
-                    <!--                    TODO GET THIS TO WORK-->
                   </template>
                 </el-table-column>
-                <!-- <el-table-column prop="completed" label="Publish">
-                  <template #default="scope">
-                    <el-button
-                        size="large"
-                        type="Default"
-                        @click="publish(scope.$index, scope.row)">
-                      <el-icon><Promotion /></el-icon></el-button
-                    >
-                                        TODO GET THIS TO WORK
-                  </template>
-                </el-table-column> -->
                 <el-table-column label="Feedback" class="flex items-center">
                     <template #default="scope">
                         <el-button
                             size="large"
                             type="primary"
                             @click="handleFeedback(i, scope.$index)"
-                        >Feedback
-                            <!-- <el-icon><i class="el-icon-message"></i></el-icon> -->
+                            >Feedback
                         </el-button>
                     </template>
                 </el-table-column>

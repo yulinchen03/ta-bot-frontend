@@ -6,7 +6,7 @@
     <div class="h-[calc(100vh-120px)] bg-white py-[20px]">
       <div class="flex flex-col justify-between h-full">
         <div class="px-[20px] flex flex-col space-y-[10px]">
-          <router-link to="/courses">
+          <router-link to="/studentcourses">
             <div class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
               <div class="grid grid-cols-1">
                 <div class="flex justify-center mb-1">
