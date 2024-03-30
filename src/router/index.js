@@ -1,12 +1,14 @@
 import {createRouter, createWebHistory} from "vue-router";
-import courses from '../pages/Courses.vue'
+import teachercourses from "@/pages/TeacherCourses.vue";
+import studentcourses from "@/pages/StudentCourses.vue";
 import profile from '../pages/Profile.vue'
 import messages from '../pages/Messages.vue'
 import settings from '../pages/Settings.vue'
 import helpCenter from '../pages/HelpCenter.vue'
 import help from '../pages/Help.vue'
 import login from '../pages/Login.vue'
-import course from "@/pages/Course.vue";
+import teachercourse from '../pages/TeacherCourse.vue'
+import studentcourse from '../pages/StudentCourse.vue'
 
 const routes = [
     {
@@ -16,9 +18,14 @@ const routes = [
         component:login
     },
     {
-        name:'Courses',
-        path:'/courses',
-        component:courses
+        name:'TeacherCourses',
+        path:'/teachercourses',
+        component: teachercourses
+    },
+    {
+        name:'StudentCourses',
+        path:'/studentcourses',
+        component: studentcourses
     },
     {
         name:'Messages',
@@ -51,10 +58,15 @@ const routes = [
         component:help
     },
     {
-        name:'course',
-        path:'/course',
-        component:course
+        name:'teachercourse',
+        path:'/teachercourse',
+        component: teachercourse
 
+    },
+    {
+        name:'studentcourse',
+        path:'/studentcourse',
+        component: studentcourse
     }
 ];
 const router = Router();

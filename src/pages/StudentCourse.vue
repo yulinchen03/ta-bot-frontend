@@ -1,0 +1,229 @@
+<template>
+    <div class="w-screen h-screen flex bg-gray-200">
+      <!-- sidebar -->
+      <Sidebar></Sidebar>
+      <!--  main -->
+      <div class="grid grid-cols-1 relative h-full w-full overflow-auto">
+        <div class="relative grid grid-cols-1 overflow-visible bg-cover bg-no-repeat h-[25vh] w-full"
+             style="background-image: url('https://cdn.rit.edu/images/program/2020-06/ai-banner.jpg');">
+          <Header :title="pageTitle" class="text-gray-200 italic font-semibold"></Header>
+          <div class="text-gray-200 xl:text-lg 2xl:text-2xl font-arial px-10 font-semibold">
+            <h2>Instructor: {{ instructor }}</h2>
+          </div>
+          <div class="flex space-x-10 justify-between items-center text-gray-200 font-arial px-10 font-semibold xl:text-lg 2xl:text-2xl">
+            <div class="flex space-x-10">
+              <div class="text-center">
+                <h2>Assignments: {{ assignmentCount }}</h2>
+              </div>
+              <div class="text-center">
+                <h2>Total Questions: {{ questionCount }}</h2>
+              </div>
+              <div class="text-center">
+                <h2>Unfinished Questions: {{ todo }}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mx-10 py-5 h-[calc(100vh-150px)]">
+          <div v-for="(item, i) in assignments" :key="i"
+               class="bg-black border-ut-pink border-l-4 border-r-4 rounded-lg my-5 font-arial">
+            <button @click="toggle(i)" class="w-full px-8 py-6">
+              <svg :class="{'transform rotate-180': activeIndex === i}" class="fill-ut-pink shrink-0" width="16"
+                   height="16" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 256 256" id="Flat">
+                <path d="M128,188a11.96187,11.96187,0,0,1-8.48535-3.51465l-80-80a12.0001,12.0001,0,0,1,16.9707-16.9707L128,159.0293l71.51465-71.51465a12.0001,12.0001,0,0,1,16.9707,16.9707l-80,80A11.96187,11.96187,0,0,1,128,188Z"/>
+              </svg>
+              <h2 class="text-ut-pink font-semibold absolute left-32">{{ item.title }}</h2>
+              <h2 class="text-white font-semibold absolute right-36">Questions: {{ item.questions.length }}</h2>
+            </button>
+            <div v-show="activeIndex === i"
+                 class="bg-white px-8 py-6 grid grid-cols-1 relative h-full w-full overflow-auto">
+              <el-table :data="item.questions" >
+                <el-table-column label="Complete">
+                  <template v-slot:default="scope">
+                    <el-icon v-if="scope.row.completed" color="green" size="large">
+                      <Check/>
+                    </el-icon>
+                    <el-icon v-else color="red" size="large">
+                      <Close/>
+                    </el-icon>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="question" label="Question"></el-table-column>
+                <el-table-column label="Open">
+                  <template v-slot:default="scope">
+                    <el-button>
+                      <el-icon class="mr-2">
+                        <View />
+                      </el-icon>
+                      View
+                    </el-button>
+                    <!--                    TODO GET THIS TO WORK-->
+                  </template>
+                </el-table-column>
+                <!-- <el-table-column prop="completed" label="Publish">
+                  <template #default="scope">
+                    <el-button
+                        size="large"
+                        type="Default"
+                        @click="publish(scope.$index, scope.row)">
+                      <el-icon><Promotion /></el-icon></el-button
+                    >
+                                        TODO GET THIS TO WORK
+                  </template>
+                </el-table-column> -->
+                <el-table-column label="Feedback" class="flex items-center">
+                    <template #default="scope">
+                        <el-button
+                            size="large"
+                            type="primary"
+                            @click="handleFeedback(i, scope.$index)"
+                        >Feedback
+                            <!-- <el-icon><i class="el-icon-message"></i></el-icon> -->
+                        </el-button>
+                    </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+  
+  
+  <script>
+  import {ElMessage} from "element-plus";
+  
+  export default {
+    created() {
+      this.fetchData();
+    },
+    data() {
+      return {
+        courseid: -1,
+        pageTitle: '',
+        instructor: '',
+        assignmentCount: 0,
+        questionCount: 0,
+        todo: 0,
+        activeIndex: null,
+        assignments: [
+          {
+            title: 'Assignment 1',
+            questions: [{question: 'Question 1', completed: false}, {
+              question: 'Question 2',
+              completed: false
+            }, {question: 'Question 3', completed: false}]
+          },
+          {
+            title: 'Assignment 2',
+            questions: [{question: 'Question 1', completed: true}, {
+              question: 'Question 2',
+              completed: false
+            }, {question: 'Question 3', completed: false}]
+          },
+          {
+            title: 'Assignment 3',
+            questions: [{question: 'Question 1', completed: true}, {
+              question: 'Question 2',
+              completed: true
+            }, {question: 'Question 3', completed: false}]
+          }],
+        assignmentForm: {
+          name: '',
+          number_of_questions: ''
+        },
+        dialogFormVisible: false
+      }
+    },
+    watch: {
+      '$route': 'fetchData'
+    },
+    methods: {
+      fetchData() {
+        this.courseid = this.$route.query.id;
+        this.pageTitle = 'Service-Oriented Architecture Web Serv. (2023-2A)';
+        this.instructor = 'Luis Ferreira Pires';
+        this.assignmentCount = this.assignments.length;
+        for(let i = 0; i < this.assignmentCount; i++) {
+          let questions = this.assignments[i].questions
+          this.questionCount += questions.length
+          for(let i = 0; i < questions.length; i++) {
+            if(!questions[i].completed){
+              this.todo += 1
+            }
+          }
+        }
+        // todo Query your database with courseId
+      },
+  
+      createQuestion(assignment_id) {
+        this.assignments[assignment_id].questions.push({question: 'Question ' + (this.assignments[assignment_id].questions.length + 1), completed: false})
+        // todo API
+      },
+  
+      toggle(i) {
+        this.activeIndex = this.activeIndex === i ? null : i;
+      },
+  
+      createAssignment() {
+        let questionsList = [];
+        for(let i = 1; i <= this.assignmentForm.number_of_questions; i++) {
+          questionsList.push({question: 'Question ' + i, completed: false});
+        }
+        this.assignments.push({title: this.assignmentForm.name, questions: questionsList});
+        console.log(this.assignments)
+        this.assignmentCount += 1
+        this.questionCount += this.assignmentForm.number_of_questions
+        this.todo += this.assignmentForm.number_of_questions
+        // todo replace with API call
+        this.dialogFormVisible = false;
+        this.loadSuccessMessage()
+      },
+  
+      handleDelete(assignment_idx, question_idx) {
+        this.assignments[assignment_idx].questions.splice(question_idx, 1)
+        // todo API
+      }
+    },
+  }
+  </script>
+  
+  <script setup>
+  import Sidebar from "@/components/Sidebar.vue";
+  import Header from "@/components/Header.vue";
+  
+  </script>
+  
+  <style scoped>
+  button {
+    @apply flex justify-between items-center;
+  }
+  
+  svg {
+    @apply transition-transform duration-200;
+  }
+  
+  .custom-button {
+    background-color: #cf0072; /* This is for pink background */
+    color: white; /* This is for white text */
+    font-weight: bold;
+  }
+  
+  .custom-button:hover {
+    background-color: white;
+    color: black;
+    border-color: #cf0072;
+  }
+  
+  .add_question-button {
+    font-weight: bold;
+  }
+  
+  .add_question-button:hover {
+    border-color: #cf0072;
+    color: black;
+    background-color: white;
+  }
+  
+  </style>
