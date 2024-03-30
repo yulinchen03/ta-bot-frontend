@@ -6,8 +6,8 @@
     <div class="h-[calc(100vh-120px)] bg-white py-[20px]">
       <div class="flex flex-col justify-between h-full">
         <div class="px-[20px] flex flex-col space-y-[10px]">
-          <router-link to="/studentcourses">
-            <div class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
+          <!-- <router-link to="/studentcourses"> -->
+            <div @click="navigateToCourse" class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
               <div class="grid grid-cols-1">
                 <div class="flex justify-center mb-1">
                   <el-icon :size="30">
@@ -17,7 +17,7 @@
                 <h3 class="font-arial">Courses</h3>
               </div>
             </div>
-          </router-link>
+          <!-- </router-link> -->
           <router-link to="/profile">
             <div class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
               <div class="grid grid-cols-1">
@@ -110,6 +110,10 @@ export default {
       console.log('Logging out...')
       this.$router.push('/login');
       // TODO LOGOUT LOGIC TO BE ADDED
+    },
+    navigateToCourse() {
+      this.$router.push('/studentcourses');
+      // this.$emit('teachercourses');
     }
   },
 };

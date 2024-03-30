@@ -11,13 +11,13 @@
                                 Join New Course
                             </h3>
                             <div class="mt-2">
-                                <input type="password" placeholder="Old Password" v-model="courseCode" class="w-full px-3 py-2 placeholder-gray-500 border rounded-md">
+                                <input type="input" placeholder="Course Code" v-model="courseCode" class="w-full px-3 py-2 placeholder-gray-500 border rounded-md">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm" @click="changePassword">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm" @click="saveCourseCode">
                         Save
                     </button>
                     <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="cancel">
@@ -30,3 +30,23 @@
 </template>
 
 <script>
+export default {
+    data() {
+        return {
+            courseCode: '',
+        };
+    },
+    methods: {
+        saveCourseCode() {
+            if (this.courseCode === '') {
+                alert('Please fill in all the fields.');
+                return;
+            }
+            this.$emit('courseCode', this.courseCode);    
+        },
+        cancel() {
+            this.$emit('cancel');
+        },
+    },
+};
+</script>
