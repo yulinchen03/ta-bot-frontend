@@ -34,8 +34,6 @@
       login(){
         console.log('Student logging in...')
         this.$router.push('/courses');
-        // this.$router.push('/teachercourses') // Redirect to teacher courses
-        this.$router.push('studentcourses') // Redirect to student courses
       },
     }
   }

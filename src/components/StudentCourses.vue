@@ -53,7 +53,7 @@ export default {
       // TODO get course data
     },
     openCourse(id) {
-      this.$router.push({path: 'studentcourse', query: {id: id}});
+      this.$router.push({path: 'course', query: {id: id}});
     }
   },
   computed: {
