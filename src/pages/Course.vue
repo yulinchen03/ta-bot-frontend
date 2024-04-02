@@ -3,12 +3,18 @@
     <!-- sidebar -->
     <Sidebar></Sidebar>
     <!--  main -->
-    <div class="grid grid-cols-1 relative h-full w-full overflow-auto">
+    <div class="grid grid-cols-1 relative h-full w-full overflow-y-auto">
       <div class="relative grid grid-cols-1 overflow-visible bg-cover bg-no-repeat h-[25vh] w-full"
            style="background-image: url('https://cdn.rit.edu/images/program/2020-06/ai-banner.jpg');">
-        <Header :title="pageTitle" class="text-gray-200 italic font-semibold"></Header>
+        <Header :title="pageTitle" class="text-gray-200 italic font-semibold">
+        </Header>
         <div class="text-gray-200 xl:text-lg 2xl:text-2xl font-arial px-10 font-semibold">
-          <h2>Instructor: {{ instructor  }}</h2>
+          <div class="flex items-center mb-3">
+            <h2 class="mr-3">Invite code: {{ invite_code }}</h2>
+            <el-alert v-if="showCopySuccess" title="Success alert" type="success" show-icon @close="showCopySuccess=false"/>
+            <el-button :size="'small'" round class="custom-button" @click="copy()" :plain="true">Copy</el-button>
+          </div>
+          <h2>Instructor: {{ instructor }}</h2>
         </div>
         <div class="flex space-x-10 justify-between items-center text-gray-200 font-arial px-10 font-semibold xl:text-lg 2xl:text-2xl">
           <div class="flex space-x-10">
@@ -16,10 +22,10 @@
               <h2>Assignments: {{ assignmentCount }}</h2>
             </div>
             <div class="text-center">
-              <h2>Total Questions: {{ questionCount }}</h2>
+              <h2>Total Exercises: {{ exerciseCount }}</h2>
             </div>
             <div class="text-center">
-              <h2>Unfinished Questions: {{ todo }}</h2>
+              <h2>Unpublished Exercises: {{ todo }}</h2>
             </div>
           </div>
 <!--          Create assignment modal-->
@@ -32,8 +38,8 @@
           <el-form-item label="Assignment Name:">
             <el-input v-model="assignmentForm.name" autocomplete="off" />
           </el-form-item>
-          <el-form-item label="Number of Questions">
-            <el-input-number v-model="assignmentForm.number_of_questions" :min="1" :max="99" />
+          <el-form-item label="Number of Exercises">
+            <el-input-number v-model="assignmentForm.number_of_exercises" :min="1" :max="99" />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -53,15 +59,15 @@
                  height="16" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 256 256" id="Flat">
               <path d="M128,188a11.96187,11.96187,0,0,1-8.48535-3.51465l-80-80a12.0001,12.0001,0,0,1,16.9707-16.9707L128,159.0293l71.51465-71.51465a12.0001,12.0001,0,0,1,16.9707,16.9707l-80,80A11.96187,11.96187,0,0,1,128,188Z"/>
             </svg>
-            <h2 class="text-ut-pink font-semibold absolute left-32">{{ item.name }}</h2>
-            <h2 class="text-white font-semibold absolute right-36">Questions: {{ item.exercises.length }}</h2>
+            <h2 class="text-ut-pink font-semibold absolute left-32">{{ item.title }}</h2>
+            <h2 class="text-white font-semibold absolute right-36">Exercises: {{ item.exercises.length }}</h2>
           </button>
           <div v-show="activeIndex === i"
                class="bg-white px-8 py-6 grid grid-cols-1 relative h-full w-full overflow-auto">
-            <el-button class="add_question-button">
-              <div @click="createQuestion(i)" class="absolute inset-x-0 flex justify-center items-center">
+            <el-button class="add_exercise-button">
+              <div @click="createExercise(i)" class="absolute inset-x-0 flex justify-center items-center">
                 <el-icon class="mr-4"><Plus/></el-icon>
-                <b>Add Question</b>
+                <b>Add Exercise</b>
               </div>
             </el-button>
             <el-table :data="item.exercises" >
@@ -78,7 +84,11 @@
               <el-table-column prop="exercise" label="Question"></el-table-column>
               <el-table-column label="Open">
                 <template v-slot:default="scope">
-                  <el-button>
+                  <el-button
+                      size="large"
+                      type="Default"
+                      @click="edit(scope.$index, i)"
+                  >
                     <el-icon class="mr-2">
                       <Edit />
                     </el-icon>
@@ -276,9 +286,6 @@ export default {
       await this.fetchData()
     }
   },
-  computed: {
-    ...mapStores(useUserStore)
-  }
 }
 </script>
 
@@ -309,11 +316,11 @@ svg {
   border-color: #cf0072;
 }
 
-.add_question-button {
+.add_exercise-button {
   font-weight: bold;
 }
 
-.add_question-button:hover {
+.add_exercise-button:hover {
   border-color: #cf0072;
   color: black;
   background-color: white;

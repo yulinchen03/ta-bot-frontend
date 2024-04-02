@@ -4,17 +4,14 @@
       <img class="h-36 w-full object-cover" src="https://upload.wikimedia.org/wikipedia/commons/5/51/Computer_Science_Word_Cloud.png">
     </div>
     <div class="p-8">
-      <div class="uppercase tracking-wide text-sm text-ut-pink font-semibold">{{ courseData.access_id }}</div>
-      <p class="block mt-1 text-lg leading-tight font-medium text-black">{{ courseData.name }}</p>
-<!--      <p class="mt-2 text-gray-500">{{assignments}} assignments</p>-->
+      <div class="uppercase tracking-wide text-sm text-ut-pink font-semibold">{{ courseTitle }}</div>
+      <p class="block mt-1 text-lg leading-tight font-medium text-black">{{ code }}</p>
     </div>
   </div>
 </template>
 
 <script>
-
 export default {
-  props: ['courseData'],
   mounted() {
     this.loadData()
   },
@@ -22,14 +19,14 @@ export default {
     return {
       courseTitle: 'Service-Oriented Architecture Web Serv. (2023-2A)',
       code: 'Luis Ferreira Pires',
-      assignments: 4,
+      join_code: '',
     }
   },
   methods: {
     loadData() {
       this.courseTitle = this.courseData['title']
       this.code = this.courseData['code']
-      this.assignments = this.courseData['assignments']
+      this.join_code = this.courseData['join_code']
     },
     emitClickEvent() {
       this.$emit('courseSelected');
@@ -37,6 +34,7 @@ export default {
   },
 }
 </script>
+
 
 <style scoped>
 .hover\:shadow-glow:hover {
