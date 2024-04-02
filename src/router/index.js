@@ -18,40 +18,40 @@ const routes = [
         path:'/',
         alias: '/login',
         component:login,
-        beforeEnter: (to, from, next) => {
-            next()
-            //todo prevent access when user is already logged in
-        }
+        // beforeEnter: (to, from, next) => {
+        //     next()
+        //     //todo prevent access when user is already logged in
+        // }
     },
     {
         name:'Reset',
         path:'/reset',
         component: reset,
-        beforeEnter: (to, from, next) => {
-            // Check if the navigation is from the /courses route
-            if (from.path === '/login') {
-                // If true, allow navigation
-                next();
-            } else {
-                // If false, redirect to /courses
-                next('/login');
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     // Check if the navigation is from the /courses route
+        //     if (from.path === '/login') {
+        //         // If true, allow navigation
+        //         next();
+        //     } else {
+        //         // If false, redirect to /courses
+        //         next('/login');
+        //     }
+        // }
     },
     {
         name:'Signup',
         path:'/signup',
         component: signup,
-        beforeEnter: (to, from, next) => {
-            // Check if the navigation is from the /courses route
-            if (from.path === '/login') {
-                // If true, allow navigation
-                next();
-            } else {
-                // If false, redirect to /courses
-                next('/login');
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     // Check if the navigation is from the /courses route
+        //     if (from.path === '/login') {
+        //         // If true, allow navigation
+        //         next();
+        //     } else {
+        //         // If false, redirect to /courses
+        //         next('/login');
+        //     }
+        // }
     },
     {
         name:'Courses',
@@ -92,33 +92,33 @@ const routes = [
         name:'course',
         path:'/course',
         component:course,
-        beforeEnter: (to, from, next) => {
-            // Check if the navigation is from the /courses route
-            if (from.path === '/courses' || from.path.includes('/editor')) {
-                // If true, allow navigation
-                next();
-            } else {
-                // If false, redirect to /courses
-                next('/courses');
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     // Check if the navigation is from the /courses route
+        //     if (from.path === '/courses' || from.path.includes('/editor')) {
+        //         // If true, allow navigation
+        //         next();
+        //     } else {
+        //         // If false, redirect to /courses
+        //         next('/courses');
+        //     }
+        // }
     },
     {
         name:'editor',
         path:'/editor',
         component: editor,
-        beforeEnter: (to, from, next) => {
-            console.log(to.path)
-            console.log(from.path)
-            // Check if the navigation is from the /courses route
-            if (from.path.includes('/course') || (from.path === '/' && to.path.includes('/editor'))) {
-                // If true, allow navigation
-                next();
-            } else {
-                // If false, redirect to /courses
-                next('/courses');
-            }
-        },
+        // beforeEnter: (to, from, next) => {
+        //     console.log(to.path)
+        //     console.log(from.path)
+        //     // Check if the navigation is from the /courses route
+        //     if (from.path.includes('/course') || (from.path === '/' && to.path.includes('/editor'))) {
+        //         // If true, allow navigation
+        //         next();
+        //     } else {
+        //         // If false, redirect to /courses
+        //         next('/courses');
+        //     }
+        // },
 
     }
 ];
@@ -127,7 +127,7 @@ const router = Router();
 router.beforeEach(async (to, from, next) => {
     const store = useUserStore()
 
-    const publicPages = ['/login']
+    const publicPages = ['/login', '/signup', '/reset']
     const authRequired = !publicPages.includes(to.path)
     let loggedIn = !!store.token
 
@@ -148,26 +148,3 @@ function Router() {
     });
     return router;
 }
-
-// Prevents back navigation back to login
-// router.beforeEach((to, from, next) => {
-//     // Redirect if user is disallowed to view the page
-//     const isLogged = !! store.getters.getUser
-//     if (isLogged && to.meta.disallowAuthed) {
-//         return router.push('/my-redirect-page')
-//     }
-//
-//     return next()
-// })
-
-router.beforeEach(async (to, from) => {
-    if (
-        // make sure the user is authenticated
-        !isAuthenticated &&
-        // ❗️ Avoid an infinite redirect
-        to.name !== 'Login'
-    ) {
-        // redirect the user to the login page
-        return { name: 'Login' }
-    }
-})

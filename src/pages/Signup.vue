@@ -100,7 +100,9 @@
 import {useVuelidate} from '@vuelidate/core'
 import {required, minLength, email, sameAs} from '@vuelidate/validators'
 import {ElMessage} from "element-plus";
+import {mapStores} from "pinia";
 
+import useUserStore from "@/stores/user";
 export default {
   setup: () => ({ v$: useVuelidate() }),
   data: () => ({firstName: '', lastName: '', email: '', password: '', confirmation: '', confirmData: false}),
@@ -119,6 +121,9 @@ export default {
       confirmation: {required, sameAsPassword: sameAs(this.password)}
     }
   },
+  computed: {
+    ...mapStores(useUserStore)
+  },
   methods: {
      async signup() {
       const validity = await this.v$.$validate()
@@ -133,12 +138,21 @@ export default {
         })
       } else {
         // handle success
-        ElMessage({
-          message: 'Signup successful.',
-          type: 'success',
-          plain: true,
-        })
-        this.$router.push('/login')
+        try {
+          await userStore.register(this.firstName, this.lastName, this.email, this.password, this.confirmation)
+          ElMessage({
+            message: 'Signup successful.',
+            type: 'success',
+            plain: true,
+          })
+          this.$router.push('/login')
+        }
+        catch(err)
+        {
+          // TODO handle error
+          console.log(err)
+        }
+
       }
     },
     back() {

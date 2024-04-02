@@ -62,6 +62,8 @@
 import {useVuelidate} from '@vuelidate/core'
 import {required, minLength, email, sameAs} from '@vuelidate/validators'
 import {ElMessage} from "element-plus";
+import useUserStore from "@/stores/user";
+import {mapStores} from "pinia";
   export default {
     setup: () => ({ v$: useVuelidate() }),
     data() {
@@ -70,6 +72,9 @@ import {ElMessage} from "element-plus";
         correctUsername: 'user@utwente.nl',
         correctPassword: 'Utwente1234'
       }
+    },
+    computed: {
+      ...mapStores(useUserStore)
     },
     validations() {
       return {
@@ -115,6 +120,33 @@ import {ElMessage} from "element-plus";
         }
         //
         // todo login API
+        try
+        {
+          const res = await userStore.login(this.loginForm.email, this.loginForm.password)
+
+          if(res.status === 200) {
+            ElMessage({
+              message: 'Login successful.',
+              type: 'success',
+              plain: true,
+            })
+            this.$router.push('/courses')
+          }
+          else {
+            ElMessage({
+              message: 'Incorrect credentials',
+              type: 'warning',
+              plain: true,
+            })
+
+          }
+        }
+        catch(err)
+        {
+          console.log(err)
+          // TODO handle error
+        }
+
         //
       },
       goToSignup(){
