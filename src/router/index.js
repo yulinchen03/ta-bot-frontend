@@ -130,6 +130,9 @@ router.beforeEach(async (to, from, next) => {
     const publicPages = ['/login', '/signup', '/reset']
     const authRequired = !publicPages.includes(to.path)
     let loggedIn = !!store.token
+    console.log(authRequired)
+    console.log(loggedIn)
+    console.log(store.token)
 
     if (authRequired && !loggedIn) {
         return next({ name: 'login' })

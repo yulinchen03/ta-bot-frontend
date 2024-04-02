@@ -2,11 +2,11 @@ import Api from '@/services/Api'
 
 
 export default {
-    register(username, email, password, password_confirmation) {
-        return Api().post('register',
+    register(name, surname, email, password, password_confirmation) {
+        return Api().post('signup',
             {
-                user: {
-                    username, email, password, password_confirmation
+                "user": {
+                    name, surname, email, password, password_confirmation
                 }
     })
     },

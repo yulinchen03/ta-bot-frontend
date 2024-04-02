@@ -12,6 +12,7 @@
 
 <script>
 export default {
+  props: ['courseData'],
   mounted() {
     this.loadData()
   },
@@ -24,7 +25,7 @@ export default {
   },
   methods: {
     loadData() {
-      this.courseTitle = this.courseData['title']
+      this.courseTitle = this.courseData['name']
       this.code = this.courseData['code']
       this.join_code = this.courseData['join_code']
     },

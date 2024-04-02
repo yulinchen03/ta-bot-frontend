@@ -17,7 +17,7 @@ import Header from "@/components/Header.vue";
           <Itemcard
               v-for="item in row"
               :key="item.id"
-              :course-data="item"
+              :courseData="item"
               class="w-[calc(25vw-100px)]"
               @courseSelected="openCourse(item.id)"
           />
@@ -64,7 +64,9 @@ export default {
         const res = await courseService.getCourses();
         const courses = res.data.data;
         this.courses = courses;
-        const assignments = await assignmentsService.getAssignments();
+        console.log(this.courses)
+
+        // const assignments = await assignmentsService.getAssignments();
         console.log(res)
       }
       catch(err){

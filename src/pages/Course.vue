@@ -14,7 +14,6 @@
             <el-alert v-if="showCopySuccess" title="Success alert" type="success" show-icon @close="showCopySuccess=false"/>
             <el-button :size="'small'" round class="custom-button" @click="copy()" :plain="true">Copy</el-button>
           </div>
-          <h2>Instructor: {{ instructor }}</h2>
         </div>
         <div class="flex space-x-10 justify-between items-center text-gray-200 font-arial px-10 font-semibold xl:text-lg 2xl:text-2xl">
           <div class="flex space-x-10">
@@ -132,8 +131,6 @@ import {ElMessage} from "element-plus";
 import courseService from "@/services/courseService.js";
 import exercisesService from "@/services/exercisesService.js";
 import assignmentsService from "@/services/assignmentsService.js";
-import { mapStores } from 'pinia'
-import useUserStore from '@/stores/user.js'
 
 
 export default {
@@ -150,6 +147,7 @@ export default {
       todo: 0,
       activeIndex: null,
       assignments: [],
+      invite_code: null,
       assignmentForm: {
         name: '',
         number_of_questions: ''
@@ -166,6 +164,8 @@ export default {
       this.assignments = []
 
       const course = (await courseService.getCourse(this.courseid)).data.data;
+      console.log(course)
+      this.invite_code = course.access_id
 
       try {
         const res = await assignmentsService.getAssignments(this.courseid);
@@ -186,21 +186,9 @@ export default {
             })
           })
         }
-
-        // {
-          //     title: 'Assignment 1',
-          //     questions: [{question: 'Question 1', completed: false}, {
-          //       question: 'Question 2',
-          //       completed: false
-          //     }, {question: 'Question 3', completed: false}]
-          //   },
-
-
       } catch (err) {
         console.log(err)
       }
-
-
 
       this.pageTitle = course.name;
       // this.instructor = this.userStore.username;

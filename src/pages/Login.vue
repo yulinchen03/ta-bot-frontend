@@ -64,11 +64,12 @@ import {required, minLength, email, sameAs} from '@vuelidate/validators'
 import {ElMessage} from "element-plus";
 import useUserStore from "@/stores/user";
 import {mapStores} from "pinia";
+import authService from "@/services/authService.js";
   export default {
     setup: () => ({ v$: useVuelidate() }),
     data() {
       return {
-        loginForm: {email: '', password: '', rememberMe: false},
+        loginForm: {email: 'p.krylov@teacher.utwente.nl', password: 'Password123', rememberMe: false},
         correctUsername: 'user@utwente.nl',
         correctPassword: 'Utwente1234'
       }
@@ -102,52 +103,45 @@ import {mapStores} from "pinia";
             plain: true,
           })
         } else {
-          if(this.loginForm.email === this.correctUsername && this.loginForm.password === this.correctPassword) {
-            // handle success
-            ElMessage({
-              message: 'Login successful.',
-              type: 'success',
-              plain: true,
+          try {
+            console.log(this.loginForm.email, this.loginForm.password)
+            await authService.login(this.loginForm.email, this.loginForm.password).then((res) => {
+
+              this.userStore.token = res.headers.authorization.split(' ')[1]
+              this.userStore.user = {email: res.data.data.email, name: res.data.data.username, role: res.data.data.role}
+
+
+
+              if (res.status === 200) {
+                ElMessage({
+                  message: 'Login successful.',
+                  type: 'success',
+                  plain: true,
+                })
+                this.$router.push('/courses')
+              }
+              else {
+                ElMessage({
+                  message: 'Incorrect credentials',
+                  type: 'warning',
+                  plain: true,
+                })
+
+              }
             })
-            this.$router.push('/courses')
-          } else {
+          }
+          catch(err) {
             ElMessage({
-              message: 'Incorrect credentials',
+              message: err.message,
               type: 'warning',
               plain: true,
             })
           }
+
         }
         //
         // todo login API
-        try
-        {
-          const res = await userStore.login(this.loginForm.email, this.loginForm.password)
 
-          if(res.status === 200) {
-            ElMessage({
-              message: 'Login successful.',
-              type: 'success',
-              plain: true,
-            })
-            this.$router.push('/courses')
-          }
-          else {
-            ElMessage({
-              message: 'Incorrect credentials',
-              type: 'warning',
-              plain: true,
-            })
-
-          }
-        }
-        catch(err)
-        {
-          console.log(err)
-          // TODO handle error
-        }
-
-        //
       },
       goToSignup(){
         this.$router.push('/signup');
