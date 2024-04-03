@@ -5,6 +5,9 @@ export default {
     getAssignments(courseId) {
         return Api().get(`courses/${courseId}/assignments`)
     },
+    getAssignmentsWithExercises(courseId) {
+        return Api().get(`courses/${courseId}/assignments?with_exercises=true`)
+    },
     getAssignment(courseId, assignmentId) {
         return Api().get(`courses/${courseId}/assignments/${assignmentId}`)
     },

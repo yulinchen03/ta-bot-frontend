@@ -8,7 +8,7 @@ export default {
     getCourse(courseId) {
         return Api().get(`courses/${courseId}`)
     },
-    postCourse(course) {
+    addCourse(course) {
         return Api().post('courses', course)
     },
     changeCourse(courseId, course) {
