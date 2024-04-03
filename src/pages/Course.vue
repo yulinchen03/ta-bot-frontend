@@ -38,7 +38,7 @@
             <el-input v-model="assignmentForm.name" autocomplete="off" />
           </el-form-item>
           <el-form-item label="Number of Exercises:">
-            <el-input-number v-model="assignmentForm.number_of_exercises" :min="1" :max="99" />
+            <el-input-number v-model="assignmentForm.number_of_exercises" :min="1" :max="20" />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -54,15 +54,17 @@
         <div v-for="(item, i) in assignments" :key="i"
              class="bg-black border-ut-pink border-l-4 border-r-4 rounded-lg my-5 font-arial">
           <div class="flex flex-row justify-around align-middle relative">
-            <button @click="toggle(i)" class="w-full px-8 py-6">
-            <svg :class="{'transform rotate-180': activeIndex === i}" class="fill-ut-pink shrink-0" width="16"
-                 height="16" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 256 256" id="Flat">
-              <path d="M128,188a11.96187,11.96187,0,0,1-8.48535-3.51465l-80-80a12.0001,12.0001,0,0,1,16.9707-16.9707L128,159.0293l71.51465-71.51465a12.0001,12.0001,0,0,1,16.9707,16.9707l-80,80A11.96187,11.96187,0,0,1,128,188Z"/>
-            </svg>
-            <h2 class="text-ut-pink font-semibold absolute left-32">{{ item.name }}</h2>
-            <h2 class="text-white font-semibold absolute right-36">Exercises: {{ item.exercises.length }}</h2>
-          </button>
-            <el-button color="#fff" class="m-auto" @click="deleteAssignment(item.id)"> <el-icon><Delete /></el-icon> </el-button>
+            <button @click="toggle(i)" class="w-full px-8 py-6 flex items-center">
+              <svg :class="{'transform rotate-180': activeIndex === i}" class="fill-ut-pink shrink-0" width="16"
+                   height="16" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 256 256" id="Flat">
+                <path d="M128,188a11.96187,11.96187,0,0,1-8.48535-3.51465l-80-80a12.0001,12.0001,0,0,1,16.9707-16.9707L128,159.0293l71.51465-71.51465a12.0001,12.0001,0,0,1,16.9707,16.9707l-80,80A11.96187,11.96187,0,0,1,128,188Z"/>
+              </svg>
+              <h2 class="text-ut-pink font-semibold text-2xl absolute left-20">{{ item.name }}</h2>
+              <h2 class="text-white italic text-sm">(Exercises: {{ item.exercises.length }})</h2>
+            </button>
+            <div class="flex items-center pr-3">
+              <el-button class="delete-button" @click="deleteAssignment(item.id)"><el-icon class="mr-2"><Delete /></el-icon>Delete Assignment</el-button>\
+            </div>
           </div>
           <div v-show="activeIndex === i"
                class="bg-white px-8 py-6 grid grid-cols-1 relative h-full w-full overflow-auto">
@@ -184,9 +186,9 @@ export default {
 
 
         for (let assignment of assignments) {
-          const exercises = assignment.exercises
+          const exercises = assignment.exercises.reverse()
 
-          assignmentsArray.push({
+          assignmentsArray.unshift({
             id: assignment.id,
             name: assignment.name,
             exercises: exercises.map(exercise => {
@@ -209,11 +211,11 @@ export default {
       this.assignmentCount = this.assignments.length;
       this.exerciseCount = 0
       this.todo = 0
-      for(let i = 0; i < this.assignmentCount; i++) {
+      for (let i = 0; i < this.assignmentCount; i++) {
         let exercises = this.assignments[i].exercises
         this.exerciseCount += exercises.length
-        for(let i = 0; i < exercises.length; i++) {
-          if(!exercises[i].completed){
+        for (let i = 0; i < exercises.length; i++) {
+          if (!exercises[i].completed) {
             this.todo += 1
           }
         }
@@ -240,8 +242,7 @@ export default {
     async createExercise(assignment, assignmentIntheList) {
       try {
         await exercisesService.addExercises(this.courseid, assignment.id, {identifier: 'Exercise ' + (this.assignments[assignmentIntheList].exercises.length + 1)})
-      }
-      catch (err) {
+      } catch (err) {
         //TODO handle error
         console.log(err)
       }
@@ -285,8 +286,7 @@ export default {
         console.log(!exercise.completed)
         await exercisesService.changeExercises(this.courseid, assignment.id, exercise.id, {is_published: !exercise.completed})
 
-      } catch (err)
-      {
+      } catch (err) {
         //TODO handle error
         console.log(err)
       }
@@ -295,18 +295,25 @@ export default {
 
     },
 
-    async handleDelete(exercise,assignment) {
+    async handleDelete(exercise, assignment) {
       try {
-        await exercisesService.deleteExercises(this.courseid, assignment.id,  exercise.id)
-      }
-      catch (err) {
+        await exercisesService.deleteExercises(this.courseid, assignment.id, exercise.id)
+      } catch (err) {
         //TODO handle error
         console.log(err)
       }
 
       await this.fetchData()
-    }
-  },
+    },
+
+    copy() {
+      navigator.clipboard.writeText(this.invite_code);
+      ElMessage({
+        message: 'Invite code copied to clipboard',
+        type: 'success'
+      })
+    },
+  }
 }
 </script>
 
@@ -335,6 +342,20 @@ svg {
   background-color: white;
   color: black;
   border-color: #cf0072;
+}
+
+.delete-button {
+  background-color: black; /* This is for pink background */
+  color: white; /* This is for white text */
+  border-color: black;
+  font-weight: bold;
+}
+
+.delete-button:hover {
+  background-color: red;
+  color: white;
+  border-color: red;
+  font-weight: bold;
 }
 
 .add_exercise-button {
