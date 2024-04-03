@@ -35,6 +35,7 @@
                      focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600
                       dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                            placeholder="Firstname">
+
                     <p v-if="v$.firstName.$error" class="text-xs text-red-500 flex justify-end">First Name is too short.</p>
                   </div>
                 </el-form-item>
@@ -100,10 +101,13 @@
 import {useVuelidate} from '@vuelidate/core'
 import {required, minLength, email, sameAs} from '@vuelidate/validators'
 import {ElMessage} from "element-plus";
+import {mapStores} from "pinia";
 
+import useUserStore from "@/stores/user";
+import authService from "@/services/authService.js";
 export default {
   setup: () => ({ v$: useVuelidate() }),
-  data: () => ({firstName: '', lastName: '', email: '', password: '', confirmation: '', confirmData: false}),
+  data: () => ({firstName: 'Penis', lastName: 'Krylov', email: 'p.krylov@teacher.utwente.nl', password: 'Password123', confirmation: 'Password123', confirmData: false}),
   validations() {
     return {
       firstName: {required, minLength: minLength(2)},
@@ -119,6 +123,9 @@ export default {
       confirmation: {required, sameAsPassword: sameAs(this.password)}
     }
   },
+  computed: {
+    ...mapStores(useUserStore)
+  },
   methods: {
      async signup() {
       const validity = await this.v$.$validate()
@@ -133,12 +140,23 @@ export default {
         })
       } else {
         // handle success
-        ElMessage({
-          message: 'Signup successful.',
-          type: 'success',
-          plain: true,
-        })
-        this.$router.push('/login')
+        try {
+
+            const res = await authService.register(this.name, this.surname, this.email, this.password, this.confirm_password)
+
+          ElMessage({
+            message: 'Signup successful.',
+            type: 'success',
+            plain: true,
+          })
+          this.$router.push('/login')
+        }
+        catch(err)
+        {
+          // TODO handle error
+          console.log(err)
+        }
+
       }
     },
     back() {

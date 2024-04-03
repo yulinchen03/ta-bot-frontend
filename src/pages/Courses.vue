@@ -17,19 +17,45 @@ import Header from "@/components/Header.vue";
           <Itemcard
               v-for="item in row"
               :key="item.id"
-              :course-data="item"
+              :courseData="item"
               class="w-[calc(25vw-100px)]"
               @courseSelected="openCourse(item.id)"
+              @deleteCourse="deleteCourse(item.id)"
           />
         </div>
       </div>
     </div>
+    <el-dialog v-model="dialogFormVisible" title="Create Course" width="500">
+      <el-form :model="courseForm">
+        <el-form-item label="Course Name:" class="text-black">
+          <el-input v-model="courseForm.name" autocomplete="off" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer flex items-center justify-center">
+          <el-button @click="dialogFormVisible = false">Cancel</el-button>
+          <el-button class="custom-button" @click="addCourse">
+            Confirm
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
+
+
+    <el-button size="large" @click="dialogFormVisible = true" circle class="fixed right-10 bottom-10 z-20">
+      <el-icon><Plus /></el-icon>
+    </el-button>
   </div>
 </template>
 
 
 <script>
 import PageHeader from '../components/Header.vue';
+import courseService from "@/services/courseService.js";
+import assignmentsService from "@/services/assignmentsService.js";
+import { mapStores} from "pinia";
+import useUserStore from "@/stores/user.js";
+import {ElMessage} from "element-plus";
 
 export default {
   components: {
@@ -38,29 +64,69 @@ export default {
   data() {
     return {
       pageTitle: 'My Courses',
-      courses: [
-        { id: 1, title: 'M1 Pearls of Computer Science (2023-1A)', code: '2023-202001048-2A', invite_code: 'AWA324' },
-        { id: 2, title: 'M2 Software Systems (2023-1B)', code: '2023-202001048-2A', invite_code: 'AWA324' },
-        { id: 3, title: 'M3 Network Systems (2023-2A)', code: '2023-202001048-2A', invite_code: 'AWA324' },
-        { id: 4, title: 'M4 Data & Information (2023-2B)', code: '2023-202001048-2A', invite_code: 'AWA324' },
-        { id: 5, title: 'M5 Computer Systems (2023-1A)', code: '2023-202001048-2A', invite_code: 'AWA324' },
-        { id: 6, title: 'M6 Intelligent Interaction (2023-1B)', code: '2023-202001048-2A', invite_code: 'AWA324' },
-        { id: 7, title: 'M7 Discrete Structures & Efficient Algorithms (2023-2A)', code: '2023-202001048-2A', invite_code: 'AWA324' },
-        { id: 8, title: 'M8 Programming Paradigms (2023-2B)', code: '2023-202001048-2A', invite_code: 'AWA324' },
-        { id: 9, title: 'M9 Minor I (2023-2A)', code: '2023-202001048-2A', invite_code: 'AWA324' },
-        { id: 10, title: 'M10 Minor II (2023-2A)', code: '2023-202001048-2A', invite_code: 'AWA324' },
-        { id: 11, title: 'M11 Design Project Module (2023-2A)', code: '2023-202001048-2A', invite_code: 'AWA324' },
-        { id: 12, title: 'M12 Research Project Module (2023-2B)', code: '2023-202001048-2A', invite_code: 'AWA324' },
-        // ... Add more data as needed
-      ],
+      courses: [],
+      isTeacher: null,
+      courseForm: {
+        name: '',
+      },
+      dialogFormVisible: false
     }
   },
   methods: {
-    getCourses() {
-      // TODO get course data
+    async addCourse() {
+      try {
+        const res = await courseService.addCourse({name: this.courseForm.name});
+        const course = res.data.data;
+
+        ElMessage({
+          message: 'Course successfully created.',
+          type: 'success',
+        })
+        this.dialogFormVisible = false
+        this.courseForm.name = ''
+        this.getCourses()
+      }
+      catch(err){
+        // TODO handle error
+        console.log(err)
+
+        ElMessage({
+          message: err.message,
+          type: 'fail',
+        })
+      }
+    },
+    async getCourses() {
+      try {
+        const res = await courseService.getCourses();
+        const courses = res.data.data;
+        this.courses = courses;
+      }
+      catch(err){
+        // TODO handle error
+        console.log(err)
+      }
     },
     openCourse(id) {
       this.$router.push({path: 'course', query: {id: id}});
+    },
+    async deleteCourse(id) {
+      try {
+        await courseService.deleteCourse(id);
+        this.courses = this.courses.filter(course => course.id !== id);
+        ElMessage({
+          message: 'Course successfully deleted.',
+          type: 'success',
+        })
+      }
+      catch(err){
+        // TODO handle error
+        console.log(err)
+        ElMessage({
+          message: err.name,
+          type: 'fail',
+        })
+      }
     }
   },
   computed: {
@@ -73,6 +139,13 @@ export default {
       }
       return rows;
     },
+    ...mapStores(useUserStore)
   },
+
+  created() {
+    this.getCourses()
+
+    this.isTeacher = this.userStore.user.role === 'teacher';
+  }
 }
 </script>

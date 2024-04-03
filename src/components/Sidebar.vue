@@ -32,7 +32,7 @@
               </div>
             </div>
           </router-link>
-          <div>
+<!--          <div>
             <router-link to="/notifications">
               <div
                   class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
@@ -48,7 +48,7 @@
                 </div>
               </div>
             </router-link>
-          </div>
+          </div>-->
           <router-link to="/helpcenter">
             <div
                 class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
