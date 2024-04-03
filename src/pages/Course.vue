@@ -37,7 +37,7 @@
           <el-form-item label="Assignment Name:">
             <el-input v-model="assignmentForm.name" autocomplete="off" />
           </el-form-item>
-          <el-form-item label="Number of Exercises">
+          <el-form-item label="Number of Exercises:">
             <el-input-number v-model="assignmentForm.number_of_exercises" :min="1" :max="99" />
           </el-form-item>
         </el-form>
@@ -347,4 +347,7 @@ svg {
   background-color: white;
 }
 
+:deep(.el-form-item__label) {
+  color: black !important;
+}
 </style>
