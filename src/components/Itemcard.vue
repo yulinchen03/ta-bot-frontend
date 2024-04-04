@@ -1,9 +1,9 @@
 <template>
   <div class="max-w-md bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-4 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-102 hover:shadow-glow border-ut-pink">
-    <el-button v-if="isTeacher" @click="this.$emit('deleteCourse')" class="absolute right-1 top-1 z-50">
+    <el-button v-if="isTeacher" @click="this.$emit('deleteCourse')" class="absolute right-1 top-1 z-50 transparent-delete-button">
       <el-icon><Delete /></el-icon>
     </el-button>
-    <el-button v-else @click="this.$emit('deEnroll')" class="absolute right-1 top-1 z-50">
+    <el-button v-else @click="this.$emit('deEnroll')" class="absolute right-1 top-1 z-50 transparent-delete-button">
       <el-icon><Delete /></el-icon>
     </el-button>
     <div @click="emitClickEvent">
@@ -59,5 +59,20 @@ export default {
 <style scoped>
 .hover\:shadow-glow:hover {
   box-shadow: 0 0 5px , 0 0 5px #cf0072, 0 0 5px #cf0072, 0 0 5px #cf0072;
+}
+
+.transparent-delete-button {
+  background-color: transparent;
+  border-color: transparent;
+  height: 40px;
+  width:40px;
+  font-size: 25px;
+  color: white;
+}
+
+.transparent-delete-button:hover {
+  background-color: lightcoral;
+  color: white;
+  border-color: transparent;
 }
 </style>

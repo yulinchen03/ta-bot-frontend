@@ -12,7 +12,7 @@
           <div v-if="isTeacher" class="flex items-center mb-3">
             <h2 class="mr-3">Invite code: {{ invite_code }}</h2>
             <el-alert v-if="showCopySuccess" title="Success alert" type="success" show-icon @close="showCopySuccess=false"/>
-            <el-button :size="'small'" round class="custom-button" @click="copy()" :plain="true">Copy</el-button>
+            <el-button :size="'default'" round class="custom-button" @click="copy()" :plain="true"><el-icon class="mr-2"><CopyDocument /></el-icon>Copy</el-button>
           </div>
         </div>
         <div class="flex space-x-10 justify-between items-center text-gray-200 font-arial px-10 font-semibold xl:text-lg 2xl:text-2xl">
@@ -213,7 +213,7 @@ export default {
         for (let assignment of assignments) {
           const exercises = assignment.exercises.reverse()
 
-          assignmentsArray.unshift({
+          assignmentsArray.push({
             id: assignment.id,
             name: assignment.name,
             exercises: exercises.map(exercise => {
@@ -338,6 +338,10 @@ export default {
         type: 'success'
       })
     },
+
+    edit(exercise_idx, assignment_idx) {
+      this.$router.push({path: 'editor', query: {c: this.courseid, a: assignment_idx, e: exercise_idx}});
+    }
   }
 }
 </script>

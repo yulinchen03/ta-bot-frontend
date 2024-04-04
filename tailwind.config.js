@@ -12,6 +12,11 @@ export default {
         'ut-light-gray': '#919191',
         'ut-dark-gray': '#535353',
         'ut-pink': '#cf0072',
+        'tree-turtle': '#2a9d8f',
+        'tree-red': '#e76f51',
+        'tree-yellow': '#e9c46a',
+        'tree-blue': '#264653',
+        'tree-orange': '#f4a261'
       },
       fontFamily: {
         arial: ["Arial"],
