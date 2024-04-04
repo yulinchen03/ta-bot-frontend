@@ -69,9 +69,7 @@ import authService from "@/services/authService.js";
     setup: () => ({ v$: useVuelidate() }),
     data() {
       return {
-        loginForm: {email: 'p.krylov@teacher.utwente.nl', password: 'Password123', rememberMe: false},
-        correctUsername: 'user@utwente.nl',
-        correctPassword: 'Utwente1234'
+        loginForm: {email: '', password: '', rememberMe: false},
       }
     },
     computed: {
