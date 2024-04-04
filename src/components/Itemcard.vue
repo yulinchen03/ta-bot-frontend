@@ -48,8 +48,6 @@ export default {
     },
   created() {
     this.isTeacher = this.userStore.user.role === 'teacher';
-    this.isTeacher = false;
-    console.log(this.isTeacher)
   }
 }
 </script>
