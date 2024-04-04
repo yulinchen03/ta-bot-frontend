@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-md bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-4 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-102 hover:shadow-glow border-ut-pink">
-    <el-button @click="this.$emit('deleteCourse')" class="absolute right-1 top-1 z-50">
+    <el-button v-if="isTeacher" @click="this.$emit('deleteCourse')" class="absolute right-1 top-1 z-50">
       <el-icon><Delete /></el-icon>
     </el-button>
     <div @click="emitClickEvent">
@@ -16,6 +16,9 @@
 </template>
 
 <script>
+import { mapStores} from "pinia";
+import useUserStore from "@/stores/user.js";
+
 export default {
   props: ['courseData'],
   emits: ['courseSelected', 'deleteCourse'],
@@ -27,6 +30,7 @@ export default {
       courseTitle: '',
       code: '',
       join_code: '',
+      isTeacher: null,
     }
   },
   methods: {
@@ -37,8 +41,16 @@ export default {
     },
     emitClickEvent() {
       this.$emit('courseSelected');
-    }
+    },
   },
+  computed: {
+      ...mapStores(useUserStore)
+    },
+  created() {
+    this.isTeacher = this.userStore.user.role === 'teacher';
+    this.isTeacher = false;
+    console.log(this.isTeacher)
+  }
 }
 </script>
 
