@@ -107,7 +107,7 @@ import useUserStore from "@/stores/user";
 import authService from "@/services/authService.js";
 export default {
   setup: () => ({ v$: useVuelidate() }),
-  data: () => ({firstName: 'Penis', lastName: 'Krylov', email: 'p.krylov@teacher.utwente.nl', password: 'Password123', confirmation: 'Password123', confirmData: false}),
+  data: () => ({firstName: '', lastName: '', email: '', password: 'Password123', confirmation: 'Password123', confirmData: false}),
   validations() {
     return {
       firstName: {required, minLength: minLength(2)},
