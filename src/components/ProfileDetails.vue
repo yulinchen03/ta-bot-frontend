@@ -44,8 +44,9 @@
            
         </div>
     <NewPassword v-if="isNewPassword" @cancel="isNewPassword = false" @newPass="handleNewPassword" />
-    <ProfilePopUp v-if="updating" :type="update" @cancel="updating = false" @update="updateDetails" />
-    <ProfilePopUp v-if="isDelete" :type="del" @cancel="isDelete = false" @delete="deleteAccount" />
+
+    <ProfilePopUp v-if="updating" :type="update" @cancel="cancelUpdate" @update="updateDetails" />
+    <ProfilePopUp v-if="isDelete" :type="del" @cancel="cancelDelete" @delete="deleteAccount" />
 
 
 </template>
@@ -66,8 +67,8 @@ export default {
         return {
             del: 'delete',
             updating: false,
-            isDelete: false,
             isEditing: false,
+            isDelete: false,
             isNewPassword: false,
             userDetails: {
                 name: '',
@@ -89,8 +90,22 @@ export default {
             this.updating = true;
             console.log('Save Edit');
         },
+        cancelUpdate() {
+            this.updating = false;
+            this.isEditing = false;
+            this.userDetails = {
+                name: this.userStore.user.name,
+                surname: this.userStore.user.surname,
+                email: this.userStore.user.email,
+            };
+            console.log('Cancel Update');
+        },
         onDelete() {
             this.isDelete = true;
+        },
+        cancelDelete() {
+            this.isDelete = false;
+            console.log('Cancel Delete');
         },
         onNewPassword() {
             console.log('New Password');
