@@ -9,7 +9,7 @@
         <Header :title="pageTitle" class="text-gray-200 italic font-semibold">
         </Header>
         <div class="text-gray-200 xl:text-lg 2xl:text-2xl font-arial px-10 font-semibold">
-          <div class="flex items-center mb-3">
+          <div v-if="isTeacher" class="flex items-center mb-3">
             <h2 class="mr-3">Invite code: {{ invite_code }}</h2>
             <el-alert v-if="showCopySuccess" title="Success alert" type="success" show-icon @close="showCopySuccess=false"/>
             <el-button :size="'small'" round class="custom-button" @click="copy()" :plain="true">Copy</el-button>
@@ -23,12 +23,12 @@
             <div class="text-center">
               <h2>Total Exercises: {{ exerciseCount }}</h2>
             </div>
-            <div class="text-center">
+            <div v-if="isTeacher" class="text-center">
               <h2>Unpublished Exercises: {{ todo }}</h2>
             </div>
           </div>
 <!--          Create assignment modal-->
-          <el-button size="large" class="custom-button" @click="dialogFormVisible = true"><el-icon class="mr-2" :size="20"><Plus /></el-icon>Create Assignment</el-button>
+          <el-button v-if="isTeacher" size="large" class="custom-button" @click="dialogFormVisible = true"><el-icon class="mr-2" :size="20"><Plus /></el-icon>Create Assignment</el-button>
 <!--          -->
         </div>
       </div>
@@ -62,20 +62,20 @@
               <h2 class="text-ut-pink font-semibold text-2xl absolute left-20">{{ item.name }}</h2>
               <h2 class="text-white italic text-sm">(Exercises: {{ item.exercises.length }})</h2>
             </button>
-            <div class="flex items-center pr-3">
+            <div v-if="isTeacher" class="flex items-center pr-3">
               <el-button class="delete-button" @click="deleteAssignment(item.id)"><el-icon class="mr-2"><Delete /></el-icon>Delete Assignment</el-button>\
             </div>
           </div>
           <div v-show="activeIndex === i"
                class="bg-white px-8 py-6 grid grid-cols-1 relative h-full w-full overflow-auto">
-            <el-button class="add_exercise-button">
+            <el-button v-if="isTeacher" class="add_exercise-button">
               <div @click="createExercise(item, i)" class="absolute inset-x-0 flex justify-center items-center">
                 <el-icon class="mr-4"><Plus/></el-icon>
                 <b>Add Exercise</b>
               </div>
             </el-button>
             <el-table :data="item.exercises" >
-              <el-table-column label="Complete">
+              <el-table-column v-if="isTeacher" label="Complete">
                 <template v-slot:default="scope">
                   <el-icon v-if="scope.row.completed" color="green" size="large">
                     <Check/>
@@ -86,7 +86,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="exercise" label="Question"></el-table-column>
-              <el-table-column label="Open">
+              <el-table-column v-if="isTeacher" label="Open">
                 <template v-slot:default="scope">
                   <el-button
                       size="large"
@@ -101,7 +101,22 @@
                   <!--                    TODO GET THIS TO WORK-->
                 </template>
               </el-table-column>
-              <el-table-column prop="completed" label="Publish">
+              <el-table-column v-else label="Open">
+                  <template v-slot:default="scope">
+                    <el-button
+                    size = "large"
+                    type = "Default"
+                    @click = "view(scope.$index, i)" 
+                    >
+                    <!-- TODO GET THIS TO WORK -->
+                      <el-icon class="mr-2">
+                        <View />
+                      </el-icon>
+                        View
+                    </el-button>
+                  </template>
+              </el-table-column>
+              <el-table-column v-if="isTeacher" prop="completed" label="Publish">
                 <template #default="scope">
                   <el-button
                       size="large"
@@ -112,7 +127,7 @@
                   <!--                    TODO GET THIS TO WORK-->
                 </template>
               </el-table-column>
-              <el-table-column label="Remove">
+              <el-table-column v-if="isTeacher" label="Remove">
                 <template #default="scope">
                   <el-button
                       size="large"
@@ -122,6 +137,16 @@
                   >
                 </template>
               </el-table-column>
+              <el-table-column v-else label="Feedback" class="flex items-center">
+                    <template #default="scope">
+                        <el-button
+                            size="large"
+                            type="primary"
+                            @click="handleFeedback(i, scope.$index)"
+                            >Feedback
+                        </el-button>
+                    </template>
+                </el-table-column>
             </el-table>
           </div>
         </div>

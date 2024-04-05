@@ -13,7 +13,7 @@ import Header from "@/components/Header.vue";
       <Header :title="pageTitle"></Header>
       <div class="mx-20 overflow-y-auto w-[calc(100vw-200px)] h-[calc(100vh-100px)]">
         <!-- Dynamic rows -->
-        <div v-for="(row, rowIndex) in coursesRows" :key="rowIndex" class="flex justify-start">
+        <div v-if="isTeacher" v-for="(row, rowIndex) in coursesRows" :key="rowIndex" class="flex justify-start">
           <Itemcard
               v-for="item in row"
               :key="item.id"
@@ -23,9 +23,19 @@ import Header from "@/components/Header.vue";
               @deleteCourse="deleteCourse(item.id)"
           />
         </div>
+        <div v-else>
+          <Itemcard
+              v-for="course in courses"
+              :key="course.id"
+              :courseData="course"
+              class="w-[calc(25vw-100px)]"
+              @courseSelected="openCourse(course.id)"
+              @deEnroll="deEnroll(course.id)"
+          />
+        </div>
       </div>
     </div>
-    <el-dialog v-model="dialogFormVisible" title="Create Course" width="500">
+    <el-dialog v-if="isTeacher" v-model="dialogFormVisible" title="Create Course" width="500">
       <el-form :model="courseForm">
         <el-form-item label="Course Name:" class="text-black">
           <el-input v-model="courseForm.name" autocomplete="off" />
@@ -42,7 +52,7 @@ import Header from "@/components/Header.vue";
     </el-dialog>
 
 
-    <el-button size="large" @click="dialogFormVisible = true" circle class="fixed right-10 bottom-10 z-20">
+    <el-button v-if="isTeacher" size="large" @click="dialogFormVisible = true" circle class="fixed right-10 bottom-10 z-20">
       <el-icon><Plus /></el-icon>
     </el-button>
   </div>
@@ -56,6 +66,7 @@ import assignmentsService from "@/services/assignmentsService.js";
 import { mapStores} from "pinia";
 import useUserStore from "@/stores/user.js";
 import {ElMessage} from "element-plus";
+import userService from "@/services/userService";
 
 export default {
   components: {
@@ -112,6 +123,8 @@ export default {
     },
     async deleteCourse(id) {
       try {
+        console.log(id)
+        console.log('deleting course')
         await courseService.deleteCourse(id);
         this.courses = this.courses.filter(course => course.id !== id);
         ElMessage({
@@ -121,6 +134,21 @@ export default {
       }
       catch(err){
         // TODO handle error
+        console.log(err)
+        ElMessage({
+          message: err.name,
+          type: 'fail',
+        })
+      }
+    },
+    async deEnroll(id) {
+      try {
+        await userService.denrolCourse(id)
+        ElMessage({
+          message: 'Successfully de-enrolled from course.',
+          type: 'success',
+        })
+      } catch (err) {
         console.log(err)
         ElMessage({
           message: err.name,
