@@ -56,7 +56,7 @@ import ProfilePopUp from "@/components/ProfilePopUp.vue";
 import NewPassword from "@/components/NewPassword.vue";
 import { mapStores} from "pinia";
 import useUserStore from "@/stores/user.js";
-
+import authService from "@/services/authService.js";
 export default {
     components: {
         NewPassword,
@@ -124,16 +124,29 @@ export default {
             this.isDelete = false;
             console.log('Delete Account'); // handle logic to delete user account
         },
+      async refresh() {
+        try
+        {
+          const user = (await authService.getCurrentUser()).data
+
+          this.userDetails = {
+            name: user.name,
+            surname: user.surname,
+            email: user.email,
+          };
+        }
+        catch(err)
+        {
+          console.log(err);
+
+        }
+      }
     },
     computed: {
     ...mapStores(useUserStore)
     },
-    created() {
-        this.userDetails = {
-            name: this.userStore.user.name,
-            surname: this.userStore.user.surname,
-            email: this.userStore.user.email,
-        };
+    async created() {
+      await this.refresh()
     },
 };
 </script>

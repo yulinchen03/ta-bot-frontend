@@ -142,7 +142,7 @@ export default {
         // handle success
         try {
 
-            const res = await authService.register(this.name, this.surname, this.email, this.password, this.confirm_password)
+            const res = await authService.register(this.firstName, this.lastName, this.email, this.password, this.confirm_password)
 
           ElMessage({
             message: 'Signup successful.',

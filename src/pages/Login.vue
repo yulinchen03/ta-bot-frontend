@@ -104,14 +104,11 @@ import authService from "@/services/authService.js";
           try {
             await authService.login(this.loginForm.email, this.loginForm.password).then((res) => {
 
-              console.log(res.headers.authorization.split(' ')[1])
-              console.log(res.data.data)
+
 
               this.userStore.token = res.headers.authorization.split(' ')[1]
               this.userStore.user = {email: res.data.data.email, name: res.data.data.username, role: res.data.data.role}
 
-              console.log(this.userStore.token)
-              console.log(this.userStore.user)
 
               if (res.status === 200) {
                 ElMessage({
