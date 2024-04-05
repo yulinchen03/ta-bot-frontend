@@ -7,11 +7,12 @@
       <div class="flex flex-col justify-between h-full">
         <div class="px-[20px] flex flex-col space-y-[10px]">
           <router-link to="/courses">
-            <div class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
+            <div
+                class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
               <div class="grid grid-cols-1">
                 <div class="flex justify-center mb-1">
                   <el-icon :size="30">
-                    <HomeFilled />
+                    <HomeFilled/>
                   </el-icon>
                 </div>
                 <h3 class="font-arial">Courses</h3>
@@ -19,37 +20,42 @@
             </div>
           </router-link>
           <router-link to="/profile">
-            <div class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
+            <div
+                class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
               <div class="grid grid-cols-1">
                 <div class="flex justify-center mb-1">
                   <el-icon :size="30">
-                    <Avatar />
+                    <Avatar/>
                   </el-icon>
                 </div>
                 <h3 class="font-arial">Profile</h3>
               </div>
             </div>
           </router-link>
-          <el-badge :value="messageCount" class="item">
-            <router-link to="/messages">
-              <div class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
+<!--          <div>
+            <router-link to="/notifications">
+              <div
+                  class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
                 <div class="grid grid-cols-1">
                   <div class="flex justify-center mb-1">
-                    <el-icon :size="30">
-                      <Comment />
-                    </el-icon>
+                    <el-badge :value="notificationCount" class="item">
+                      <el-icon :size="30">
+                        <Comment/>
+                      </el-icon>
+                    </el-badge>
                   </div>
-                  <h3 class="font-arial">Messages</h3>
+                  <h3 class="font-arial">Inbox</h3>
                 </div>
               </div>
             </router-link>
-          </el-badge>
+          </div>-->
           <router-link to="/helpcenter">
-            <div class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
+            <div
+                class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
               <div class="grid grid-cols-1">
                 <div class="flex justify-center mb-1">
                   <el-icon :size="30">
-                    <InfoFilled />
+                    <InfoFilled/>
                   </el-icon>
                 </div>
                 <h3 class="font-arial">Help</h3>
@@ -63,7 +69,7 @@
             <div class="grid grid-cols-1">
               <div class="flex justify-center mb-1">
                 <el-icon :size="30">
-                  <SwitchButton />
+                  <SwitchButton/>
                 </el-icon>
               </div>
               <h3 class="font-arial">Logout</h3>
@@ -100,7 +106,7 @@ export default {
       dialogVisible: false,
       confirmLogout: false,
       courseCount: 3,
-      messageCount: 12
+      notificationCount: 12
     };
   },
   methods: {

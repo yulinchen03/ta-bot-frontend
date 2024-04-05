@@ -49,8 +49,6 @@ export default {
         id: 1,
         title: 'Help topic 1',
         description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,\n' +
-            '          molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum\n' +
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,\n' +
             '          molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum\n'
       },{
         id: 2,

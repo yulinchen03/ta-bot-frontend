@@ -3,12 +3,17 @@
     <!-- sidebar -->
     <Sidebar></Sidebar>
     <!--  main -->
-    <div class="grid grid-cols-1 relative h-full w-full overflow-auto">
+    <div class="grid grid-cols-1 relative h-full w-full overflow-y-auto">
       <div class="relative grid grid-cols-1 overflow-visible bg-cover bg-no-repeat h-[25vh] w-full"
            style="background-image: url('https://cdn.rit.edu/images/program/2020-06/ai-banner.jpg');">
-        <Header :title="pageTitle" class="text-gray-200 italic font-semibold"></Header>
+        <Header :title="pageTitle" class="text-gray-200 italic font-semibold">
+        </Header>
         <div class="text-gray-200 xl:text-lg 2xl:text-2xl font-arial px-10 font-semibold">
-          <h2>Instructor: {{ instructor }}</h2>
+          <div class="flex items-center mb-3">
+            <h2 class="mr-3">Invite code: {{ invite_code }}</h2>
+            <el-alert v-if="showCopySuccess" title="Success alert" type="success" show-icon @close="showCopySuccess=false"/>
+            <el-button :size="'small'" round class="custom-button" @click="copy()" :plain="true">Copy</el-button>
+          </div>
         </div>
         <div class="flex space-x-10 justify-between items-center text-gray-200 font-arial px-10 font-semibold xl:text-lg 2xl:text-2xl">
           <div class="flex space-x-10">
@@ -16,10 +21,10 @@
               <h2>Assignments: {{ assignmentCount }}</h2>
             </div>
             <div class="text-center">
-              <h2>Total Questions: {{ questionCount }}</h2>
+              <h2>Total Exercises: {{ exerciseCount }}</h2>
             </div>
             <div class="text-center">
-              <h2>Unfinished Questions: {{ todo }}</h2>
+              <h2>Unpublished Exercises: {{ todo }}</h2>
             </div>
           </div>
 <!--          Create assignment modal-->
@@ -32,8 +37,8 @@
           <el-form-item label="Assignment Name:">
             <el-input v-model="assignmentForm.name" autocomplete="off" />
           </el-form-item>
-          <el-form-item label="Number of Questions">
-            <el-input-number v-model="assignmentForm.number_of_questions" :min="1" :max="99" />
+          <el-form-item label="Number of Exercises:">
+            <el-input-number v-model="assignmentForm.number_of_exercises" :min="1" :max="20" />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -48,23 +53,28 @@
       <div class="mx-10 py-5 h-[calc(100vh-150px)]">
         <div v-for="(item, i) in assignments" :key="i"
              class="bg-black border-ut-pink border-l-4 border-r-4 rounded-lg my-5 font-arial">
-          <button @click="toggle(i)" class="w-full px-8 py-6">
-            <svg :class="{'transform rotate-180': activeIndex === i}" class="fill-ut-pink shrink-0" width="16"
-                 height="16" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 256 256" id="Flat">
-              <path d="M128,188a11.96187,11.96187,0,0,1-8.48535-3.51465l-80-80a12.0001,12.0001,0,0,1,16.9707-16.9707L128,159.0293l71.51465-71.51465a12.0001,12.0001,0,0,1,16.9707,16.9707l-80,80A11.96187,11.96187,0,0,1,128,188Z"/>
-            </svg>
-            <h2 class="text-ut-pink font-semibold absolute left-32">{{ item.title }}</h2>
-            <h2 class="text-white font-semibold absolute right-36">Questions: {{ item.questions.length }}</h2>
-          </button>
+          <div class="flex flex-row justify-around align-middle relative">
+            <button @click="toggle(i)" class="w-full px-8 py-6 flex items-center">
+              <svg :class="{'transform rotate-180': activeIndex === i}" class="fill-ut-pink shrink-0" width="16"
+                   height="16" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 256 256" id="Flat">
+                <path d="M128,188a11.96187,11.96187,0,0,1-8.48535-3.51465l-80-80a12.0001,12.0001,0,0,1,16.9707-16.9707L128,159.0293l71.51465-71.51465a12.0001,12.0001,0,0,1,16.9707,16.9707l-80,80A11.96187,11.96187,0,0,1,128,188Z"/>
+              </svg>
+              <h2 class="text-ut-pink font-semibold text-2xl absolute left-20">{{ item.name }}</h2>
+              <h2 class="text-white italic text-sm">(Exercises: {{ item.exercises.length }})</h2>
+            </button>
+            <div class="flex items-center pr-3">
+              <el-button class="delete-button" @click="deleteAssignment(item.id)"><el-icon class="mr-2"><Delete /></el-icon>Delete Assignment</el-button>\
+            </div>
+          </div>
           <div v-show="activeIndex === i"
                class="bg-white px-8 py-6 grid grid-cols-1 relative h-full w-full overflow-auto">
-            <el-button class="add_question-button">
-              <div @click="createQuestion(i)" class="absolute inset-x-0 flex justify-center items-center">
+            <el-button class="add_exercise-button">
+              <div @click="createExercise(item, i)" class="absolute inset-x-0 flex justify-center items-center">
                 <el-icon class="mr-4"><Plus/></el-icon>
-                <b>Add Question</b>
+                <b>Add Exercise</b>
               </div>
             </el-button>
-            <el-table :data="item.questions" >
+            <el-table :data="item.exercises" >
               <el-table-column label="Complete">
                 <template v-slot:default="scope">
                   <el-icon v-if="scope.row.completed" color="green" size="large">
@@ -75,10 +85,14 @@
                   </el-icon>
                 </template>
               </el-table-column>
-              <el-table-column prop="question" label="Question"></el-table-column>
+              <el-table-column prop="exercise" label="Question"></el-table-column>
               <el-table-column label="Open">
                 <template v-slot:default="scope">
-                  <el-button>
+                  <el-button
+                      size="large"
+                      type="Default"
+                      @click="edit(scope.$index, i)"
+                  >
                     <el-icon class="mr-2">
                       <Edit />
                     </el-icon>
@@ -92,7 +106,7 @@
                   <el-button
                       size="large"
                       type="Default"
-                      @click="publish(scope.$index, scope.row)">
+                      @click="publish(scope.row, item)">
                     <el-icon><Promotion /></el-icon></el-button
                   >
                   <!--                    TODO GET THIS TO WORK-->
@@ -103,7 +117,7 @@
                   <el-button
                       size="large"
                       type="danger"
-                      @click="handleDelete(i, scope.$index)"
+                      @click="handleDelete(scope.row, item)"
                   ><el-icon><Delete /></el-icon></el-button
                   >
                 </template>
@@ -119,45 +133,37 @@
 
 <script>
 import {ElMessage} from "element-plus";
+import courseService from "@/services/courseService.js";
+import exercisesService from "@/services/exercisesService.js";
+import assignmentsService from "@/services/assignmentsService.js";
+import { mapStores} from "pinia";
+import useUserStore from "@/stores/user.js";
+
 
 export default {
+  computed: {
+    ...mapStores(useUserStore)
+  },
   created() {
     this.fetchData();
+
+    this.isTeacher = this.userStore.user.role === 'teacher'
   },
   data() {
     return {
+      isTeacher: null,
       courseid: -1,
       pageTitle: '',
       instructor: '',
       assignmentCount: 0,
-      questionCount: 0,
+      exerciseCount: 0,
       todo: 0,
       activeIndex: null,
-      assignments: [
-        {
-          title: 'Assignment 1',
-          questions: [{question: 'Question 1', completed: false}, {
-            question: 'Question 2',
-            completed: false
-          }, {question: 'Question 3', completed: false}]
-        },
-        {
-          title: 'Assignment 2',
-          questions: [{question: 'Question 1', completed: true}, {
-            question: 'Question 2',
-            completed: false
-          }, {question: 'Question 3', completed: false}]
-        },
-        {
-          title: 'Assignment 3',
-          questions: [{question: 'Question 1', completed: true}, {
-            question: 'Question 2',
-            completed: true
-          }, {question: 'Question 3', completed: false}]
-        }],
+      assignments: [],
+      invite_code: null,
       assignmentForm: {
         name: '',
-        number_of_questions: ''
+        number_of_exercises: null
       },
       dialogFormVisible: false
     }
@@ -166,59 +172,148 @@ export default {
     '$route': 'fetchData'
   },
   methods: {
-    fetchData() {
+    async fetchData() {
       this.courseid = this.$route.query.id;
-      this.pageTitle = 'Service-Oriented Architecture Web Serv. (2023-2A)';
-      this.instructor = 'Luis Ferreira Pires';
+      this.exerciseCount = 0
+
+      const course = (await courseService.getCourse(this.courseid)).data.data;
+      this.invite_code = course.access_id
+
+      try {
+        const assignmentsArray = []
+        const res = await assignmentsService.getAssignmentsWithExercises(this.courseid);
+        const assignments = res.data.data;
+
+
+        for (let assignment of assignments) {
+          const exercises = assignment.exercises.reverse()
+
+          assignmentsArray.unshift({
+            id: assignment.id,
+            name: assignment.name,
+            exercises: exercises.map(exercise => {
+              return {
+                id: exercise.id,
+                exercise: exercise.identifier,
+                completed: exercise.is_published
+              }
+            })
+          })
+          this.assignments = assignmentsArray
+        }
+      } catch (err) {
+        console.log(err)
+      }
+
+      this.pageTitle = course.name;
+      // this.instructor = this.userStore.username;
+      // TODO add instructor
       this.assignmentCount = this.assignments.length;
-      for(let i = 0; i < this.assignmentCount; i++) {
-        let questions = this.assignments[i].questions
-        this.questionCount += questions.length
-        for(let i = 0; i < questions.length; i++) {
-          if(!questions[i].completed){
+      this.exerciseCount = 0
+      this.todo = 0
+      for (let i = 0; i < this.assignmentCount; i++) {
+        let exercises = this.assignments[i].exercises
+        this.exerciseCount += exercises.length
+        for (let i = 0; i < exercises.length; i++) {
+          if (!exercises[i].completed) {
             this.todo += 1
           }
         }
       }
       // todo Query your database with courseId
     },
+    async deleteAssignment(assignment_id) {
+      try {
+        await assignmentsService.deleteAssignment(this.courseid, assignment_id)
+        ElMessage({
+          message: 'Successfuly deleted',
+          type: 'success',
+        })
+      } catch (err) {
+        ElMessage({
+          message: err.message,
+          type: 'fail',
+        })
+        console.log(err)
+      }
+      await this.fetchData()
+    },
 
-    createQuestion(assignment_id) {
-      this.assignments[assignment_id].questions.push({question: 'Question ' + (this.assignments[assignment_id].questions.length + 1), completed: false})
-      // todo API
+    async createExercise(assignment, assignmentIntheList) {
+      try {
+        await exercisesService.addExercises(this.courseid, assignment.id, {identifier: 'Exercise ' + (this.assignments[assignmentIntheList].exercises.length + 1)})
+      } catch (err) {
+        //TODO handle error
+        console.log(err)
+      }
+      this.fetchData()
     },
 
     toggle(i) {
       this.activeIndex = this.activeIndex === i ? null : i;
     },
 
-    createAssignment() {
-      let questionsList = [];
-      for(let i = 1; i <= this.assignmentForm.number_of_questions; i++) {
-        questionsList.push({question: 'Question ' + i, completed: false});
+    async createAssignment() {
+      try {
+        const assignment = await assignmentsService.addAssignment(this.courseid, {name: this.assignmentForm.name})
+
+        for (let i = 0; i < this.assignmentForm.number_of_exercises; i++) {
+          await exercisesService.addExercises(this.courseid, assignment.data.data.id, {identifier: 'Exercise ' + (i + 1)})
+        }
+
+        ElMessage({
+          message: 'Assignment successfully created.',
+          type: 'success',
+        })
+      } catch (err) {
+        //TODO handle error
+        console.log(err)
+        ElMessage({
+          message: err.message,
+          type: 'success',
+        })
       }
-      this.assignments.push({title: this.assignmentForm.name, questions: questionsList});
-      console.log(this.assignments)
-      this.assignmentCount += 1
-      this.questionCount += this.assignmentForm.number_of_questions
-      this.todo += this.assignmentForm.number_of_questions
-      // todo replace with API call
       this.dialogFormVisible = false;
-      this.loadSuccessMessage()
+      this.assignmentForm.name = '';
+      this.assignmentForm.number_of_exercises = 0;
+      await this.fetchData()
     },
 
-    loadSuccessMessage() {
+    async publish(exercise, assignment) {
+      try {
+        console.log(assignment)
+        console.log(exercise)
+        console.log(!exercise.completed)
+        await exercisesService.changeExercises(this.courseid, assignment.id, exercise.id, {is_published: !exercise.completed})
+
+      } catch (err) {
+        //TODO handle error
+        console.log(err)
+      }
+
+      await this.fetchData()
+
+    },
+
+    async handleDelete(exercise, assignment) {
+      try {
+        await exercisesService.deleteExercises(this.courseid, assignment.id, exercise.id)
+      } catch (err) {
+        //TODO handle error
+        console.log(err)
+      }
+
+      await this.fetchData()
+    },
+
+    copy() {
+      navigator.clipboard.writeText(this.invite_code);
       ElMessage({
-        message: 'Assignment successfully created.',
-        type: 'success',
+        message: 'Invite code copied to clipboard',
+        type: 'success'
       })
     },
-
-    handleDelete(assignment_idx, question_idx) {
-      this.assignments[assignment_idx].questions.splice(question_idx, 1)
-      // todo API
-    }
-  },
+  }
 }
 </script>
 
@@ -249,14 +344,31 @@ svg {
   border-color: #cf0072;
 }
 
-.add_question-button {
+.delete-button {
+  background-color: black; /* This is for pink background */
+  color: white; /* This is for white text */
+  border-color: black;
   font-weight: bold;
 }
 
-.add_question-button:hover {
+.delete-button:hover {
+  background-color: red;
+  color: white;
+  border-color: red;
+  font-weight: bold;
+}
+
+.add_exercise-button {
+  font-weight: bold;
+}
+
+.add_exercise-button:hover {
   border-color: #cf0072;
   color: black;
   background-color: white;
 }
 
+:deep(.el-form-item__label) {
+  color: black !important;
+}
 </style>

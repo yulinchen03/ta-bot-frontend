@@ -16,15 +16,9 @@ import { ElNotification } from 'element-plus'
 
 const open1 = () => {
   ElNotification({
-    title: 'Success',
+    exercise: 'Success',
     message: 'This is a success message',
     type: 'success',
   })
 }
 </script>
-
-<style scoped>
-.hover\:shadow-glow:hover {
-  box-shadow: 0 0 5px , 0 0 5px #cf0072, 0 0 5px #cf0072, 0 0 5px #cf0072;
-}
-</style>
