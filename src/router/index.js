@@ -86,7 +86,7 @@ const router = Router();
 router.beforeEach(async (to, from, next) => {
     const store = useUserStore()
 
-    const publicPages = ['/login', '/signup', '/reset']
+    const publicPages = ['/login', '/signup', '/reset', '/bot']
     const authRequired = !publicPages.includes(to.path)
     let loggedIn = !!store.token
     if (authRequired && !loggedIn) {

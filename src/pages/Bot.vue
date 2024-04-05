@@ -7,9 +7,9 @@
         </el-icon>
         <div class="text-3xl"> Course</div> </div>
       <div @click="showExercises = !showExercises" class="w-1/4 border flex flex-row justify-between p-4 bg-white rounded-full relative">
-        <div class="text-2xl">{{exercises[selectedExercise]}}</div>
+        <div class="text-2xl">{{this.exercises.find(exercise => exercise.id === parseInt(this.exerciseId)).identifier}}</div>
         <div @click="showExercises = !showExercises" v-if="showExercises" class="shadow-lg bg-white  z-30 text-2xl rounded-lg p-2 w-full h-max-1/4 scroll-auto absolute left-0 top-full">
-          <div v-for="(exercise, index) in exercises" @click="selectedExercise = index" :class="{ 'hover:bg-ut-blue hover:text-white hover:cursor-pointer p-2': true, 'border-b-2': index < exercises.length - 1 }">{{exercise}}</div>
+          <div v-for="(exercise, index) in exercises" @click="this.$router.push({ path: '/bot', query: {courseId, assignmentId, exerciseId: exercise.id}})" :class="{ 'hover:bg-ut-blue hover:text-white hover:cursor-pointer p-2': true, 'border-b-2': index < exercises.length - 1 }">{{exercise.identifier}}</div>
         </div>
         <el-icon class="transition transform ease-in-out delay-150 hover:cursor-pointer"   :size="32">
           <svg :class="{'transform rotate-180': showExercises}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="M104.704 338.752a64 64 0 0 1 90.496 0l316.8 316.8 316.8-316.8a64 64 0 0 1 90.496 90.496L557.248 791.296a64 64 0 0 1-90.496 0L104.704 429.248a64 64 0 0 1 0-90.496z"></path></svg>
@@ -40,27 +40,45 @@
 <script>
 
 import Messages from "@/components/Messsage.vue"
-
+import exercisesService from "@/services/exercisesService.js";
 export default {
   data() {
     return {
       options: ['Yes', 'No', 'Yes, but actually no', 'No, but actually yes', 'This is a scrollable list of buttons with no background', 'I become dark when you hover me'],
       exercises: ['Exercise 1', 'Exercise 2', 'Exercise 3', 'Exercise 4', 'Exercise 5', 'Exercise 6', 'Exercise 7', 'Exercise 8', 'Exercise 9', 'Exercise 10'],
-      selectedExercise: 0,
       showExercises: false,
+      courseId: null,
       assignmentId: null,
       exerciseId: null,
     }
   },
   created() {
+    this.courseId = this.$route.query.courseId;
     this.assignmentId = this.$route.query.assignmentId;
     this.exerciseId = this.$route.query.exerciseId;
 
+    console.log(this.courseId)
+    console.log(this.assignmentId)
+    console.log(this.exerciseId)
+
+    this.getExercises()
   },
   methods: {
-    getExercises() {
+    async getExercises() {
       try {
-        const res = await
+        const res = await exercisesService.getExercises(this.courseId, this.assignmentId)
+
+        this.exercises = res.data.data
+
+
+
+        console.log(this.exercises)
+        const exercise = this.exercises.find(exercise => exercise.id === parseInt(this.exerciseId)).identifier
+        console.log('ex')
+        console.log(exercise)
+
+        console.log(res)
+
 
       }
       catch(err) {
