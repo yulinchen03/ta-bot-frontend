@@ -28,8 +28,8 @@ import Header from "@/components/Header.vue";
                 </div>
                 <div class="mx-4 mb-4 text-sm"><p>{{ item.content }}</p></div>
               </div>
-              <el-button v-if="!item.read" @click="toggleRead(i)" class="custom-button absolute right-10">Mark as Read</el-button>
-              <el-button v-if="item.read" @click="toggleRead(i)" class="custom-button absolute right-10">Mark as Unread</el-button>
+              <el-button v-if="!item.read" @click="toggleRead(item.id, true)" class="custom-button absolute right-10">Mark as Read</el-button>
+              <el-button v-if="item.read" @click="toggleRead(item.id, false)" class="custom-button absolute right-10">Mark as Unread</el-button>
             </div>
           </div>
         </div>
@@ -40,7 +40,8 @@ import Header from "@/components/Header.vue";
 
 <script>
 import PageHeader from '../components/Header.vue';
-
+import {ElMessage} from "element-plus";
+import feedbackService from "@/services/feedbackService.js";
 export default {
   components: {
     PageHeader
@@ -72,9 +73,54 @@ export default {
         }],
     }
   },
+  created() {
+    this.refresh()
+    },
   methods: {
-    toggleRead(id) {
-      this.notifications[id].read = !this.notifications[id].read
+    async toggleRead(id, read) {
+      try {
+        console.log(id)
+        await feedbackService.toggleFeedback(id, read)
+
+
+        await this.refresh()
+
+      } catch (err) {
+        console.log(err)
+        ElMessage({
+          message: err.message,
+          type: 'fail',
+        })
+      }
+    },
+    async refresh() {
+      try {
+        const data = (await feedbackService.getFeedbackPerTeacher()).data.data
+
+
+        const feedback = data.map(object => ({
+          id: object.id,
+          from: object.student_id,
+          exercise: object.exercise_id,
+          content: object.content,
+          read: object.is_read
+        }));
+
+        feedback.sort((a, b) => a.read - b.read);
+
+        console.log(feedback)
+
+        this.notifications = feedback
+
+
+
+      }
+      catch (err) {
+        ElMessage({
+          message: err.message,
+          type: 'fail',
+        })
+      }
     }
   }
 }

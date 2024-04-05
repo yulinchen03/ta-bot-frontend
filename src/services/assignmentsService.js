@@ -19,5 +19,6 @@ export default {
     },
     deleteAssignment(courseId, assignmentId) {
         return Api().delete(`courses/${courseId}/assignments/${assignmentId}`)
-    }
+    },
+    
 }
