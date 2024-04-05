@@ -14,7 +14,8 @@ export default {
         'ut-pink': '#cf0072',
         'ut-blue': '#264653',
         'ut-orange': '#F4A261',
-        'ut-green': '#2A9D8F'
+        'ut-green': '#2A9D8F',
+        'ut-gold': '#E76F51',
       },
       fontFamily: {
         arial: ["Arial"],
