@@ -3,6 +3,9 @@
     <el-button v-if="isTeacher" @click="this.$emit('deleteCourse')" class="absolute right-1 top-1 z-50">
       <el-icon><Delete /></el-icon>
     </el-button>
+    <el-button v-else @click="this.$emit('deEnroll')" class="absolute right-1 top-1 z-50">
+      <el-icon><Delete /></el-icon>
+    </el-button>
     <div @click="emitClickEvent">
     <div class="hover:shadow-lg">
       <img class="h-36 w-full object-cover" src="https://upload.wikimedia.org/wikipedia/commons/5/51/Computer_Science_Word_Cloud.png">

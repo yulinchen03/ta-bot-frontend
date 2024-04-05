@@ -1,7 +1,7 @@
 <template>
   <div class="h-[100px] w-full flex justify-between items-center">
     <h1 class="text-3xl font-arial px-10 font-bold">{{ title }}</h1>
-    <el-button @click="showJoin" v-if="!isTeacher" type="primary" class="mr-10 mt-4">Join Course</el-button>
+    <el-button @click="showJoin" v-if="isCoursesStudent()" type="primary" class="mr-10 mt-4">Join Course</el-button>
   </div>
   <!-- POPUP -->
   <JoinCourse v-if="showJoinCourse" @courseCode="joinCourse" @close="close"></JoinCourse>
@@ -29,6 +29,12 @@ export default {
     },
     close() {
       this.showJoinCourse = false
+    },
+    isCoursesStudent(){
+      if (this.userStore.user.role === 'student' && this.title === 'My Courses') {
+        return true;
+      }
+      return false;
     }
   },
   computed: {

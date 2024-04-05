@@ -44,17 +44,17 @@ export default {
                 alert('Please fill in all the fields.');
                 return;
             }
-            // else {
-            //     try {
-            //         const response = await userService.joinCourse({ course_id: this.courseCode });
-            //         const data = response.data;
-            //         console.log(data);
-            //     }
-            //     catch (error) {
-            //         console.log(error);
-            //     }
+            else {
+                try {
+                    const response = await userService.joinCourse(this.courseCode);
+                    const data = response.data;
+                    console.log(data);
+                }
+                catch (error) {
+                    console.log(error);
+                }
 
-            // } 
+            } 
             // TODO - Add the logic to join the course
             console.log(this.courseCode);
 

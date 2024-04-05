@@ -30,6 +30,7 @@ import Header from "@/components/Header.vue";
               :courseData="course"
               class="w-[calc(25vw-100px)]"
               @courseSelected="openCourse(course.id)"
+              @deEnroll="deEnroll(course.id)"
           />
         </div>
       </div>
@@ -65,6 +66,7 @@ import assignmentsService from "@/services/assignmentsService.js";
 import { mapStores} from "pinia";
 import useUserStore from "@/stores/user.js";
 import {ElMessage} from "element-plus";
+import userService from "@/services/userService";
 
 export default {
   components: {
@@ -121,6 +123,8 @@ export default {
     },
     async deleteCourse(id) {
       try {
+        console.log(id)
+        console.log('deleting course')
         await courseService.deleteCourse(id);
         this.courses = this.courses.filter(course => course.id !== id);
         ElMessage({
@@ -130,6 +134,21 @@ export default {
       }
       catch(err){
         // TODO handle error
+        console.log(err)
+        ElMessage({
+          message: err.name,
+          type: 'fail',
+        })
+      }
+    },
+    async deEnroll(id) {
+      try {
+        await userService.denrolCourse(id)
+        ElMessage({
+          message: 'Successfully de-enrolled from course.',
+          type: 'success',
+        })
+      } catch (err) {
         console.log(err)
         ElMessage({
           message: err.name,
