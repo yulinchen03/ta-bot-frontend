@@ -116,6 +116,10 @@ export default {
       catch(err){
         // TODO handle error
         console.log(err)
+        ElMessage({
+          message: err.message,
+          type: 'fail',
+        })
       }
     },
     openCourse(id) {

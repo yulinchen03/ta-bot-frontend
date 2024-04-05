@@ -106,7 +106,7 @@
                     <el-button
                     size = "large"
                     type = "Default"
-                    @click = "view(scope.$index, i)"
+                    @click = "view(item, scope.$index)"
                     >
                     <!-- TODO GET THIS TO WORK -->
                       <el-icon class="mr-2">
@@ -338,17 +338,9 @@ export default {
         type: 'success'
       })
     },
-    // edit(exercise_idx, assignment_idx) {
-    //   this.$router.push({path: 'editor', query: {c: this.courseid, a: assignment_idx, e: exercise_idx}});
-    // }
-    view(assignment_idx, exercise_idx) {
-      this.$router.push({path: 'bot', query: {courseId: 36, assignmentId: 52, exerciseId: 270}});
+    view(assignment, exercise_idx) {
 
-      // console.log(item)
-      // console.log(index)
-      // console.log(item.exercises)
-      // console.log(item.exercises[index])
-      // this.$router.push({ path: '/bot', query: {courseId: courseid, item.id, exerciseId: exercise.id}})
+      this.$router.push({path: 'bot', query: {courseId: this.courseid, assignmentId: assignment.id, exerciseId: (assignment.exercises[parseInt(exercise_idx)]).id }});
 
     }
   }
