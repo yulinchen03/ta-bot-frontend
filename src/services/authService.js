@@ -23,5 +23,23 @@ export default {
     },
     getCurrentUser() {
         return Api().get('current_user')
+    },
+    updateUser(changes) {
+        changes["current_password"] = "Password123"
+
+        console.log(changes)
+        return Api().patch('signup', {
+            "user": changes
+        })
+    },
+    updateUserPassword(current_password, encrypted_password) {
+        return Api().patch('signup', {
+            "user": {
+                current_password, encrypted_password
+            }
+        })
+    },
+    deleteUser() {
+        return Api().delete('signup')
     }
 }

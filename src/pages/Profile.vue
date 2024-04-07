@@ -42,9 +42,9 @@ export default {
       pageTitle: 'My Profile',
       isEditing: false,
       userProfile: {
-        name: 'Jane',
-        surname: 'Doe',
-        email: 'jane.doe@example.com'
+        name: '',
+        surname: '',
+        email: ''
       }
     }
   },
