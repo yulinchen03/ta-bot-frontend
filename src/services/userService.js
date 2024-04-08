@@ -6,6 +6,6 @@ export default {
         return Api().post('enrollments', { access_id })
     },
     denrolCourse(access_id) {
-        return Api().delete(`enrollments/`, { access_id })
+        return Api().delete(`enrollments`, {access_id})
     }
 }

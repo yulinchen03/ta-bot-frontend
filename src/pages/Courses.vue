@@ -30,7 +30,7 @@ import Header from "@/components/Header.vue";
               :courseData="course"
               class="w-[calc(25vw-100px)]"
               @courseSelected="openCourse(course.id)"
-              @deEnroll="deEnroll(course.id)"
+              @deEnroll="deEnroll(course.access_id)"
           />
         </div>
       </div>
@@ -112,6 +112,7 @@ export default {
         const res = await courseService.getCourses();
         const courses = res.data.data;
         this.courses = courses;
+        console.log(courses)
       }
       catch(err){
         // TODO handle error
@@ -147,6 +148,7 @@ export default {
     },
     async deEnroll(id) {
       try {
+        console.log(id)
         await userService.denrolCourse(id)
         ElMessage({
           message: 'Successfully de-enrolled from course.',
@@ -176,7 +178,7 @@ export default {
 
   created() {
     this.getCourses()
-
+    console.log(this.userStore.user)
     this.isTeacher = this.userStore.user.role === 'teacher';
   }
 }
