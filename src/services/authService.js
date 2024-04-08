@@ -23,5 +23,20 @@ export default {
     },
     getCurrentUser() {
         return Api().get('current_user')
+    },
+    updateUser(changes) {
+        return Api().patch('signup', {
+            "user": changes
+        })
+    },
+    updateUserPassword(password, current_password) {
+        return Api().patch('signup', {
+            "user": {
+                current_password, password
+            }
+        })
+    },
+    deleteUser() {
+        return Api().delete('signup')
     }
 }
