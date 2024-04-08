@@ -156,6 +156,7 @@ export default {
               type: 'error',
               message: err.message,
             });
+            this.refresh()
           }
 
         },
