@@ -140,7 +140,8 @@ export default {
             this.isEditing = false;
             this.updating = false;
           try {
-            await authService.updateUser(this.userDetails);
+           await authService.updateUser(this.userDetails);
+
             ElMessage({
               type: 'success',
               message: 'User details updated successfully',
