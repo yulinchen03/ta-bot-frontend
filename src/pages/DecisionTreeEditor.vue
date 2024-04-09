@@ -7,7 +7,7 @@
                       :assignmentname="assignmentname"
                       :exercisename="exercisename"
                       @goBack="back"></EditorHeader>
-        <div class="grid grid-cols-2 w-full h-[90vh] p-10">
+        <div class="grid grid-cols-2 w-full h-[90vh] lg:p-5 xl:p-10 2xl:p-20">
           <vue-tree
               style="width: 45vw; height: 75vh;"
               :dataset="sampleData"
@@ -28,7 +28,7 @@
             </template>
           </vue-tree>
           <div class="bg-gray-100 rounded-xl grid grid-cols-1">
-            <div class="ml-5 mt-5"><b class="text-2xl">Step #{{sampleData.value}}</b></div>
+            <div class="ml-5 mt-5"><b class="text-2xl">Step #{{ sampleData.id }}</b></div>
             <div class="mx-5">
               <span class="font-arial">
                 Hint and suggestions
@@ -132,12 +132,12 @@ export default {
       hintdescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam quis lectus dapibus, faucibus sem a, venenatis lectus. Maecenas laoreet, turpis sit amet luctus vehicula, risus urna efficitur magna, euismod semper ipsum nunc sed mi. Nunc id eleifend leo. ',
       unsavedChanges: true,
       sampleData: {
-        value: 1,
+        id: 1,
         children: [
-          {value: 2, children: [{value: 6}, {value: 7}]},
-          {value: 3, children: [{value: 8}, {value: 9}]},
-          {value: 4, children: [{value: 10}, {value: 11}]},
-          {value: 5, children: [{value: 12}, {value: 13}]}
+          {id: 2, children: [{id: 6, children: [{id:14}]}, {id: 7}]},
+          {id: 3, children: [{id: 8}, {id: 9}]},
+          {id: 4, children: [{id: 10}, {id: 11}]},
+          {id: 5, children: [{id: 12}, {id: 13}]}
         ]
       },
       treeConfig: {nodeWidth: 120, nodeHeight: 80, levelHeight: 200},
