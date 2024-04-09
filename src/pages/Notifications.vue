@@ -16,7 +16,7 @@ import Header from "@/components/Header.vue";
             <div class="flex items-center">
               <div>
                 <div class="flex items-center justify-start">
-                  <img :src="item.imgurl"
+                  <img :src="'https://xsgames.co/randomusers/avatar.php?g=pixel&' + Math.floor(Math.random() * 50) + 1"
                       class="m-4 rounded-full w-[48px] h-[48px]">
                   <div class="grid grid-cols-1 text-sm">
                     <div class="flex">
@@ -49,28 +49,7 @@ export default {
   data() {
     return {
       pageTitle: 'My Notifications',
-      notifications: [
-        {
-          from: 'D. Krylov',
-          imgurl: 'https://media.licdn.com/dms/image/D4E03AQFiKwwtju2pkw/profile-displayphoto-shrink_400_400/0/1702248046452?e=1717027200&v=beta&t=8cURgcpoCuKkygn3gJqfxxj31bJlB4JhjSXC6kQs_Uw',
-          exercise: 'Exercise 2 - Assignment 4 - M8 Programming Paradigms (2023-2B)',
-          content: 'Yapping is all about making the obvious sound so sophisticated that people actually think you know what you are talking about.',
-          read: false
-        },
-        {
-          from: 'S. Akin',
-          imgurl: 'https://media.licdn.com/dms/image/D4E35AQFjsKZe5NFPrg/profile-framedphoto-shrink_400_400/0/1651415418695?e=1712170800&v=beta&t=fBj75YibCbLapt56W3VaMZfacGISU7A1kcmqE4S2WHg',
-          exercise: 'Exercise 6 - Assignment 1 - M5 Computer Systems (2023-1A)\n',
-          content: 'The nature of git is actually quite philosophical. Think about it.',
-          read: false
-        },
-        {
-          from: 'S. Asif',
-          imgurl: 'https://media.licdn.com/dms/image/D4E03AQEzaJiMrM7bfQ/profile-displayphoto-shrink_400_400/0/1696446050831?e=1717027200&v=beta&t=Qra6LC7LdHrF0ES2tq266Rvm0-rfHeX8STuxbN7X0Kw',
-          exercise: 'Exercise 4 - Assignment 7 - M6 Intelligent Interaction (2023-1B)',
-          content: 'Nothing about this course makes sense. The feedback is vague and does not help me with any of the exercises meaningfully.',
-          read: true
-        }],
+      notifications: [],
     }
   },
   created() {
@@ -97,18 +76,20 @@ export default {
       try {
         const data = (await feedbackService.getFeedbackPerTeacher()).data.data
 
+        console.log(data)
+
 
         const feedback = data.map(object => ({
           id: object.id,
-          from: object.student_id,
-          exercise: object.exercise_id,
+          from: object.student,
+          exercise: object.exercise.identifier,
           content: object.content,
           read: object.is_read
         }));
 
         feedback.sort((a, b) => a.read - b.read);
 
-        console.log(feedback)
+        // console.log(feedback)
 
         this.notifications = feedback
 
