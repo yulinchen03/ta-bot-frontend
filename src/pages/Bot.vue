@@ -1,6 +1,6 @@
 <template>
   <div class="w-screen h-screen bg-gray-200 p-10 flex justify-center align-middle flex-col">
-      <div v-if="feedbackFormVisible" class="w-full h-full pointer-events-none absolute inset-0 bg-gray-800 opacity-50 z-40 transition-opacity"> </div>
+      <div v-if="feedbackFormVisible" class="fixed inset-0 z-40 bg-gray-800 opacity-50 transition-opacity"> </div>
       <transition>
         <div v-if="feedbackFormVisible" class="box-border gap-6 h-min-56 flex flex-col justify-center align-middle z-50 w-1/2 h-fit bg-white rounded-xl shadow-xl fixed bottom-2 inset-0 m-auto">
           <div class="flex flex-row bg-ut-green rounded-t-xl px-2 ">
@@ -37,9 +37,10 @@
     <div class="w-full h-full flex flex-row justify-center align-middle">
       <div class="h-4/5 flex flex-row m-auto">
         <div class="h-full flex w-2/3 outline outline-gray-400 outline-2 rounded-3xl bg-white m-auto relative flex-col">
-          <Messages />
-          <Answer />
-          <Messages />
+          <template v-for="(question, index) in questions" :key="index">
+            <Message :description="question.name" />
+<!--            <Answer :answer="answers[index]" />-->
+          </template>
 
     </div>
         <div class="m-auto w-1/3">
@@ -53,7 +54,7 @@
             <div class="font-bold">Feedback</div>
           </div>
           </div>
-          <div v-for="option in options" class="text-lg w-full bg-white outline outline-ut-blue outline-2 p-3 m-3 box-border rounded-xl hover:bg-ut-blue text-ut-blue hover:text-white hover:cursor-pointer">{{option}}</div>
+          <div v-for="option in options" class="text-lg w-full bg-white outline outline-ut-blue outline-2 p-3 m-3 box-border rounded-xl hover:bg-ut-blue text-ut-blue hover:text-white hover:cursor-pointer">{{option.option}}</div>
         </div>
       </div>
     </div>
@@ -61,14 +62,14 @@
 </template>
 <script>
 
-import Messages from "@/components/Messsage.vue"
+import Message from "@/components/Messsage.vue"
 import exercisesService from "@/services/exercisesService.js";
 import {ElMessage} from "element-plus";
 import feedbackService from "@/services/feedbackService.js";
 export default {
   data() {
     return {
-      options: ['Yes', 'No', 'Yes, but actually no', 'No, but actually yes', 'This is a scrollable list of buttons with no background', 'I become dark when you hover me'],
+      options: [],
       exercises: [],
       showExercises: false,
       courseId: null,
@@ -76,38 +77,60 @@ export default {
       exerciseId: null,
       feedbackFormVisible: false,
       feedback: '',
+      current_hint: null,
+      questions: [],
+      answers: []
     }
   },
   async created() {
-    this.courseId = this.$route.query.courseId;
-    this.assignmentId = this.$route.query.assignmentId;
-    this.exerciseId = this.$route.query.exerciseId;
-
-    // const res = await exercisesService.getTreeStructure(this.courseId, this.assignmentId, this.exerciseId)
-
-
-    console.log(this.courseId)
-    console.log(this.assignmentId)
-    console.log(this.exerciseId)
-
-    this.getExercises()
+    this.refresh()
   },
   methods: {
+    async refresh() {
+      this.courseId = this.$route.query.courseId;
+      this.assignmentId = this.$route.query.assignmentId;
+      this.exerciseId = this.$route.query.exerciseId;
+
+      this.questions = []
+      this.answers = []
+      this.options = []
+
+      this.getHints()
+      this.getExercises()
+
+    },
+    async getHints() {
+      try {
+        const res = await exercisesService.getTreeStructure(this.courseId, this.assignmentId, this.exerciseId)
+
+        console.log(res)
+
+        this.current_hint = res.data.data.hint_nodes[0].id
+        this.questions.push(res.data.data.hint_nodes[0])
+
+        console.log('quesions ', this.questions)
+
+        for(let option of res.data.data.hint_nodes[0].outgoing_edges) {
+          this.options.push(option)
+        }
+        console.log(this.options)
+
+      } catch (err) {
+        console.log(err)
+        ElMessage({
+          message: err.message,
+          type: 'fail',
+        })
+      }
+    },
     async getExercises() {
       try {
         const res = await exercisesService.getExercises(this.courseId, this.assignmentId)
 
-        console.log(res)
+
         this.exercises = res.data.data
 
-
-
-        console.log(this.exercises)
-        const exercise = this.exercises.find(exercise => exercise.id === parseInt(this.exerciseId)).identifier
-        console.log('ex')
-        console.log(exercise)
-
-        console.log(res)
+        // const exercise = this.exercises.find(exercise => exercise.id === parseInt(this.exerciseId)).identifier
 
 
       }
@@ -144,8 +167,13 @@ export default {
       }
     }
   },
+  watch: {
+    $route() {
+        this.refresh();
+    },
+  },
   components: {
-    Messages
+    Message
   },
 }
 
