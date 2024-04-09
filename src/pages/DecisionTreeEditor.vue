@@ -18,11 +18,11 @@
             <template v-slot:node="{ node, collapsed }">
               <div
                   :style="{ border: collapsed ? '2px solid grey' : '' }"
-                  :class="{'tree-node': node.value !== currentNode,
-                   'tree-node-highlighted': node.value === currentNode,}"
+                  :class="{'tree-node': node.id !== currentNode,
+                   'tree-node-highlighted': node.id === currentNode,}"
               >
           <span style="padding: 4px 0; font-weight: bold;"
-          >Step {{ node.value }}</span
+          >Step {{ node.id }}</span
           >
               </div>
             </template>

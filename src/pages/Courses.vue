@@ -13,7 +13,7 @@ import Header from "@/components/Header.vue";
       <Header :title="pageTitle"></Header>
       <div class="mx-20 overflow-y-auto w-[calc(100vw-200px)] h-[calc(100vh-100px)]">
         <!-- Dynamic rows -->
-        <div v-for="(row, rowIndex) in coursesRows" :key="rowIndex" class="flex justify-start">
+        <div v-if="isTeacher" v-for="(row, rowIndex) in coursesRows" :key="rowIndex" class="flex justify-start">
           <Itemcard
               v-for="item in row"
               :key="item.id"
@@ -52,7 +52,7 @@ import Header from "@/components/Header.vue";
     </el-dialog>
 
 
-    <el-button v-if="isTeacher" size="large" @click="dialogFormVisible = true" circle class="fixed right-10 bottom-10 z-20">
+    <el-button v-if="isTeacher" size="large" @click="dialogFormVisible = true" round class="fixed right-10 bottom-10 z-20 custom-button">
       <el-icon class="mr-2"><Plus/></el-icon>
       Create a course
     </el-button>
@@ -189,5 +189,12 @@ export default {
   background-color: lightcoral;
   color: white;
   border-color: transparent;
+}
+
+.custom-button {
+  background-color: #cf0072; /* This is for pink background */
+  color: white; /* This is for white text */
+  font-weight: bold;
+  border-color: #cf0072;
 }
 </style>
