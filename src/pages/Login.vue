@@ -31,7 +31,7 @@
                      focus:border-primary-600 block w-[20vw] p-2.5 dark:bg-gray-700 dark:border-gray-600
                       dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                              placeholder="Password">
-                      <div v-if="v$.loginForm.password.$error" class="text-xs text-red-500 flex justify-end">Password is less than 8 characters.</div>
+                      <div v-if="v$.loginForm.password.$error" class="text-xs text-red-500 flex justify-end">Please enter your password.</div>
                     </div>
                   </el-form-item>
                 </el-form>
@@ -81,10 +81,6 @@ import authService from "@/services/authService.js";
           email: {required, email},
           password: {
             required,
-            minLength: minLength(8),
-            hasUpperCase: value => /[A-Z]/.test(value),
-            hasLowerCase: value => /[a-z]/.test(value),
-            hasNumber: value => /[0-9]/.test(value)
           },
         }
       }
