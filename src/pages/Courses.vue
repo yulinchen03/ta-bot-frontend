@@ -13,7 +13,7 @@ import Header from "@/components/Header.vue";
       <Header :title="pageTitle"></Header>
       <div class="mx-20 overflow-y-auto w-[calc(100vw-200px)] h-[calc(100vh-100px)]">
         <!-- Dynamic rows -->
-        <div v-if="isTeacher" v-for="(row, rowIndex) in coursesRows" :key="rowIndex" class="flex justify-start">
+        <div v-for="(row, rowIndex) in coursesRows" :key="rowIndex" class="flex justify-start">
           <Itemcard
               v-for="item in row"
               :key="item.id"
