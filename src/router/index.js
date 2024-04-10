@@ -11,6 +11,7 @@ import editor from "@/pages/DecisionTreeEditor.vue";
 import reset from "@/pages/Reset.vue"
 import signup from "@/pages/Signup.vue"
 import useUserStore from "@/stores/user";
+import bot from "@/pages/Bot.vue";
 
 const routes = [
     {
@@ -70,9 +71,14 @@ const routes = [
         component:course,
     },
     {
-        name:'editor',
-        path:'/editor',
+        name: 'editor',
+        path: '/editor',
         component: editor,
+    },
+    {
+        name: 'bot',
+        path: '/bot',
+        component: bot
     }
 ];
 const router = Router();
@@ -80,7 +86,7 @@ const router = Router();
 router.beforeEach(async (to, from, next) => {
     const store = useUserStore()
 
-    const publicPages = ['/login', '/signup', '/reset']
+    const publicPages = ['/login', '/signup', '/reset', '/bot']
     const authRequired = !publicPages.includes(to.path)
     let loggedIn = !!store.token
     if (authRequired && !loggedIn) {

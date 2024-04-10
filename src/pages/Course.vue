@@ -106,7 +106,7 @@
                     <el-button
                     size = "large"
                     type = "Default"
-                    @click = "view(scope.$index, i)" 
+                    @click = "view(item, scope.$index)"
                     >
                     <!-- TODO GET THIS TO WORK -->
                       <el-icon class="mr-2">
@@ -306,14 +306,19 @@ export default {
 
     async publish(exercise, assignment) {
       try {
-        console.log(assignment)
-        console.log(exercise)
-        console.log(!exercise.completed)
         await exercisesService.changeExercises(this.courseid, assignment.id, exercise.id, {is_published: !exercise.completed})
 
+        ElMessage({
+          message: !exercise.completed ? 'Exercise published' : 'Exercise unpublished',
+          type: 'success',
+        })
       } catch (err) {
         //TODO handle error
         console.log(err)
+        ElMessage({
+          message: err.message,
+          type: 'fail',
+        })
       }
 
       await this.fetchData()
@@ -338,6 +343,11 @@ export default {
         type: 'success'
       })
     },
+    view(assignment, exercise_idx) {
+
+      this.$router.push({path: 'bot', query: {courseId: this.courseid, assignmentId: assignment.id, exerciseId: (assignment.exercises[parseInt(exercise_idx)]).id }});
+
+    }
   }
 }
 </script>
