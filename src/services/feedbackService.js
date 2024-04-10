@@ -14,4 +14,15 @@ export default {
     changeFeedback(courseId, assignmentId, exerciseId, feedbackId, feedback) {
         return Api().patch(`/courses/${courseId}/assignments/${assignmentId}/exercises/${exerciseId}/feedbacks/${feedbackId}`, feedback)
     },
+
+    getFeedbackPerTeacher() {
+        return Api().get('/teacher_feedback')
+    },
+    toggleFeedback(feedbackId, read) {
+        return Api().patch(`/teacher_feedback/${feedbackId}`, {
+            "feedback": {
+                "is_read": read
+            }
+        })
+    }
 }

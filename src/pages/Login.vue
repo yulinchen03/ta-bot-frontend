@@ -103,9 +103,9 @@ import authService from "@/services/authService.js";
           })
         } else {
           try {
+
+            console.log(this.loginForm.email, this.loginForm.password)
             await authService.login(this.loginForm.email, this.loginForm.password).then((res) => {
-
-
 
               this.userStore.token = res.headers.authorization.split(' ')[1]
               this.userStore.user = {email: res.data.data.email, name: res.data.data.username, role: res.data.data.role}
@@ -130,6 +130,7 @@ import authService from "@/services/authService.js";
             })
           }
           catch(err) {
+            console.log(err)
             ElMessage({
               message: err.message,
               type: 'warning',
