@@ -57,6 +57,7 @@ import NewPassword from "@/components/NewPassword.vue";
 import { mapStores} from "pinia";
 import useUserStore from "@/stores/user.js";
 import authService from "@/services/authService.js";
+import {ElMessage} from "element-plus";
 export default {
     components: {
         NewPassword,
@@ -84,20 +85,19 @@ export default {
         },
         saveEdit() {
             if (this.userDetails.name === '' || this.userDetails.surname === '' || this.userDetails.email === '') {
-                alert('Please fill in all fields');
+              ElMessage({
+                    type: 'error',
+                    message: 'Please fill in all fields',
+
+                })
                 return;
             }
             this.updating = true;
-            console.log('Save Edit');
         },
         cancelUpdate() {
             this.updating = false;
             this.isEditing = false;
-            this.userDetails = {
-                name: this.userStore.user.name,
-                surname: this.userStore.user.surname,
-                email: this.userStore.user.email,
-            };
+
             console.log('Cancel Update');
         },
         onDelete() {
@@ -111,18 +111,74 @@ export default {
             console.log('New Password');
             this.isNewPassword = true;
         },
-        handleNewPassword(newPassword) {
-            console.log('New Password:', newPassword);
-            this.isNewPassword = false; // handle logic to update user password
+        async handleNewPassword(newPassword, oldPassword) {
+          console.log('New Password:', newPassword);
+          console.log('Old Password:', oldPassword);
+           // handle logic to update user password
+
+          try {
+            await authService.updateUserPassword(newPassword, oldPassword);
+
+            ElMessage({
+              type: 'success',
+              message: 'Password updated successfully',
+            });
+
+          } catch (err) {
+            console.log(err)
+            ElMessage({
+              type: 'error',
+              message: err.response.data.status.message,
+              duration: 5000,
+            });
+          }
+
+          this.isNewPassword = false;
+
         },
-        updateDetails() {
+        async updateDetails() {
             this.isEditing = false;
             this.updating = false;
-            console.log('Update Details'); // handle logic to update user details
+          try {
+           await authService.updateUser(this.userDetails);
+
+            ElMessage({
+              type: 'success',
+              message: 'User details updated successfully',
+            });
+            this.refresh();
+
+
+            this.updating = false;
+            this.isEditing = false;
+          } catch (err) {
+            ElMessage({
+              type: 'error',
+              message: err.message,
+            });
+            this.refresh()
+          }
+
         },
-        deleteAccount() {
+        async deleteAccount() {
             this.isDelete = false;
-            console.log('Delete Account'); // handle logic to delete user account
+
+            try {
+             await authService.deleteUser();
+
+
+              ElMessage({
+                type: 'success',
+                message: 'User account deleted successfully',
+              });
+              this.$router.push('/login');
+            } catch (err) {
+              ElMessage({
+                type: 'error',
+                message: err.message,
+              });
+            }
+
         },
       async refresh() {
         try

@@ -36,18 +36,18 @@ export default {
     data() {
         return {
             showModal: false,
-            oldPassword: '',
-            newPassword: '',
+            oldPassword: 'Password123',
+            newPassword: 'Password1234',
             
         };
     },
     methods: {
         changePassword() {
-            if (this.newPassword == '' || this.oldPassword == '') {
+            if (this.newPassword === '' || this.oldPassword === '') {
                 alert('Please fill in all the fields.');
                 return;
             }
-            this.$emit('newPass', this.newPassword);    
+            this.$emit('newPass', this.newPassword, this.oldPassword);
         },
         cancel() {
             this.$emit('cancel');
