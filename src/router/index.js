@@ -12,6 +12,8 @@ import reset from "@/pages/Reset.vue"
 import signup from "@/pages/Signup.vue"
 import useUserStore from "@/stores/user";
 import bot from "@/pages/Bot.vue";
+import people from "@/pages/People.vue";
+import coursesAdmin from "@/pages/CoursesAdmin.vue";
 
 const routes = [
     {
@@ -34,6 +36,11 @@ const routes = [
         name:'Courses',
         path:'/courses',
         component:courses,
+    },
+    {
+        name: 'CoursesAdmin',
+        path: '/courses-admin',
+        component: coursesAdmin,
     },
     {
         name:'Notifications',
@@ -91,7 +98,14 @@ const router = Router();
 router.beforeEach(async (to, from, next) => {
     const store = useUserStore()
 
-    const publicPages = ['/login', '/signup', '/reset', '/bot', '/people']
+    store.user = {
+        id: 1,
+        username: "tes",
+        email: "",
+        role: "admin"
+    }
+
+    const publicPages = ['/login', '/signup', '/reset', '/bot', '/people', '/courses-admin']
     const authRequired = !publicPages.includes(to.path)
     let loggedIn = !!store.token
     if (authRequired && !loggedIn) {

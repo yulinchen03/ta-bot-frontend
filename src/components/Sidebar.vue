@@ -6,7 +6,7 @@
     <div class="h-[calc(100vh-120px)] bg-white py-[20px]">
       <div class="flex flex-col justify-between h-full">
         <div class="px-[20px] flex flex-col space-y-[10px]">
-          <router-link to="/courses">
+          <router-link :to="role === 'admin' ? '/courses-admin' : '/courses'">
             <div
                 class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
               <div class="grid grid-cols-1">
@@ -32,7 +32,7 @@
               </div>
             </div>
           </router-link>
-          <router-link v-if="isTeacher" to="/notifications">
+          <router-link v-if="role === 'teacher'" to="/notifications">
               <div
                   class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
                 <div class="grid grid-cols-1">
@@ -47,6 +47,19 @@
                 </div>
               </div>
             </router-link>
+          <router-link v-if="role === 'admin'" to="/people">
+            <div
+                class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
+              <div class="grid grid-cols-1">
+                <div class="flex justify-center mb-1">
+                  <el-icon :size="30">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M16 17v2H2v-2s0-4 7-4s7 4 7 4m-3.5-9.5A3.5 3.5 0 1 0 9 11a3.5 3.5 0 0 0 3.5-3.5m3.44 5.5A5.32 5.32 0 0 1 18 17v2h4v-2s0-3.63-6.06-4M15 4a3.4 3.4 0 0 0-1.93.59a5 5 0 0 1 0 5.82A3.4 3.4 0 0 0 15 11a3.5 3.5 0 0 0 0-7"/></svg>
+                  </el-icon>
+                </div>
+                <h3 class="font-arial">People</h3>
+              </div>
+            </div>
+          </router-link>
           <router-link to="/helpcenter">
             <div
                 class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
@@ -108,14 +121,14 @@ export default {
       confirmLogout: false,
       courseCount: 3,
       notificationCount: 12,
-      isTeacher: false,
+      role: null,
     };
   },
   computed: {
     ...mapStores(useUserStore, 'user')
   },
   created() {
-    this.isTeacher = this.userStore.user.role === 'teacher'
+    this.role = this.userStore.user.role
   },
   methods: {
     logout() {

@@ -3,13 +3,6 @@ import {createRouterMatcher as Promise} from "vue-router";
 
 
 export default {
-    joinCourse(access_id) {
-        return Api().post('enrollments', { access_id })
-    },
-    denrolCourse(access_id) {
-        console.log('access_id', {access_id})
-        return Api().delete(`enrollments/${access_id}`)
-    },
     getUsers() {
         return Api().get('users')
     },
@@ -27,5 +20,14 @@ export default {
     },
     editUser(id, user) {
         return Api().patch(`users/${id}`, user)
+    },
+    getCourses() {
+        return Api().get('courses')
+    },
+    deleteCourse(id) {
+        return Api().delete(`courses/${id}`)
+    },
+    editCourse(id, course) {
+        return Api().patch(`courses/${id}`, course)
     }
 }
