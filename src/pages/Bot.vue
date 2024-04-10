@@ -35,15 +35,17 @@
     </div>
 
     <div class="w-full h-full flex flex-row justify-center align-middle">
-      <div class="h-4/5 flex flex-row m-auto w-full">
-        <div class="h-full flex w-2/3 outline outline-gray-400 outline-2 rounded-3xl bg-white m-auto relative flex-col">
+      <div class="h-4/5 flex flex-row m-auto w-full ">
+        <div class="rounded-3xl custom-scrollbar overflow-hidden h-full flex w-2/3 outline outline-gray-400 outline-2  bg-white m-auto relative flex-col">
+        <div class="overflow-y-scroll custom-scrollbar h-full">
           <Message v-if="!!first_question.question" :description="first_question.question" />
           <template v-for="(question, index) in questions" :key="index">
             <Answer :answer="answers[index].option" />
             <Message :description="question.question" />
           </template>
     </div>
-        <div class="m-auto w-1/3">
+        </div>
+          <div class="m-auto w-1/3">
           <div class="md:flex-col lg:flex-row flex justify-between">
           <div @click="previous"  class="gap-4 md:text-lg lg:text-2xl flex justify-center flex-row w-full hover:bg-ut-gold outline outline-ut-gold outline-2 p-3 m-3 box-border rounded-xl bg-ut-white hover:text-white text-ut-gold hover:cursor-pointer text-center">
             <svg class="w-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="M572.235 205.282v600.365a30.118 30.118 0 1 1-60.235 0V205.282L292.382 438.633a28.913 28.913 0 0 1-42.646 0 33.43 33.43 0 0 1 0-45.236l271.058-288.045a28.913 28.913 0 0 1 42.647 0L834.5 393.397a33.43 33.43 0 0 1 0 45.176 28.913 28.913 0 0 1-42.647 0l-219.618-233.23z"></path></svg>
@@ -111,7 +113,7 @@ export default {
       try {
         const res = await exercisesService.getTreeStructure(this.courseId, this.assignmentId, this.exerciseId)
         this.hints = res.data.data.hint_nodes
-
+        console.log(this.hints)
         if(this.hints.length === 0) return
 
 
@@ -126,6 +128,7 @@ export default {
           }
           this.options.push(opt)
         }
+
 
       } catch (err) {
         console.log(err)
@@ -156,7 +159,6 @@ export default {
     async getExercises() {
       try {
         const res = await exercisesService.getExercises(this.courseId, this.assignmentId)
-        console.log(res)
         this.exercises = res.data.data
 
         // const exercise = this.exercises.find(exercise => exercise.id === parseInt(this.exerciseId)).identifier
@@ -226,5 +228,21 @@ export default {
 svg {
   @apply transition-transform duration-200;
 }
+/* Custom scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
 
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: transparent; /* Set track background color to transparent */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #888; /* Grey */
+  border-radius: 3rem;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Dark grey */
+}
 </style>

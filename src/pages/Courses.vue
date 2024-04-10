@@ -1,11 +1,9 @@
-<script setup>
-import Sidebar from "@/components/Sidebar.vue";
-import Itemcard from "@/components/Itemcard.vue";
-import Header from "@/components/Header.vue";
-</script>
-
 <template>
   <div class="w-screen h-screen flex bg-gray-200">
+    <el-button v-if="!isTeacher" @click="showJoin" type="primary" class="fixed right-5 top-5 mr-10 mt-4 z-50">Join Course</el-button>
+
+    <JoinCourse @refresh="getCourses" v-if="showJoinCourse" @close="close"></JoinCourse>
+
     <!-- Sidebar -->
     <Sidebar></Sidebar>
     <!-- Main content -->
@@ -23,7 +21,7 @@ import Header from "@/components/Header.vue";
               @deleteCourse="deleteCourse(item.id)"
           />
         </div>
-        <div v-else>
+        <div v-else class="flex justify-start">
           <Itemcard
               v-for="course in courses"
               :key="course.id"
@@ -67,10 +65,20 @@ import { mapStores} from "pinia";
 import useUserStore from "@/stores/user.js";
 import {ElMessage} from "element-plus";
 import userService from "@/services/userService";
+import JoinCourse from "@/components/JoinCourse.vue";
+import Sidebar from "@/components/Sidebar.vue";
+import Itemcard from "@/components/Itemcard.vue";
+import Header from "@/components/Header.vue";
+import joinCourse from "@/components/JoinCourse.vue";
 
 export default {
   components: {
-    PageHeader
+    PageHeader,
+    joinCourse,
+    Header,
+    Sidebar,
+    Itemcard,
+
   },
   data() {
     return {
@@ -80,7 +88,8 @@ export default {
       courseForm: {
         name: '',
       },
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      showJoinCourse: false
     }
   },
   methods: {
@@ -112,7 +121,6 @@ export default {
         const res = await courseService.getCourses();
         const courses = res.data.data;
         this.courses = courses;
-        console.log(courses)
       }
       catch(err){
         // TODO handle error
@@ -128,8 +136,6 @@ export default {
     },
     async deleteCourse(id) {
       try {
-        console.log(id)
-        console.log('deleting course')
         await courseService.deleteCourse(id);
         this.courses = this.courses.filter(course => course.id !== id);
         ElMessage({
@@ -148,12 +154,12 @@ export default {
     },
     async deEnroll(id) {
       try {
-        console.log(id)
         await userService.denrolCourse(id)
         ElMessage({
           message: 'Successfully de-enrolled from course.',
           type: 'success',
         })
+        this.getCourses()
       } catch (err) {
         console.log(err)
         ElMessage({
@@ -161,7 +167,13 @@ export default {
           type: 'fail',
         })
       }
-    }
+    },
+    showJoin() {
+      this.showJoinCourse = true
+    },
+    close() {
+      this.showJoinCourse = false
+    },
   },
   computed: {
     // Divide courses into rows (each row has 4 items)
