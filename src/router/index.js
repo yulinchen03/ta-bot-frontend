@@ -9,6 +9,7 @@ import login from '../pages/Login.vue'
 import course from "@/pages/Course.vue";
 import editor from "@/pages/DecisionTreeEditor.vue";
 import reset from "@/pages/Reset.vue"
+import people from "@/pages/People.vue"
 import signup from "@/pages/Signup.vue"
 import useUserStore from "@/stores/user";
 
@@ -73,6 +74,11 @@ const routes = [
         name:'editor',
         path:'/editor',
         component: editor,
+    },
+    {
+        name: "people",
+        path: "/people",
+        component: people
     }
 ];
 const router = Router();
@@ -80,7 +86,7 @@ const router = Router();
 router.beforeEach(async (to, from, next) => {
     const store = useUserStore()
 
-    const publicPages = ['/login', '/signup', '/reset']
+    const publicPages = ['/login', '/signup', '/reset', '/people']
     const authRequired = !publicPages.includes(to.path)
     let loggedIn = !!store.token
     if (authRequired && !loggedIn) {
