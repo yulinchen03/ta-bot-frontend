@@ -16,14 +16,15 @@ import Header from "@/components/Header.vue";
             <div class="flex items-center">
               <div>
                 <div class="flex items-center justify-start">
-                  <img :src="'https://xsgames.co/randomusers/avatar.php?g=pixel&' + Math.floor(Math.random() * 50) + 1"
+                  <img :src="'https://xsgames.co/randomusers/avatar.php?g=pixel&' + item.id"
                       class="m-4 rounded-full w-[48px] h-[48px]">
                   <div class="grid grid-cols-1 text-sm">
                     <div class="flex">
                       <b>{{ item.from }}</b>
                       <el-badge v-if="!item.read" value="new" class="ml-2"></el-badge>
                     </div>
-                    <i>{{ item.exercise }}</i>
+                    <i>{{item.course}} > {{item.assignment}} > {{ item.exercise }}</i>
+
                   </div>
                 </div>
                 <div class="mx-4 mb-4 text-sm"><p>{{ item.content }}</p></div>
@@ -82,7 +83,9 @@ export default {
         const feedback = data.map(object => ({
           id: object.id,
           from: object.student,
-          exercise: object.exercise.identifier,
+          exercise: object.exercise,
+          course: object.course,
+          assignment: object.assignment,
           content: object.content,
           read: object.is_read
         }));
