@@ -31,8 +31,10 @@
 
 <script>
 import userService from '@/services/userService';
+import {ElMessage} from "element-plus";
 
 export default {
+  emits: ['close'],
     data() {
         return {
             courseCode: '',
@@ -41,16 +43,29 @@ export default {
     methods: {
         async joinCourse() {
             if (this.courseCode === '') {
-                alert('Please fill in all the fields.');
+              ElMessage({
+                message: 'Please enter a course code',
+                type: 'error'
+
+              })
+
                 return;
-            }
-            else {
+            } else {
                 try {
                     const response = await userService.joinCourse(this.courseCode);
                     const data = response.data;
-                    console.log(data);
+                    ElMessage({
+                        message: 'Course joined successfully',
+                        type: 'success'
+
+                    })
+                  this.$emit('refresh')
                 }
                 catch (error) {
+                    ElMessage({
+                        message: 'Error joining course',
+                        type: 'error'
+                    })
                     console.log(error);
                 }
 
