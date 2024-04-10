@@ -24,7 +24,7 @@ import useUserStore from "@/stores/user.js";
 
 export default {
   props: ['courseData'],
-  emits: ['courseSelected', 'deleteCourse'],
+  emits: ['courseSelected', 'deleteCourse', 'deEnroll'],
   mounted() {
     this.loadData()
   },

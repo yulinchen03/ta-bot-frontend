@@ -85,7 +85,7 @@
                   </el-icon>
                 </template>
               </el-table-column>
-              <el-table-column prop="exercise" label="Question"></el-table-column>
+              <el-table-column prop="exercise" label="Exercise"></el-table-column>
               <el-table-column v-if="isTeacher" label="Open">
                 <template v-slot:default="scope">
                   <el-button
@@ -106,7 +106,7 @@
                     <el-button
                     size = "large"
                     type = "Default"
-                    @click = "view(scope.$index, i)" 
+                    @click = "view(item, scope.$index)"
                     >
                     <!-- TODO GET THIS TO WORK -->
                       <el-icon class="mr-2">
@@ -137,16 +137,6 @@
                   >
                 </template>
               </el-table-column>
-              <el-table-column v-else label="Feedback" class="flex items-center">
-                    <template #default="scope">
-                        <el-button
-                            size="large"
-                            type="primary"
-                            @click="handleFeedback(i, scope.$index)"
-                            >Feedback
-                        </el-button>
-                    </template>
-                </el-table-column>
             </el-table>
           </div>
         </div>
@@ -267,6 +257,11 @@ export default {
     async createExercise(assignment, assignmentIntheList) {
       try {
         await exercisesService.addExercises(this.courseid, assignment.id, {identifier: 'Exercise ' + (this.assignments[assignmentIntheList].exercises.length + 1)})
+
+        ElMessage({
+          message: 'Exercise successfully created.',
+          type: 'success',
+        })
       } catch (err) {
         //TODO handle error
         console.log(err)
@@ -306,14 +301,19 @@ export default {
 
     async publish(exercise, assignment) {
       try {
-        console.log(assignment)
-        console.log(exercise)
-        console.log(!exercise.completed)
         await exercisesService.changeExercises(this.courseid, assignment.id, exercise.id, {is_published: !exercise.completed})
 
+        ElMessage({
+          message: !exercise.completed ? 'Exercise published' : 'Exercise unpublished',
+          type: 'success',
+        })
       } catch (err) {
         //TODO handle error
         console.log(err)
+        ElMessage({
+          message: err.message,
+          type: 'fail',
+        })
       }
 
       await this.fetchData()
@@ -323,6 +323,10 @@ export default {
     async handleDelete(exercise, assignment) {
       try {
         await exercisesService.deleteExercises(this.courseid, assignment.id, exercise.id)
+        ElMessage({
+          message: 'Exercise successfully deleted',
+          type: 'success',
+        })
       } catch (err) {
         //TODO handle error
         console.log(err)
@@ -338,6 +342,11 @@ export default {
         type: 'success'
       })
     },
+    view(assignment, exercise_idx) {
+
+      this.$router.push({path: 'bot', query: {courseId: this.courseid, assignmentId: assignment.id, exerciseId: (assignment.exercises[parseInt(exercise_idx)]).id }});
+
+    }
   }
 }
 </script>
