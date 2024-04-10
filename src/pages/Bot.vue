@@ -37,9 +37,10 @@
     <div class="w-full h-full flex flex-row justify-center align-middle">
       <div class="h-4/5 flex flex-row m-auto">
         <div class="h-full flex w-2/3 outline outline-gray-400 outline-2 rounded-3xl bg-white m-auto relative flex-col">
+          <Message :description="first_question.question" />
           <template v-for="(question, index) in questions" :key="index">
-            <Message :description="question.name" />
-<!--            <Answer :answer="answers[index]" />-->
+            <Answer :answer="answers[index]" />
+            <Message :description="questions[0].question" />
           </template>
 
     </div>
@@ -54,7 +55,7 @@
             <div class="font-bold">Feedback</div>
           </div>
           </div>
-          <div v-for="option in options" class="text-lg w-full bg-white outline outline-ut-blue outline-2 p-3 m-3 box-border rounded-xl hover:bg-ut-blue text-ut-blue hover:text-white hover:cursor-pointer">{{option.option}}</div>
+          <div v-for="option in options" :key="option.next_hint" class="text-lg w-full bg-white outline outline-ut-blue outline-2 p-3 m-3 box-border rounded-xl hover:bg-ut-blue text-ut-blue hover:text-white hover:cursor-pointer">{{option.option}}</div>
         </div>
       </div>
     </div>
@@ -78,8 +79,10 @@ export default {
       feedbackFormVisible: false,
       feedback: '',
       current_hint: null,
+      first_question: null,
       questions: [],
-      answers: []
+      answers: [],
+      tree: null
     }
   },
   async created() {
@@ -105,15 +108,23 @@ export default {
 
         console.log(res)
 
-        this.current_hint = res.data.data.hint_nodes[0].id
-        this.questions.push(res.data.data.hint_nodes[0])
+        this.tree = res.data.data.tree
 
-        console.log('quesions ', this.questions)
+        this.current_hint = res.data.data.tree.id
 
-        for(let option of res.data.data.hint_nodes[0].outgoing_edges) {
-          this.options.push(option)
+        this.first_question = {
+          question: res.data.data.tree.name,
+          id: res.data.data.tree.id
         }
-        console.log(this.options)
+
+        for(let option of res.data.data.tree.outgoing_edges) {
+          const opt = {
+            option: option.option,
+            next_hint: option.destination_hint_node_id
+          }
+          this.options.push(opt)
+        }
+        console.log('options: ', this.options)
 
       } catch (err) {
         console.log(err)
@@ -122,6 +133,10 @@ export default {
           type: 'fail',
         })
       }
+    },
+    async pickAnswer() {
+      this.answers.push(this.option)
+      this.options = []
     },
     async getExercises() {
       try {
