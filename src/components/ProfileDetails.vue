@@ -64,6 +64,8 @@ export default {
         ProfilePopUp,
     },
     name: 'UserDetails',
+  props: ['userDetails'],
+  emits: ['refresh'],
     data() {
         return {
             del: 'delete',
@@ -71,11 +73,6 @@ export default {
             isEditing: false,
             isDelete: false,
             isNewPassword: false,
-            userDetails: {
-                name: '',
-                surname: '',
-                email: '',
-            },
         };
     },
     methods: {
@@ -146,7 +143,7 @@ export default {
               type: 'success',
               message: 'User details updated successfully',
             });
-            this.refresh();
+            this.$emit('refresh');
 
 
             this.updating = false;
@@ -156,7 +153,7 @@ export default {
               type: 'error',
               message: err.message,
             });
-            this.refresh()
+            this.$emit('refresh');
           }
 
         },
@@ -180,29 +177,12 @@ export default {
             }
 
         },
-      async refresh() {
-        try
-        {
-          const user = (await authService.getCurrentUser()).data
-
-          this.userDetails = {
-            name: user.name,
-            surname: user.surname,
-            email: user.email,
-          };
-        }
-        catch(err)
-        {
-          console.log(err);
-
-        }
-      }
     },
     computed: {
     ...mapStores(useUserStore)
     },
     async created() {
-      await this.refresh()
+      this.$emit('refresh');
     },
 };
 </script>
