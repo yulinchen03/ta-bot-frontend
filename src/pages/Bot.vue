@@ -22,7 +22,7 @@
           <ArrowLeft />
         </el-icon>
         <div class="text-3xl"> Course</div> </div>
-      <div @click="showExercises = !showExercises" class="w-1/4 border flex flex-row justify-between p-4 bg-white rounded-full relative">
+      <div v-if="exercises.length !== 0" @click="showExercises = !showExercises" class="w-1/4 border flex flex-row justify-between p-4 bg-white rounded-full relative">
         <div class="text-2xl">{{this.exercises.find(exercise => exercise.id === parseInt(this.exerciseId)).identifier}}</div>
         <div @click="showExercises = !showExercises" v-if="showExercises" class="shadow-lg bg-white  z-30 text-2xl rounded-lg p-2 w-full h-max-1/4 scroll-auto absolute left-0 top-full">
           <div v-for="(exercise, index) in exercises" @click="this.$router.push({ path: '/bot', query: {courseId, assignmentId, exerciseId: exercise.id}})" :class="{ 'hover:bg-ut-blue hover:text-white hover:cursor-pointer p-2': true, 'border-b-2': index < exercises.length - 1 }">{{exercise.identifier}}</div>
@@ -35,18 +35,17 @@
     </div>
 
     <div class="w-full h-full flex flex-row justify-center align-middle">
-      <div class="h-4/5 flex flex-row m-auto">
+      <div class="h-4/5 flex flex-row m-auto w-full">
         <div class="h-full flex w-2/3 outline outline-gray-400 outline-2 rounded-3xl bg-white m-auto relative flex-col">
-          <Message :description="first_question.question" />
+          <Message v-if="!!first_question.question" :description="first_question.question" />
           <template v-for="(question, index) in questions" :key="index">
-            <Answer :answer="answers[index]" />
-            <Message :description="questions[0].question" />
+            <Answer :answer="answers[index].option" />
+            <Message :description="question.question" />
           </template>
-
     </div>
         <div class="m-auto w-1/3">
           <div class="md:flex-col lg:flex-row flex justify-between">
-          <div class="gap-4 md:text-lg lg:text-2xl flex justify-center flex-row w-full hover:bg-ut-gold outline outline-ut-gold outline-2 p-3 m-3 box-border rounded-xl bg-ut-white hover:text-white text-ut-gold hover:cursor-pointer text-center">
+          <div @click="previous"  class="gap-4 md:text-lg lg:text-2xl flex justify-center flex-row w-full hover:bg-ut-gold outline outline-ut-gold outline-2 p-3 m-3 box-border rounded-xl bg-ut-white hover:text-white text-ut-gold hover:cursor-pointer text-center">
             <svg class="w-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="M572.235 205.282v600.365a30.118 30.118 0 1 1-60.235 0V205.282L292.382 438.633a28.913 28.913 0 0 1-42.646 0 33.43 33.43 0 0 1 0-45.236l271.058-288.045a28.913 28.913 0 0 1 42.647 0L834.5 393.397a33.43 33.43 0 0 1 0 45.176 28.913 28.913 0 0 1-42.647 0l-219.618-233.23z"></path></svg>
             <div class="font-bold">Previous</div>
           </div>
@@ -55,7 +54,7 @@
             <div class="font-bold">Feedback</div>
           </div>
           </div>
-          <div v-for="option in options" :key="option.next_hint" class="text-lg w-full bg-white outline outline-ut-blue outline-2 p-3 m-3 box-border rounded-xl hover:bg-ut-blue text-ut-blue hover:text-white hover:cursor-pointer">{{option.option}}</div>
+          <div v-for="option in options" @click="pickAnswer(option)" :key="option.next_hint" class="text-lg w-full bg-white outline outline-ut-blue outline-2 p-3 m-3 box-border rounded-xl hover:bg-ut-blue text-ut-blue hover:text-white hover:cursor-pointer">{{option.option}}</div>
         </div>
       </div>
     </div>
@@ -78,11 +77,13 @@ export default {
       exerciseId: null,
       feedbackFormVisible: false,
       feedback: '',
-      current_hint: null,
-      first_question: null,
+      first_question: {
+        question: '',
+        id: null
+      },
       questions: [],
       answers: [],
-      tree: null
+      hints: null
     }
   },
   async created() {
@@ -94,6 +95,10 @@ export default {
       this.assignmentId = this.$route.query.assignmentId;
       this.exerciseId = this.$route.query.exerciseId;
 
+      this.first_question = {
+        question: null,
+        id: null
+      }
       this.questions = []
       this.answers = []
       this.options = []
@@ -105,26 +110,22 @@ export default {
     async getHints() {
       try {
         const res = await exercisesService.getTreeStructure(this.courseId, this.assignmentId, this.exerciseId)
+        this.hints = res.data.data.hint_nodes
 
-        console.log(res)
+        if(this.hints.length === 0) return
 
-        this.tree = res.data.data.tree
-
-        this.current_hint = res.data.data.tree.id
 
         this.first_question = {
-          question: res.data.data.tree.name,
-          id: res.data.data.tree.id
+          question: this.hints[0].name,
+          id: this.hints[0].id
         }
-
-        for(let option of res.data.data.tree.outgoing_edges) {
+        for(let option of this.hints[0].outgoing_edges) {
           const opt = {
             option: option.option,
             next_hint: option.destination_hint_node_id
           }
           this.options.push(opt)
         }
-        console.log('options: ', this.options)
 
       } catch (err) {
         console.log(err)
@@ -134,15 +135,28 @@ export default {
         })
       }
     },
-    async pickAnswer() {
-      this.answers.push(this.option)
+    async pickAnswer(option) {
+      const nextQuestion = this.hints.find(hint => hint.id === option.next_hint)
+
+
+      this.answers.push(option)
       this.options = []
+      for(let option of nextQuestion.outgoing_edges) {
+        const opt = {
+          option: option.option,
+          next_hint: option.destination_hint_node_id
+        }
+        this.options.push(opt)
+      }
+      this.questions.push({
+            question: nextQuestion.name,
+            id: nextQuestion.id
+          })
     },
     async getExercises() {
       try {
         const res = await exercisesService.getExercises(this.courseId, this.assignmentId)
-
-
+        console.log(res)
         this.exercises = res.data.data
 
         // const exercise = this.exercises.find(exercise => exercise.id === parseInt(this.exerciseId)).identifier
@@ -179,6 +193,20 @@ export default {
           message: err.message,
           type: 'fail',
         })
+      }
+    },
+    async previous() {
+      this.questions.pop()
+      this.answers.pop()
+      this.options = []
+      const lastQuestion = this.questions[this.questions.length - 1] || this.first_question
+
+      for(let option of (this.hints.find(hint => hint.id === lastQuestion.id)).outgoing_edges) {
+        const opt = {
+          option: option.option,
+          next_hint: option.destination_hint_node_id
+        }
+        this.options.push(opt)
       }
     }
   },

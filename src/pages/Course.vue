@@ -306,14 +306,19 @@ export default {
 
     async publish(exercise, assignment) {
       try {
-        console.log(assignment)
-        console.log(exercise)
-        console.log(!exercise.completed)
         await exercisesService.changeExercises(this.courseid, assignment.id, exercise.id, {is_published: !exercise.completed})
 
+        ElMessage({
+          message: !exercise.completed ? 'Exercise published' : 'Exercise unpublished',
+          type: 'success',
+        })
       } catch (err) {
         //TODO handle error
         console.log(err)
+        ElMessage({
+          message: err.message,
+          type: 'fail',
+        })
       }
 
       await this.fetchData()
