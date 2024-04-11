@@ -41,7 +41,6 @@
                     </div>
                 </form>
             </div>
-           
         </div>
     <NewPassword v-if="isNewPassword" @cancel="isNewPassword = false" @newPass="handleNewPassword" />
 

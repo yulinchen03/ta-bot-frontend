@@ -340,7 +340,7 @@ export default {
     },
 
     edit(exercise_idx, assignment_idx) {
-      this.$router.push({path: 'editor', query: {c: this.courseid, a: assignment_idx, e: exercise_idx}});
+      this.$router.push({path: 'editor', query: {c: this.courseid, a: this.assignments[assignment_idx].id, e: this.assignments[assignment_idx].exercises[exercise_idx].id}});
     }
   }
 }

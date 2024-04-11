@@ -12,11 +12,13 @@
         <i class="text-sm">{{ assignmentname }}</i>
       </div>
       <div class="flex justify-center items-center mx-20">
-        <el-input v-model="exercise" :placeholder="exercisename" style="width: 40vw" class="mr-3" />
-        <el-button round>Save</el-button>
+        <el-input :disabled="!editName" v-model="exercise" :placeholder="exercisename" style="width: 40vw" class="mr-3" />
+          <el-button v-if="!editName" @click="editName=!editName" class="custom-button">Edit</el-button>
+          <el-button v-if="editName" @click="editName=!editName" class="custom-button">Rename</el-button>
       </div>
     </div>
     <div class="flex justify-end w-[25vw] p-5">
+      <el-button class="transparent-button"><el-icon class="mr-2"><FolderChecked /></el-icon>Save</el-button>
       <el-button class="transparent-button">
         <el-icon class="mr-2"><Promotion /></el-icon>
         Publish
@@ -38,6 +40,7 @@ export default {
   data() {
     return {
       exercise: '', // Initialize as needed
+      editName: false,
     };
   },
 };
@@ -61,12 +64,14 @@ export default {
   color: #2a9d8f;
   border-color: #2a9d8f;
   border-radius: 10px;
-  width: 7vw
+  width: 7vw;
+  font-weight: bold;
 }
 
 .transparent-button:hover {
   background-color: #2a9d8f;
   color: white;
   border-color: #2a9d8f;
+  font-weight: bold;
 }
 </style>

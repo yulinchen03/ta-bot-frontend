@@ -16,7 +16,7 @@
                 <el-form class="space-y-4 md:space-y-6 demo-dynamic login" label-width="auto">
                   <el-form-item label="Email">
                     <div :class="{ 'error': v$.loginForm.email.$error }">
-                      <input @change="this.v$.loginForm.email.$touch()" type="email" v-model="loginForm.email" class="mx-3 bg-gray-50
+                      <input @keyup.enter="login" @change="this.v$.loginForm.email.$touch()" type="email" v-model="loginForm.email" class="mx-3 bg-gray-50
                     border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
                      focus:border-primary-600 block w-[20vw] p-2.5 dark:bg-gray-700 dark:border-gray-600
                       dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -26,7 +26,7 @@
                   </el-form-item>
                   <el-form-item label="Password">
                     <div :class="{ 'error': v$.loginForm.password.$error }">
-                      <input @change="this.v$.loginForm.password.$touch()" type="password" v-model="loginForm.password" class="mx-3 bg-gray-50
+                      <input @keyup.enter="login" @change="this.v$.loginForm.password.$touch()" type="password" v-model="loginForm.password" class="mx-3 bg-gray-50
                     border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
                      focus:border-primary-600 block w-[20vw] p-2.5 dark:bg-gray-700 dark:border-gray-600
                       dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
