@@ -98,14 +98,7 @@ const router = Router();
 router.beforeEach(async (to, from, next) => {
     const store = useUserStore()
 
-    store.user = {
-        id: 1,
-        username: "tes",
-        email: "",
-        role: "admin"
-    }
-
-    const publicPages = ['/login', '/signup', '/reset', '/bot', '/people', '/courses-admin']
+    const publicPages = ['/login', '/signup', '/reset',]
     const authRequired = !publicPages.includes(to.path)
     let loggedIn = !!store.token
     if (authRequired && !loggedIn) {

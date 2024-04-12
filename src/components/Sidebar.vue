@@ -19,34 +19,21 @@
               </div>
             </div>
           </router-link>
-          <router-link to="/profile">
+          <router-link v-if="role === 'teacher'" to="/notifications">
             <div
                 class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
               <div class="grid grid-cols-1">
                 <div class="flex justify-center mb-1">
-                  <el-icon :size="30">
-                    <Avatar/>
-                  </el-icon>
+                  <el-badge :value="notificationCount" class="item">
+                    <el-icon :size="30">
+                      <Comment/>
+                    </el-icon>
+                  </el-badge>
                 </div>
-                <h3 class="font-arial">Profile</h3>
+                <h3 class="font-arial">Inbox</h3>
               </div>
             </div>
           </router-link>
-          <router-link v-if="role === 'teacher'" to="/notifications">
-              <div
-                  class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
-                <div class="grid grid-cols-1">
-                  <div class="flex justify-center mb-1">
-                    <el-badge :value="notificationCount" class="item">
-                      <el-icon :size="30">
-                        <Comment/>
-                      </el-icon>
-                    </el-badge>
-                  </div>
-                  <h3 class="font-arial">Inbox</h3>
-                </div>
-              </div>
-            </router-link>
           <router-link v-if="role === 'admin'" to="/people">
             <div
                 class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
@@ -60,6 +47,20 @@
               </div>
             </div>
           </router-link>
+          <router-link to="/profile">
+            <div
+                class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
+              <div class="grid grid-cols-1">
+                <div class="flex justify-center mb-1">
+                  <el-icon :size="30">
+                    <Avatar/>
+                  </el-icon>
+                </div>
+                <h3 class="font-arial">Profile</h3>
+              </div>
+            </div>
+          </router-link>
+
           <router-link to="/helpcenter">
             <div
                 class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">

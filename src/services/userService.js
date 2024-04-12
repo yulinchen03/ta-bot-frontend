@@ -19,11 +19,8 @@ export default {
     deleteUser(id) {
         return Api().delete(`users/${id}`)
     },
-    promoteToTeacher(userId) {
-        return Api().patch(`users/${userId}`)
-    },
-    demoteToStudent(userId) {
-        return Api().patch(`users/${userId}`)
+    switchRole(userId, role) {
+        return Api().patch(`users/${userId}`, {role})
     },
     editUser(id, user) {
         return Api().patch(`users/${id}`, user)

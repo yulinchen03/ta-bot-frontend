@@ -9,7 +9,7 @@
         <!-- Search Bar -->
         <input class="p-2 w-full rounded-lg" type="text" v-model="searchQuery" placeholder="Search by name, email, or role">
         <!-- List of Person Cards -->
-        <PersonCard v-for="user in filteredUsers" :key="user.email" :user="user" />
+        <PersonCard @editUserAdmin="editUserAdmin" @switchRole="switchRole(user.id, user.role)" @deleteUser="deleteUser(user.id)" v-for="user in filteredUsers" :key="user.email" :user="user" />
       </div>
     </div>
   </div>
@@ -34,52 +34,49 @@ export default {
     return {
       pageTitle: 'My People',
       searchQuery: '',
-      users: [
-        {
-          name: 'John Doe',
-          email: 'example@gmail.com',
-          role: 'teacher'
-        },
-        {
-          name: 'Jane Doe',
-          email: 'jane@example.com',
-          role: 'student'
-        },
-        {
-          name: 'Alice Smith',
-          email: 'alice@example.com',
-          role: 'student'
-        },
-        {
-          name: 'Bob Johnson',
-          email: 'bob@example.com',
-          role: 'teacher'
-        },
-        {
-          name: 'Charlie Brown',
-          email: 'charlie@example.com',
-          role: 'student'
-        },
-        {
-          name: 'David Lee',
-          email: 'david@example.com',
-          role: 'teacher'
-        },
-        {
-          name: 'Eva Taylor',
-          email: 'eva@example.com',
-          role: 'student'
-        },
-        {
-          name: 'Franklin Martinez',
-          email: 'franklin@example.com',
-          role: 'teacher'
-        }
-      ],
-      editUser: {
-        name: '',
-        email: ''
-      }
+      users: [],
+      // users: [
+      //   {
+      //     name: 'John Doe',
+      //     email: 'example@gmail.com',
+      //     role: 'teacher'
+      //   },
+      //   {
+      //     name: 'Jane Doe',
+      //     email: 'jane@example.com',
+      //     role: 'student'
+      //   },
+      //   {
+      //     name: 'Alice Smith',
+      //     email: 'alice@example.com',
+      //     role: 'student'
+      //   },
+      //   {
+      //     name: 'Bob Johnson',
+      //     email: 'bob@example.com',
+      //     role: 'teacher'
+      //   },
+      //   {
+      //     name: 'Charlie Brown',
+      //     email: 'charlie@example.com',
+      //     role: 'student'
+      //   },
+      //   {
+      //     name: 'David Lee',
+      //     email: 'david@example.com',
+      //     role: 'teacher'
+      //   },
+      //   {
+      //     name: 'Eva Taylor',
+      //     email: 'eva@example.com',
+      //     role: 'student'
+      //   },
+      //   {
+      //     name: 'Franklin Martinez',
+      //     email: 'franklin@example.com',
+      //     role: 'teacher'
+      //   }
+      // ],
     }
   },
   computed: {
@@ -94,13 +91,14 @@ export default {
     }
   },
   created() {
-    // this.refresh()
+    this.refresh()
   },
   methods: {
     async refresh() {
       try {
         const res = (await userService.getUsers()).data.data
-        this.user = res
+        console.log(res)
+        this.users = res
       } catch (err) {
         ElMessage({
           showClose: true,
@@ -126,15 +124,18 @@ export default {
         })
       }
     },
-    async promoteToTeacher(userId) {
+    async switchRole(userId, role) {
       try {
-        await userService.promoteToTeacher(userId)
-        this.refresh()
+        let changeTo = null;
+        if(role === 'teacher') changeTo = 'student'
+        else changeTo = 'teacher'
+        await userService.switchRole(userId,changeTo)
         ElMessage({
           showClose: true,
-          message: 'User promoted to teacher successfully',
+          message: `User role changed to ${changeTo} successfully`,
           type: 'success'
         })
+        this.refresh()
       } catch (err) {
         ElMessage({
           showClose: true,
@@ -143,30 +144,12 @@ export default {
         })
       }
     },
-    async demoteToStudent(userId) {
+    async editUserAdmin(userId, body) {
+      console.log(userId, body)
       try {
-        await userService.demoteToStudent(userId)
-        this.refresh()
-        ElMessage({
-          showClose: true,
-          message: 'User demoted to student successfully',
-          type: 'success'
-        })
-      } catch (err) {
-        ElMessage({
-          showClose: true,
-          message: err.response.data.message,
-          type: 'error'
-        })
-      }
-    },
-    async editUser(userId) {
-      try {
+        const {name, surname,  email} = body
 
-        await userService.editUser(userId, {
-          name: this.editUser.name,
-          email: this.editUser.email
-        })
+        await userService.editUser(userId, {name,surname, email})
         this.refresh()
         ElMessage({
           showClose: true,
