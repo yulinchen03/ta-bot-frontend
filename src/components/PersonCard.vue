@@ -4,13 +4,13 @@
 <!--    TODO  NOTES TO YULIN: this needs to be with user.id, I imitate having a avatar with that-->
       <img :src="'https://xsgames.co/randomusers/avatar.php?g=pixel&' + user.id" class="w-12 h-12 aspect-square rounded-full" />
       <div v-if="!showEdit" class="text-lg w-fit h-fit">{{user.name}}</div>
-      <input v-model="user.name" v-if="showEdit" placeholder="name" />
+      <input class="p-1" v-model="user.name" v-if="showEdit" placeholder="name" />
 
       <div v-if="!showEdit" class="text-lg w-fit h-fit">{{user.surname}}</div>
       <input v-model="user.surname" v-if="showEdit" placeholder="surname" />
 
       <div v-if="!showEdit"  class="text-lg text-ut-light-gray h-fit">{{user.email}}</div>
-      <input class="w-1/3" v-model="user.email" v-if="showEdit" placeholder="email" />
+      <input class="w-1/3 p-1" v-model="user.email" v-if="showEdit" placeholder="email" />
 
       <button @click="editUserAdmin(user.id, { name: user.name, surname: user.surname, email: user.email})" v-if="showEdit">OK</button>
     </div>

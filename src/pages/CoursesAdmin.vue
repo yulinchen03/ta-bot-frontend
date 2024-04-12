@@ -9,7 +9,7 @@
         <!-- Search Bar -->
         <input class="p-2 w-full rounded-lg" type="text" v-model="searchQuery" placeholder="Search by name, or access_id">
         <!-- List of Course Cards -->
-        <CourseCard v-for="course in filteredCourses" :key="course.access_id" :course="course" />
+        <CourseCard @deleteCourse="deleteCourse(course.id)" @editCourseAdmin="editCourseAdmin"  v-for="course in filteredCourses" :key="course.access_id" :course="course" />
       </div>
     </div>
   </div>
@@ -37,43 +37,44 @@ export default {
     return {
       pageTitle: 'My Courses',
       searchQuery: '',
-      courses: [
-        {
-          name: 'Software System',
-          access_id: '3ds72',
-          instructor: 'Steve Jobs'
-        },
-        {
-          name: 'Computer Networks',
-          access_id: '9ejd2',
-          instructor: 'Grace Hopper'
-        },
-        {
-          name: 'Algorithms and Data Structures',
-          access_id: 'kxj89',
-          instructor: 'Donald Knuth'
-        },
-        {
-          name: 'Machine Learning',
-          access_id: 'pqr45',
-          instructor: 'Andrew Ng'
-        },
-        {
-          name: 'Database Systems',
-          access_id: 'lmo37',
-          instructor: 'Edgar Codd'
-        },
-        {
-          name: 'Operating Systems',
-          access_id: 'vxy91',
-          instructor: 'Linus Torvalds'
-        },
-        {
-          name: 'Web Development',
-          access_id: 'abc123',
-          instructor: 'Tim Berners-Lee'
-        }
-      ],
+      courses: [],
+      // courses: [
+      //   {
+      //     name: 'Software System',
+      //     access_id: '3ds72',
+      //     instructor: 'Steve Jobs'
+      //   },
+      //   {
+      //     name: 'Computer Networks',
+      //     access_id: '9ejd2',
+      //     instructor: 'Grace Hopper'
+      //   },
+      //   {
+      //     name: 'Algorithms and Data Structures',
+      //     access_id: 'kxj89',
+      //     instructor: 'Donald Knuth'
+      //   },
+      //   {
+      //     name: 'Machine Learning',
+      //     access_id: 'pqr45',
+      //     instructor: 'Andrew Ng'
+      //   },
+      //   {
+      //     name: 'Database Systems',
+      //     access_id: 'lmo37',
+      //     instructor: 'Edgar Codd'
+      //   },
+      //   {
+      //     name: 'Operating Systems',
+      //     access_id: 'vxy91',
+      //     instructor: 'Linus Torvalds'
+      //   },
+      //   {
+      //     name: 'Web Development',
+      //     access_id: 'abc123',
+      //     instructor: 'Tim Berners-Lee'
+      //   }
+      // ],
       editCourse: {
         course_name: '',
         access_id: ''
@@ -85,13 +86,13 @@ export default {
       const query = this.searchQuery.toLowerCase();
       return this.courses.filter(course => {
         return course.name.toLowerCase().includes(query) ||
-            course.access_id.toLowerCase().includes(query) ||
-            course.instructor.toLowerCase().includes(query)
+            course.access_id.toLowerCase().includes(query)
+            //  || course.teacherName.toLowerCase().includes(query);
       });
     }
   },
   created() {
-    // this.refresh()
+    this.refresh()
   },
   methods: {
     async refresh() {
@@ -123,12 +124,10 @@ export default {
         })
       }
     },
-    async editCourse(courseId) {
+    async editCourseAdmin(courseId, body) {
       try {
-        await courseService.editCourse(courseId, {
-          name: this.editCourse.name,
-          access_id: this.editCourse.access_id
-        })
+        const {name} = body
+        await courseService.changeCourse(courseId, {name})
         this.refresh()
         ElMessage({
           showClose: true,
@@ -136,6 +135,7 @@ export default {
           type: 'success'
         })
       } catch (err) {
+        console.log(err)
         ElMessage({
           showClose: true,
           message: err.response.data.message,
