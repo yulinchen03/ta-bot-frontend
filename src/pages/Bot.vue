@@ -31,7 +31,9 @@
           <svg :class="{'transform rotate-180': showExercises}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="M104.704 338.752a64 64 0 0 1 90.496 0l316.8 316.8 316.8-316.8a64 64 0 0 1 90.496 90.496L557.248 791.296a64 64 0 0 1-90.496 0L104.704 429.248a64 64 0 0 1 0-90.496z"></path></svg>
         </el-icon>
       </div>
-      <div class="my-auto outline-green-500 h-fit px-5 outline text-green-500 rounded-lg text-3xl hover:cursor-pointer"> Finish </div>
+      <div @click="toHorus" class="my-auto h-fit px-5 text-3xl hover:cursor-pointer">
+        <img src="../assets/horus.png" class="h-12" />
+      </div>
     </div>
 
     <div class="w-full h-full flex flex-row justify-center align-middle">
@@ -210,7 +212,8 @@ export default {
         }
         this.options.push(opt)
       }
-    }
+    },
+    toHorus() {window.open("https://horus.apps.utwente.nl/login")}
   },
   watch: {
     $route() {
