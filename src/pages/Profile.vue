@@ -20,18 +20,19 @@ import ProfileDetails from "@/components/ProfileDetails.vue";
         <!-- profile picture -->
         <div class="flex justify-center absolute inset-x-0 -bottom-5">
           <div class="w-32 h-32 md:w-48 md:h-48 lg:w-48 lg:h-48 relative">
-            <img src="https://xsgames.co/randomusers/avatar.php?g=pixel" class="rounded-full border-4 border-gray-200 absolute object-cover w-full h-full" alt="Profile Picture">
+            <img :src="'https://xsgames.co/randomusers/avatar.php?g=pixel&' + userDetails.id" class="rounded-full border-4 border-gray-200 absolute object-cover w-full h-full" alt="Profile Picture">
           </div>
         </div>
       </div>
       <!-- profile details -->
-      <ProfileDetails />
+      <ProfileDetails :userDetails ="userDetails" @refresh="refresh" />
     </div>
   </div>
 </template>
 
 <script>
 import PageHeader from '../components/Header.vue';
+import authService from "@/services/authService.js";
 
 export default {
   components: {
@@ -41,7 +42,8 @@ export default {
     return {
       pageTitle: 'My Profile',
       isEditing: false,
-      userProfile: {
+      userDetails: {
+        id: '',
         name: '',
         surname: '',
         email: ''
@@ -55,14 +57,26 @@ export default {
     saveProfile() {
       // Here you can handle saving the profile data to a server or elsewhere
       this.toggleEdit(); // Turn off editing mode after saving
+    },
+    async refresh() {
+      try
+      {
+        const user = (await authService.getCurrentUser()).data
+
+        this.userDetails = {
+          id: user.id,
+          name: user.name,
+          surname: user.surname,
+          email: user.email,
+        };
+        console.log(user)
+      }
+      catch(err)
+      {
+        console.log(err);
+
+      }
     }
   }
 }
 </script>
-
-<!-- <style>
-/* Additional CSS for grid layout */
-.grid-cols-profileLayout {
-  grid-template-columns: minmax(200px, 1fr) 3fr;
-}
-</style> -->

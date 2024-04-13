@@ -32,8 +32,7 @@
               </div>
             </div>
           </router-link>
-<!--          <div>
-            <router-link to="/notifications">
+          <router-link v-if="isTeacher" to="/notifications">
               <div
                   class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
                 <div class="grid grid-cols-1">
@@ -48,7 +47,6 @@
                 </div>
               </div>
             </router-link>
-          </div>-->
           <router-link to="/helpcenter">
             <div
                 class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
@@ -100,14 +98,24 @@
 
 <script>
 
+import {mapStores} from "pinia";
+import useUserStore from "@/stores/user";
+
 export default {
   data() {
     return {
       dialogVisible: false,
       confirmLogout: false,
       courseCount: 3,
-      notificationCount: 12
+      notificationCount: 12,
+      isTeacher: false,
     };
+  },
+  computed: {
+    ...mapStores(useUserStore, 'user')
+  },
+  created() {
+    this.isTeacher = this.userStore.user.role === 'teacher'
   },
   methods: {
     logout() {

@@ -16,5 +16,8 @@ export default {
     },
     deleteExercises(courseId, assignmentId, exerciseId) {
         return Api().delete(`courses/${courseId}/assignments/${assignmentId}/exercises/${exerciseId}`)
+    },
+    getTreeStructure(courseId, assignmentId, exerciseId) {
+        return Api().get(`/courses/${courseId}/assignments/${assignmentId}/exercises/${exerciseId}/tree`)
     }
 }

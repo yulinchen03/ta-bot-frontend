@@ -16,7 +16,11 @@ export default {
         'tree-red': '#e76f51',
         'tree-yellow': '#e9c46a',
         'tree-blue': '#264653',
-        'tree-orange': '#f4a261'
+        'tree-orange': '#f4a261',
+        'ut-blue': '#264653',
+        'ut-orange': '#F4A261',
+        'ut-green': '#2A9D8F',
+        'ut-gold': '#E76F51',
       },
       fontFamily: {
         arial: ["Arial"],

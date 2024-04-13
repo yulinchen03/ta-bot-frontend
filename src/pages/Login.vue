@@ -69,7 +69,8 @@ import authService from "@/services/authService.js";
     setup: () => ({ v$: useVuelidate() }),
     data() {
       return {
-        loginForm: {email: 'teacherBotTest3@teacher.utwente.nl', password: 'Password123', rememberMe: false},
+        // loginForm: {email: 'studentBotTest@student.utwente.nl', password: 'Password123', rememberMe: false},
+        loginForm: {email: '', password: 'Password123', rememberMe: false},
       }
     },
     computed: {
@@ -105,7 +106,7 @@ import authService from "@/services/authService.js";
               this.userStore.token = res.headers.authorization.split(' ')[1]
               this.userStore.user = {email: res.data.data.email, name: res.data.data.username, role: res.data.data.role}
 
-
+              console.log('token: ', this.userStore.token)
               if (res.status === 200) {
                 ElMessage({
                   message: 'Login successful.',
