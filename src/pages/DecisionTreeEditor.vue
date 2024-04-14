@@ -6,10 +6,14 @@
         <EditorHeader :coursename="coursename"
                       :assignmentname="assignmentname"
                       :exercisename="exercisename"
+                      :courseId="courseid"
+                      :assignmentId="assignmentid"
+                      :exerciseId="exerciseid"
+                      @publish="publish(exerciseid, assignmentid)"
                       @goBack="back"></EditorHeader>
-        <div class="grid grid-cols-2 w-full h-[90vh] lg:p-5 xl:p-10 2xl:p-20">
+        <div class="grid grid-cols-2 w-full h-[80vh] lg:p-4 xl:p-6 2xl:p-8">
           <vue-tree
-              style="width: 45vw; height: 75vh;"
+              style="width: 45vw; height: 90vh;"
               :dataset="treeData"
               :config="treeConfig"
               linkStyle="straight"
@@ -21,12 +25,12 @@
                   :style="{ border: collapsed ? '2px solid grey' : '' }"
                   :class="{'tree-node': node.id !== currentNode,
                    'tree-node-highlighted': node.id === currentNode,}">
-                <span style="padding: 4px 0; font-weight: bold;"
+                <span style="padding: 4px 0; font-weight: bold;" class="overflow-hidden"
                 >{{ node.name }}</span>
               </div>
             </template>
           </vue-tree>
-          <HintNodeEditor @updateCurrent="updateCurrentNode" v-if="loadReady" :courseid="courseid" :assignmentid="assignmentid" :exerciseid="exerciseid" :currentNode="currentNode" :originNode="originNode"></HintNodeEditor>
+          <HintNodeEditor @updateCurrent="updateCurrentNode" @updateTree="updateTree" v-if="loadReady" :courseid="courseid" :assignmentid="assignmentid" :exerciseid="exerciseid" :currentNode="currentNode" :originNode="originNode"></HintNodeEditor>
         </div>
       </div>
     </div>
@@ -39,6 +43,8 @@ import "@ssthouse/vue3-tree-chart/dist/vue3-tree-chart.css";
 import editorService from "@/services/editorService.js";
 import HintNodeEditor from "@/components/HintNodeEditor.vue";
 import EditorHeader from "@/components/EditorHeader.vue";
+import exercisesService from "@/services/exercisesService.js";
+import {ElMessage} from "element-plus";
 export default {
   components: {
     EditorHeader,
@@ -59,7 +65,7 @@ export default {
   beforeRouteLeave(to, from, next) {
     // called when the route that renders this component is about to be navigated away from.
     // As with `beforeRouteUpdate`, it has access to `this` component instance.
-    const answer = window.confirm('Do you really want to leave? you have unsaved changes!')
+    const answer = window.confirm('Do you really want to leave? you may have unsaved changes!')
     if (!answer) return false
     next()
   },
@@ -74,7 +80,6 @@ export default {
       assignmentname: '',
       exercisename: '',
       hintdescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam quis lectus dapibus, faucibus sem a, venenatis lectus. Maecenas laoreet, turpis sit amet luctus vehicula, risus urna efficitur magna, euismod semper ipsum nunc sed mi. Nunc id eleifend leo. ',
-      unsavedChanges: true,
       loadReady: false, // check if the tree data has been received properly before loading the HintNodeEditor component
       treeData: {},
       treeConfig: {nodeWidth: 120, nodeHeight: 80, levelHeight: 200},
@@ -133,24 +138,43 @@ export default {
       this.exerciseid = Number(this.$route.query.e);
     },
     beforeUnload(e) {
-      if (this.unsavedChanges) {
         e.preventDefault();
         e.returnValue = '';
-      }
     },
     back() {
       this.$router.push({path: 'course', query: {id: this.courseid}});
     },
     updateCurrentNode(current) {
       this.currentNode = current
-    }
+    },
+    updateTree() {
+      this.getTree(true)
+    },
+    async publish(exercise, assignment) {
+      try {
+        await exercisesService.changeExercises(this.courseid, assignment, exercise, {is_published: !exercise.completed})
+
+        ElMessage({
+          message: !exercise.completed ? 'Exercise published' : 'Exercise unpublished',
+          type: 'success',
+        })
+      } catch (err) {
+        //TODO handle error
+        console.log(err)
+        ElMessage({
+          message: err.message,
+          type: 'fail',
+        })
+      }
+      this.back()
+    },
   }
 }
 </script>
 
 <style>
 .tree-node {
-  width: 100px;
+  width: 110px;
   height: 100px;
   border-radius: 50%;
   padding-top: 35px;
@@ -161,7 +185,7 @@ export default {
 }
 
 .tree-node-highlighted {
-  width: 100px;
+  width: 110px;
   height: 100px;
   border-radius: 50%;
   padding-top: 35px;

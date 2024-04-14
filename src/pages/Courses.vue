@@ -1,7 +1,5 @@
 <template>
   <div class="w-screen h-screen flex bg-gray-200">
-    <el-button v-if="!isTeacher" @click="showJoin" type="primary" class="fixed right-5 top-5 mr-10 mt-4 z-50">Join Course</el-button>
-
     <JoinCourse @refresh="getCourses" v-if="showJoinCourse" @close="close"></JoinCourse>
 
     <!-- Sidebar -->

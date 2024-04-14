@@ -1,52 +1,84 @@
 <template>
   <div class="bg-gray-100 rounded-xl grid grid-cols-1">
-    <div class="ml-5 my-5 flex items">
-      <b v-if="!editingName" class="text-2xl mr-4">{{identifier}}</b>
-      <el-input v-if="editingName" v-model="identifier" style="width: 240px" class="mr-4"></el-input>
-      <el-button @click="editingName=!editingName" circle><el-icon v-if="!editingName"><Edit /></el-icon><el-icon v-if="editingName"><Check /></el-icon></el-button>
+    <div class="grid grid-cols-5 items-center">
+      <div class="ml-5 my-5 flex items col-span-4">
+        <b v-if="!editing" class="text-2xl mr-4">{{ identifier }}</b>
+        <el-input v-if="editing" v-model="identifier" maxlength="12" show-word-limit style="width: 240px" class="mr-4"></el-input>
+        <el-button v-if="!editing" @click="editing=!editing" class="transparent-add-button">
+          <el-icon>
+            <Edit/>
+          </el-icon>
+          <span>Edit</span>
+        </el-button>
+        <el-button v-if="editing" @click="editNode" class="transparent-add-button">
+          <el-icon>
+            <Check/>
+          </el-icon>
+          <span>Save</span>
+        </el-button>
+      </div>
     </div>
-    <div class="mx-5">
+    <div class="mx-5 mb-5">
       <span class="font-arial">
         Hint and suggestions
       </span>
-      <el-input
-          v-model="hintdescription"
-          :rows="6"
-          type="textarea"
-          placeholder="Hints and suggestions"
-          :resize="'none'"
-      />
+      <div class="flex">
+        <el-input
+            :disabled="!editing"
+            v-model="hintdescription"
+            :rows="6"
+            type="textarea"
+            placeholder="Hints and suggestions"
+            :resize="'none'"
+        />
+      </div>
     </div>
-    <div class="mx-5">
-              <span class="font-arial">
-                Precondition
-              </span>
+    <div class="mx-5 grid grid-cols-6 gap-2 items-center">
+      <span class="font-arial col-span-1">Precondition:</span>
+      <b class="col-span-5" v-if="currentNode === originNode">This is the origin</b>
+      <b v-if="!editing & currentNode !== originNode" class="col-span-5">{{incomingOption}}</b>
       <el-input
+          v-if="(currentNode !== originNode) & editing"
           v-model="incomingOption"
-          :rows="2"
+          :rows="1"
           type="text"
           clearable
-          :placeholder="currentNode === originNode ? 'This is the origin' : 'Condition'"
+          :placeholder="'Condition'"
           :resize="'none'"
-          :disabled="currentNode === originNode"
+          :disabled="!editing"
+          class="col-span-5"
       />
     </div>
-    <div class="flex justify-between mt-3">
+    <div class="flex justify-between mt-5">
       <div class="ml-5"><b class="text-xl">Next options</b></div>
-      <el-button class="mr-5 transparent-add-button"><el-icon class="mr-2"><Plus /></el-icon>Add option</el-button>
+      <el-button @click="addOption" class="mr-5 transparent-add-button">
+        <el-icon class="mr-2">
+          <Plus/>
+        </el-icon>
+        Add option
+      </el-button>
     </div>
-    <div class="overflow-y-auto h-[40vh] flex items-center justify-center">
+    <div class="overflow-y-scroll h-[50vh] flex justify-center">
       <draggable v-model="outgoingOption" @change="console.log(outgoingOption)" v-if="outgoingOption.length>0">
         <transition-group>
-          <div v-for="(element, index) in outgoingOption" :key="element.id" class="bg-white border-2 border-gray-300 m-3 rounded-xl">
+          <div v-for="(element, index) in outgoingOption" :key="element.id"
+               class="bg-white border-2 border-gray-300 m-3 rounded-xl">
             <div class="grid grid-cols-4">
               <div class="grid grid-cols-1 col-span-3 m-4">
-                <b>Option {{index+1}}</b>
-                <i>Condition: {{element.edge_option}}</i>
+                <b>Option {{ index + 1 }}</b>
+                <i>Condition: {{ element.option }}</i>
               </div>
               <div class="flex items-center col-span-1 m-2">
-                <el-button class="transparent-delete-button"><el-icon><Delete /></el-icon></el-button>
-                <el-button @click="getHintNode(element.next_node_id)" class="transparent-editor-button"><el-icon><Right /></el-icon></el-button>
+                <el-button @click="deleteNode(element.destination_hint_node_id)" class="transparent-delete-button">
+                  <el-icon>
+                    <Delete/>
+                  </el-icon>
+                </el-button>
+                <el-button @click="getHintNode(element.destination_hint_node_id)" class="transparent-editor-button">
+                  <el-icon>
+                    <Right/>
+                  </el-icon>
+                </el-button>
               </div>
             </div>
           </div>
@@ -62,6 +94,8 @@
 <script>
 import {VueDraggableNext} from "vue-draggable-next";
 import editorService from "@/services/editorService.js";
+import {ElMessage} from "element-plus";
+
 export default {
   components: {
     draggable: VueDraggableNext,
@@ -71,35 +105,96 @@ export default {
     this.getHintNode(this.currentNode);
   },
   watch: {
-    currentNode: function(newVal, oldVal) { // watch change of selected node
+    currentNode: function (newVal, oldVal) { // watch change of selected node
       this.getHintNode(newVal)
     }
   },
   data() {
     return {
+      isOrigin: false,
+      nodeId: -1,
       identifier: '',
+      incomingNodeId: -1,
       incomingOption: '',
+      incomingEdgeId: -1,
       hintdescription: '',
       outgoingOption: [],
-      editingName: false
+      editing: false
     }
   },
   methods: {
     async getHintNode(currentNode) {
       const res = await editorService.getHintNode(this.courseid, this.assignmentid, this.exerciseid, currentNode);
-      console.log(res)
+      this.isOrigin = res.data.data.is_start_node
+      this.nodeId = res.data.data.id
       this.identifier = res.data.data.name
       this.hintdescription = res.data.data.description
-      this.incomingOption = res.data.data.incoming_option.option
+      this.incomingNodeId = res.data.data.incoming_option.length === 0 ? -1 : res.data.data.incoming_option[0].origin_hint_node_id
+      this.incomingOption = res.data.data.incoming_option.length === 0 ? "" : res.data.data.incoming_option[0].option
+      this.incomingEdgeId = res.data.data.incoming_option.length === 0 ? -1 : res.data.data.incoming_option[0].id
       this.outgoingOption = res.data.data.outgoing_options
       this.updateCurrentNode(currentNode)
     },
     async addOption() {
-
+      try {
+        await editorService.createHintNode(this.courseid, this.assignmentid, this.exerciseid, this.nodeId, 'Specify the option here');
+        const res = await editorService.getHintNode(this.courseid, this.assignmentid, this.exerciseid, this.currentNode);
+        this.outgoingOption = res.data.data.outgoing_options
+        ElMessage({
+          message: 'Option successfuly added',
+          type: 'success',
+        })
+      } catch (err) {
+        ElMessage({
+          message: 'Error creating option. (' + err.name + ')',
+          type: 'fail',
+        })
+      }
+      await this.updateTree()
     },
     updateCurrentNode(currentNode) {
       this.$emit('updateCurrent', currentNode)
+    },
+    updateTree() {
+      this.$emit('updateTree')
+    },
+    async editNode() {
+      try {
+        await editorService.editNode(this.courseid, this.assignmentid, this.exerciseid, this.nodeId ,this.identifier, this.hintdescription);
+        if(!this.isOrigin){
+          await editorService.editEdge(this.courseid, this.assignmentid, this.exerciseid, this.incomingNodeId, this.incomingEdgeId, this.incomingOption);
+        }
+        ElMessage({
+          message: 'Node successfully updated.',
+          type: 'success',
+        })
+      } catch (err) {
+        ElMessage({
+          message: 'Error editing node. (' + err.name + ')',
+          type: 'fail',
+        })
+      }
+      await this.updateTree()
+      this.editing = !this.editing
+    },
+    async deleteNode(nodeId) {
+      console.log(nodeId)
+      try{
+        await editorService.deleteNode(this.courseid, this.assignmentid, this.exerciseid, nodeId)
+        ElMessage({
+          message: 'Successfully deleted node',
+          type: 'success',
+        })
+        await this.getHintNode(this.currentNode)
+      } catch (err) {
+        ElMessage({
+          message: 'Error deleting node. (' + err.name + ')',
+          type: 'fail',
+        })
+      }
+      await this.updateTree()
     }
+
   }
 }
 
@@ -124,7 +219,7 @@ export default {
   background-color: transparent;
   border-color: transparent;
   height: 60px;
-  width:60px;
+  width: 60px;
   font-size: 30px;
 }
 
@@ -138,7 +233,7 @@ export default {
   background-color: transparent;
   border-color: transparent;
   height: 60px;
-  width:60px;
+  width: 60px;
   font-size: 30px;
 }
 
@@ -148,5 +243,8 @@ export default {
   border-color: transparent;
 }
 
-
+hr.rounded {
+  border-top: 4px solid #bbb;
+  border-radius: 2px;
+}
 </style>

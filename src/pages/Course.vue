@@ -118,12 +118,18 @@
               </el-table-column>
               <el-table-column v-if="isTeacher" prop="completed" label="Publish">
                 <template #default="scope">
-                  <el-button
-                      size="large"
-                      type="Default"
-                      @click="publish(scope.row, item)">
-                    <el-icon><Promotion /></el-icon></el-button
-                  >
+                  <el-switch
+                      @change="publish(scope.row, item)"
+                      v-model="scope.row.completed"
+                      class="ml-2"
+                      style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+                  />
+<!--                  <el-button-->
+<!--                      size="large"-->
+<!--                      type="Default"-->
+<!--                      @click="publish(scope.row, item)">-->
+<!--                    <el-icon><Promotion /></el-icon></el-button-->
+<!--                  >-->
                   <!--                    TODO GET THIS TO WORK-->
                 </template>
               </el-table-column>
@@ -201,9 +207,9 @@ export default {
 
 
         for (let assignment of assignments) {
-          const exercises = assignment.exercises.reverse()
+          const exercises = assignment.exercises
 
-          assignmentsArray.unshift({
+          assignmentsArray.push({
             id: assignment.id,
             name: assignment.name,
             exercises: exercises.map(exercise => {
@@ -301,13 +307,9 @@ export default {
 
     async publish(exercise, assignment) {
       try {
-        console.log(assignment)
-        console.log(exercise)
-        console.log(!exercise.completed)
-        await exercisesService.changeExercises(this.courseid, assignment.id, exercise.id, {is_published: !exercise.completed})
-
+        await exercisesService.changeExercises(this.courseid, assignment.id, exercise.id, {is_published: exercise.completed})
         ElMessage({
-          message: !exercise.completed ? 'Exercise published' : 'Exercise unpublished',
+          message: exercise.completed ? 'Exercise published' : 'Exercise unpublished',
           type: 'success',
         })
       } catch (err) {
@@ -318,9 +320,7 @@ export default {
           type: 'fail',
         })
       }
-
       await this.fetchData()
-
     },
 
     async handleDelete(exercise, assignment) {

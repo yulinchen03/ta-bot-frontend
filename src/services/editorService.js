@@ -16,7 +16,23 @@ export default {
     getHintNode(courseId, assignmentId, exerciseId, hintNodeId) {
         return Api().get(`courses/${courseId}/assignments/${assignmentId}/exercises/${exerciseId}/hint_nodes/${hintNodeId}?with_edges=true`)
     },
-    renameExercise(courseId, assignmentId, exerciseId){
-        return Api().post(`courses/${courseId}/assignments/${assignmentId}/exercises`)
-    }
+    createHintNode(courseId, assignmentId, exerciseId, parentNodeId, option) {
+        return Api().post(`courses/${courseId}/assignments/${assignmentId}/exercises/${exerciseId}/hint_nodes/${parentNodeId}/create_and_link`, {
+            option
+        })
+    },
+    editNode(courseId, assignmentId, exerciseId, hintNodeId, name, description){
+        return Api().patch(`courses/${courseId}/assignments/${assignmentId}/exercises/${exerciseId}/hint_nodes/${hintNodeId}`, {
+            "name": name,
+            "description": description
+        })
+    },
+    editEdge(courseId, assignmentId, exerciseId, hintNodeId, edgeId, option){
+        return Api().patch(`courses/${courseId}/assignments/${assignmentId}/exercises/${exerciseId}/hint_nodes/${hintNodeId}/edges/${edgeId}`, {
+            "option": option
+        })
+    },
+    deleteNode(courseId, assignmentId, exerciseId, hintNodeId) {
+        return Api().delete(`courses/${courseId}/assignments/${assignmentId}/exercises/${exerciseId}/hint_nodes/${hintNodeId}`)
+    },
 }
