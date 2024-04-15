@@ -36,8 +36,8 @@ export default {
     data() {
         return {
             showModal: false,
-            oldPassword: 'Password123',
-            newPassword: 'Password1234',
+            oldPassword: '',
+            newPassword: '',
             
         };
     },

@@ -19,6 +19,7 @@
 <script setup>
 import { ref } from 'vue'
 import { ElMessageBox } from 'element-plus'
+import errorHandler from "@/utils/errorHandler.js";
 
 const dialogVisible = ref()
 
@@ -28,7 +29,7 @@ const handleClose = (done) => {
         done()
       })
       .catch(() => {
-        // catch error
+        errorHandler(err)
       })
 }
 </script>

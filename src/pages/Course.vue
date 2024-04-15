@@ -159,6 +159,7 @@ import exercisesService from "@/services/exercisesService.js";
 import assignmentsService from "@/services/assignmentsService.js";
 import { mapStores} from "pinia";
 import useUserStore from "@/stores/user.js";
+import errorHandler from "@/utils/errorHandler.js";
 
 
 export default {
@@ -223,7 +224,7 @@ export default {
           this.assignments = assignmentsArray
         }
       } catch (err) {
-        console.log(err)
+        errorHandler(err)
       }
 
       this.pageTitle = course.name;
@@ -251,11 +252,7 @@ export default {
           type: 'success',
         })
       } catch (err) {
-        ElMessage({
-          message: err.message,
-          type: 'fail',
-        })
-        console.log(err)
+        errorHandler(err)
       }
       await this.fetchData()
     },
@@ -268,9 +265,8 @@ export default {
           message: 'Exercise successfully created.',
           type: 'success',
         })
-      } catch (err) {
-        //TODO handle error
-        console.log(err)
+      } catch(err) {
+        errorHandler(err)
       }
       this.fetchData()
     },
@@ -292,12 +288,7 @@ export default {
           type: 'success',
         })
       } catch (err) {
-        //TODO handle error
-        console.log(err)
-        ElMessage({
-          message: err.message,
-          type: 'success',
-        })
+        errorHandler(err)
       }
       this.dialogFormVisible = false;
       this.assignmentForm.name = '';
@@ -313,12 +304,7 @@ export default {
           type: 'success',
         })
       } catch (err) {
-        //TODO handle error
-        console.log(err)
-        ElMessage({
-          message: err.message,
-          type: 'fail',
-        })
+        errorHandler(err)
       }
       await this.fetchData()
     },
@@ -331,8 +317,7 @@ export default {
           type: 'success',
         })
       } catch (err) {
-        //TODO handle error
-        console.log(err)
+        errorHandler(err)
       }
 
       await this.fetchData()

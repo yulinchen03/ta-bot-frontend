@@ -43,6 +43,7 @@ import Header from "@/components/Header.vue";
 import PageHeader from '../components/Header.vue';
 import {ElMessage} from "element-plus";
 import feedbackService from "@/services/feedbackService.js";
+import errorHandler from "@/utils/errorHandler.js";
 export default {
   components: {
     PageHeader
@@ -66,11 +67,7 @@ export default {
         await this.refresh()
 
       } catch (err) {
-        console.log(err)
-        ElMessage({
-          message: err.message,
-          type: 'fail',
-        })
+        errorHandler(err)
       }
     },
     async refresh() {
@@ -100,10 +97,7 @@ export default {
 
       }
       catch (err) {
-        ElMessage({
-          message: err.message,
-          type: 'fail',
-        })
+        errorHandler(err)
       }
     }
   }

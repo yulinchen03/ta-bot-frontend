@@ -48,7 +48,7 @@
                 </div>
                 <el-button @click="login" class="custom-button w-3/4 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign in</el-button>
                 <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                  Don’t have an account yet? <a @click="goToSignup" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
+                  Don’t have an account yet? <a @click="goToSignup" class="font-medium text-primary-600 hover:underline hover:cursor-pointer dark:text-primary-500">Sign up</a>
                 </p>
               </div>
             </div>
@@ -65,6 +65,7 @@ import {ElMessage} from "element-plus";
 import useUserStore from "@/stores/user";
 import {mapStores} from "pinia";
 import authService from "@/services/authService.js";
+import errorHandler from "@/utils/errorHandler.js";
   export default {
     setup: () => ({ v$: useVuelidate() }),
     data() {
@@ -99,8 +100,6 @@ import authService from "@/services/authService.js";
           })
         } else {
           try {
-
-            console.log(this.loginForm.email, this.loginForm.password)
             await authService.login(this.loginForm.email, this.loginForm.password).then((res) => {
 
               this.userStore.token = res.headers.authorization.split(' ')[1]
@@ -126,18 +125,10 @@ import authService from "@/services/authService.js";
             })
           }
           catch(err) {
-            console.log(err)
-            ElMessage({
-              message: err.message,
-              type: 'warning',
-              plain: true,
-            })
+            errorHandler(err)
           }
 
         }
-        //
-        // todo login API
-
       },
       goToSignup(){
         this.$router.push('/signup');

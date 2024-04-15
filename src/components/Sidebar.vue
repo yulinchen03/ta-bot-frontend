@@ -102,6 +102,7 @@ import {mapStores} from "pinia";
 import useUserStore from "@/stores/user";
 import authService from "@/services/authService.js";
 import {ElMessage} from "element-plus";
+import errorHandler from "@/utils/errorHandler.js";
 
 export default {
   data() {
@@ -134,11 +135,8 @@ export default {
           type: 'success'
         })
       }
-      catch(error) {
-        ElMessage({
-              message: error.response.data.message,
-              type: 'error'
-            })}
+      catch(err) {
+        errorHandler(err)}
     }
   },
 };
