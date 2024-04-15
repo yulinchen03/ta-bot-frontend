@@ -34,7 +34,7 @@
                     border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
                      focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600
                       dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                           placeholder="Firstname">
+                           placeholder="First name">
 
                     <p v-if="v$.firstName.$error" class="text-xs text-red-500 flex justify-end">First Name is too short.</p>
                   </div>
@@ -44,7 +44,7 @@
                     <input @change="this.v$.lastName.$touch()" v-model="lastName" class="mx-3 bg-gray-50 border border-gray-300
                      text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600
                      block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
-                      dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Lastname">
+                      dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Last name">
                     <div v-if="v$.lastName.$error" class="text-xs text-red-500 flex justify-end">Last Name is too short.</div>
                   </div>
                 </el-form-item>
@@ -139,11 +139,8 @@ export default {
           plain: true,
         })
       } else {
-        // handle success
         try {
-
-            const res = await authService.register(this.firstName, this.lastName, this.email, this.password, this.confirm_password)
-
+          await authService.register(this.firstName, this.lastName, this.email, this.password, this.confirm_password)
           ElMessage({
             message: 'Signup successful.',
             type: 'success',
@@ -153,7 +150,11 @@ export default {
         }
         catch(err)
         {
-          // TODO handle error
+          ElMessage({
+            message: err.response.data.message,
+            type: 'error',
+            plain: true,
+          })
           console.log(err)
         }
 
