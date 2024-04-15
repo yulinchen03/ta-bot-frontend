@@ -6,7 +6,7 @@ const baseURL = 'https://tabot-backend-to7n.onrender.com'
 
 export default () => {
     const userStore = useUserStore()
-    console.log(userStore.token)
+    // console.log(userStore.token)
     if(userStore.token === null) {
 
         return axios.create({

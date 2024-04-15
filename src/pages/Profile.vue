@@ -33,6 +33,7 @@ import ProfileDetails from "@/components/ProfileDetails.vue";
 <script>
 import PageHeader from '../components/Header.vue';
 import authService from "@/services/authService.js";
+import errorHandler from "@/utils/errorHandler.js";
 
 export default {
   components: {
@@ -69,12 +70,10 @@ export default {
           surname: user.surname,
           email: user.email,
         };
-        console.log(user)
       }
       catch(err)
       {
-        console.log(err);
-
+        errorHandler(err)
       }
     }
   }

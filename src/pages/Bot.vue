@@ -31,7 +31,9 @@
           <svg :class="{'transform rotate-180': showExercises}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="M104.704 338.752a64 64 0 0 1 90.496 0l316.8 316.8 316.8-316.8a64 64 0 0 1 90.496 90.496L557.248 791.296a64 64 0 0 1-90.496 0L104.704 429.248a64 64 0 0 1 0-90.496z"></path></svg>
         </el-icon>
       </div>
-      <div class="my-auto outline-green-500 h-fit px-5 outline text-green-500 rounded-lg text-3xl hover:cursor-pointer"> Finish </div>
+      <div @click="toHorus" class="my-auto h-fit px-5 text-3xl hover:cursor-pointer">
+        <img src="../../public/horus.png" class="h-12" />
+      </div>
     </div>
 
     <div class="w-full h-full flex flex-row justify-center align-middle">
@@ -45,8 +47,8 @@
           </template>
     </div>
         </div>
-          <div class="m-auto w-1/3">
-          <div class="md:flex-col lg:flex-row flex justify-between">
+          <div class="m-auto w-1/3 p-3 box-border h-full overflow-y-auto">
+          <div class="md:flex-col lg:flex-row flex justify-between w-full">
           <div @click="previous"  class="gap-4 md:text-lg lg:text-2xl flex justify-center flex-row w-full hover:bg-ut-gold outline outline-ut-gold outline-2 p-3 m-3 box-border rounded-xl bg-ut-white hover:text-white text-ut-gold hover:cursor-pointer text-center">
             <svg class="w-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="M572.235 205.282v600.365a30.118 30.118 0 1 1-60.235 0V205.282L292.382 438.633a28.913 28.913 0 0 1-42.646 0 33.43 33.43 0 0 1 0-45.236l271.058-288.045a28.913 28.913 0 0 1 42.647 0L834.5 393.397a33.43 33.43 0 0 1 0 45.176 28.913 28.913 0 0 1-42.647 0l-219.618-233.23z"></path></svg>
             <div class="font-bold">Previous</div>
@@ -56,8 +58,8 @@
             <div class="font-bold">Feedback</div>
           </div>
           </div>
-          <div v-for="option in options" @click="pickAnswer(option)" :key="option.next_hint" class="text-lg w-full bg-white outline outline-ut-blue outline-2 p-3 m-3 box-border rounded-xl hover:bg-ut-blue text-ut-blue hover:text-white hover:cursor-pointer">{{option.option}}</div>
-        </div>
+          <div v-for="option in options" @click="pickAnswer(option)" :key="option.next_hint" class="text-lg w-full bg-white outline outline-ut-blue outline-2 p-3 my-3 box-border rounded-xl hover:bg-ut-blue text-ut-blue hover:text-white hover:cursor-pointer">{{option.option}}</div>
+          </div>
       </div>
     </div>
   </div>
@@ -68,6 +70,7 @@ import Message from "@/components/Messsage.vue"
 import exercisesService from "@/services/exercisesService.js";
 import {ElMessage} from "element-plus";
 import feedbackService from "@/services/feedbackService.js";
+import errorHandler from "@/utils/errorHandler.js";
 export default {
   data() {
     return {
@@ -118,7 +121,7 @@ export default {
 
 
         this.first_question = {
-          question: this.hints[0].name,
+          question: this.hints[0].description,
           id: this.hints[0].id
         }
         for(let option of this.hints[0].outgoing_edges) {
@@ -131,11 +134,7 @@ export default {
 
 
       } catch (err) {
-        console.log(err)
-        ElMessage({
-          message: err.message,
-          type: 'fail',
-        })
+        errorHandler(err)
       }
     },
     async pickAnswer(option) {
@@ -152,7 +151,7 @@ export default {
         this.options.push(opt)
       }
       this.questions.push({
-            question: nextQuestion.name,
+            question: nextQuestion.description,
             id: nextQuestion.id
           })
     },
@@ -166,12 +165,7 @@ export default {
 
       }
       catch(err) {
-        // TODO handle error
-        console.log(err)
-        ElMessage({
-          message: err.message,
-          type: 'fail',
-        })
+        errorHandler(err)
       }
 
 
@@ -191,10 +185,7 @@ export default {
 
       }
       catch (err) {
-        ElMessage({
-          message: err.message,
-          type: 'fail',
-        })
+        errorHandler(err)
       }
     },
     async previous() {
@@ -210,7 +201,8 @@ export default {
         }
         this.options.push(opt)
       }
-    }
+    },
+    toHorus() {window.open("https://horus.apps.utwente.nl/login")}
   },
   watch: {
     $route() {

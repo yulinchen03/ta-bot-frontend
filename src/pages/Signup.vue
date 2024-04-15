@@ -34,7 +34,7 @@
                     border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
                      focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600
                       dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                           placeholder="Firstname">
+                           placeholder="First name">
 
                     <p v-if="v$.firstName.$error" class="text-xs text-red-500 flex justify-end">First Name is too short.</p>
                   </div>
@@ -44,7 +44,7 @@
                     <input @change="this.v$.lastName.$touch()" v-model="lastName" class="mx-3 bg-gray-50 border border-gray-300
                      text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600
                      block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
-                      dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Lastname">
+                      dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Last name">
                     <div v-if="v$.lastName.$error" class="text-xs text-red-500 flex justify-end">Last Name is too short.</div>
                   </div>
                 </el-form-item>
@@ -105,6 +105,7 @@ import {mapStores} from "pinia";
 
 import useUserStore from "@/stores/user";
 import authService from "@/services/authService.js";
+import errorHandler from "@/utils/errorHandler.js";
 export default {
   setup: () => ({ v$: useVuelidate() }),
   data: () => ({firstName: '', lastName: '', email: '', password: 'Password123', confirmation: 'Password123', confirmData: false}),
@@ -116,9 +117,9 @@ export default {
       password: {
         required,
         minLength: minLength(8),
-        hasUpperCase: value => /[A-Z]/.test(value),
-        hasLowerCase: value => /[a-z]/.test(value),
-        hasNumber: value => /[0-9]/.test(value)
+        // hasUpperCase: value => /[A-Z]/.test(value),
+        // hasLowerCase: value => /[a-z]/.test(value),
+        // hasNumber: value => /[0-9]/.test(value)
       },
       confirmation: {required, sameAsPassword: sameAs(this.password)}
     }
@@ -139,11 +140,8 @@ export default {
           plain: true,
         })
       } else {
-        // handle success
         try {
-
-            const res = await authService.register(this.firstName, this.lastName, this.email, this.password, this.confirm_password)
-
+          await authService.register(this.firstName, this.lastName, this.email, this.password, this.confirmation)
           ElMessage({
             message: 'Signup successful.',
             type: 'success',
@@ -151,10 +149,8 @@ export default {
           })
           this.$router.push('/login')
         }
-        catch(err)
-        {
-          // TODO handle error
-          console.log(err)
+        catch(err) {
+          errorHandler(err)
         }
 
       }

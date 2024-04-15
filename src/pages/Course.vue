@@ -12,7 +12,7 @@
           <div v-if="isTeacher" class="flex items-center mb-3">
             <h2 class="mr-3">Invite code: {{ invite_code }}</h2>
             <el-alert v-if="showCopySuccess" title="Success alert" type="success" show-icon @close="showCopySuccess=false"/>
-            <el-button :size="'small'" round class="custom-button" @click="copy()" :plain="true">Copy</el-button>
+            <el-button :size="'default'" round class="custom-button" @click="copy()" :plain="true"><el-icon class="mr-2"><CopyDocument /></el-icon>Copy</el-button>
           </div>
         </div>
         <div class="flex space-x-10 justify-between items-center text-gray-200 font-arial px-10 font-semibold xl:text-lg 2xl:text-2xl">
@@ -118,12 +118,18 @@
               </el-table-column>
               <el-table-column v-if="isTeacher" prop="completed" label="Publish">
                 <template #default="scope">
-                  <el-button
-                      size="large"
-                      type="Default"
-                      @click="publish(scope.row, item)">
-                    <el-icon><Promotion /></el-icon></el-button
-                  >
+                  <el-switch
+                      @change="publish(scope.row, item)"
+                      v-model="scope.row.completed"
+                      class="ml-2"
+                      style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+                  />
+<!--                  <el-button-->
+<!--                      size="large"-->
+<!--                      type="Default"-->
+<!--                      @click="publish(scope.row, item)">-->
+<!--                    <el-icon><Promotion /></el-icon></el-button-->
+<!--                  >-->
                   <!--                    TODO GET THIS TO WORK-->
                 </template>
               </el-table-column>
@@ -153,6 +159,7 @@ import exercisesService from "@/services/exercisesService.js";
 import assignmentsService from "@/services/assignmentsService.js";
 import { mapStores} from "pinia";
 import useUserStore from "@/stores/user.js";
+import errorHandler from "@/utils/errorHandler.js";
 
 
 export default {
@@ -201,9 +208,9 @@ export default {
 
 
         for (let assignment of assignments) {
-          const exercises = assignment.exercises.reverse()
+          const exercises = assignment.exercises
 
-          assignmentsArray.unshift({
+          assignmentsArray.push({
             id: assignment.id,
             name: assignment.name,
             exercises: exercises.map(exercise => {
@@ -217,7 +224,7 @@ export default {
           this.assignments = assignmentsArray
         }
       } catch (err) {
-        console.log(err)
+        errorHandler(err)
       }
 
       this.pageTitle = course.name;
@@ -245,11 +252,7 @@ export default {
           type: 'success',
         })
       } catch (err) {
-        ElMessage({
-          message: err.message,
-          type: 'fail',
-        })
-        console.log(err)
+        errorHandler(err)
       }
       await this.fetchData()
     },
@@ -262,9 +265,8 @@ export default {
           message: 'Exercise successfully created.',
           type: 'success',
         })
-      } catch (err) {
-        //TODO handle error
-        console.log(err)
+      } catch(err) {
+        errorHandler(err)
       }
       this.fetchData()
     },
@@ -286,12 +288,7 @@ export default {
           type: 'success',
         })
       } catch (err) {
-        //TODO handle error
-        console.log(err)
-        ElMessage({
-          message: err.message,
-          type: 'success',
-        })
+        errorHandler(err)
       }
       this.dialogFormVisible = false;
       this.assignmentForm.name = '';
@@ -301,23 +298,15 @@ export default {
 
     async publish(exercise, assignment) {
       try {
-        await exercisesService.changeExercises(this.courseid, assignment.id, exercise.id, {is_published: !exercise.completed})
-
+        await exercisesService.changeExercises(this.courseid, assignment.id, exercise.id, {is_published: exercise.completed})
         ElMessage({
-          message: !exercise.completed ? 'Exercise published' : 'Exercise unpublished',
+          message: exercise.completed ? 'Exercise published' : 'Exercise unpublished',
           type: 'success',
         })
       } catch (err) {
-        //TODO handle error
-        console.log(err)
-        ElMessage({
-          message: err.message,
-          type: 'fail',
-        })
+        errorHandler(err)
       }
-
       await this.fetchData()
-
     },
 
     async handleDelete(exercise, assignment) {
@@ -328,8 +317,7 @@ export default {
           type: 'success',
         })
       } catch (err) {
-        //TODO handle error
-        console.log(err)
+        errorHandler(err)
       }
 
       await this.fetchData()
@@ -346,6 +334,10 @@ export default {
 
       this.$router.push({path: 'bot', query: {courseId: this.courseid, assignmentId: assignment.id, exerciseId: (assignment.exercises[parseInt(exercise_idx)]).id }});
 
+    },
+
+    edit(exercise_idx, assignment_idx) {
+      this.$router.push({path: 'editor', query: {c: this.courseid, a: this.assignments[assignment_idx].id, e: this.assignments[assignment_idx].exercises[exercise_idx].id}});
     }
   }
 }

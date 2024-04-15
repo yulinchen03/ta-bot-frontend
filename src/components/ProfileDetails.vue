@@ -1,7 +1,7 @@
 
 <template>
     <div class="flex justify-center">
-            <div class="px-5 py-2 bg-gray-200 mt-5 m:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4 mx-auto">
+            <div class="px-5 py-2 bg-gray-200 mt-5 m:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4 mx-auto">
                 <form @submit.prevent="onSubmit">
                     <div class="mb-4">
                         <label for="name" class="block text-black text-lg font-bold mb-2">Name</label>
@@ -41,7 +41,6 @@
                     </div>
                 </form>
             </div>
-           
         </div>
     <NewPassword v-if="isNewPassword" @cancel="isNewPassword = false" @newPass="handleNewPassword" />
 
@@ -58,6 +57,7 @@ import { mapStores} from "pinia";
 import useUserStore from "@/stores/user.js";
 import authService from "@/services/authService.js";
 import {ElMessage} from "element-plus";
+import errorHandler from "@/utils/errorHandler.js";
 export default {
     components: {
         NewPassword,
@@ -78,7 +78,7 @@ export default {
     methods: {
         edit() {
             this.isEditing = true;
-            console.log('Edit');
+
         },
         saveEdit() {
             if (this.userDetails.name === '' || this.userDetails.surname === '' || this.userDetails.email === '') {
@@ -95,23 +95,19 @@ export default {
             this.updating = false;
             this.isEditing = false;
 
-            console.log('Cancel Update');
+
         },
         onDelete() {
             this.isDelete = true;
         },
         cancelDelete() {
             this.isDelete = false;
-            console.log('Cancel Delete');
         },
         onNewPassword() {
-            console.log('New Password');
             this.isNewPassword = true;
         },
         async handleNewPassword(newPassword, oldPassword) {
-          console.log('New Password:', newPassword);
-          console.log('Old Password:', oldPassword);
-           // handle logic to update user password
+
 
           try {
             await authService.updateUserPassword(newPassword, oldPassword);
@@ -122,12 +118,8 @@ export default {
             });
 
           } catch (err) {
-            console.log(err)
-            ElMessage({
-              type: 'error',
-              message: err.response.data.status.message,
-              duration: 5000,
-            });
+            errorHandler(err)
+            this.$emit('refresh');
           }
 
           this.isNewPassword = false;
@@ -149,11 +141,9 @@ export default {
             this.updating = false;
             this.isEditing = false;
           } catch (err) {
-            ElMessage({
-              type: 'error',
-              message: err.message,
-            });
+            errorHandler(err)
             this.$emit('refresh');
+
           }
 
         },
@@ -168,12 +158,11 @@ export default {
                 type: 'success',
                 message: 'User account deleted successfully',
               });
+              this.userStore.user = null;
+              this.userStore.token = null;
               this.$router.push('/login');
             } catch (err) {
-              ElMessage({
-                type: 'error',
-                message: err.message,
-              });
+              errorHandler(err)
             }
 
         },

@@ -60,7 +60,21 @@
               </div>
             </div>
           </router-link>
-
+          <router-link v-if="isTeacher" to="/notifications">
+              <div
+                  class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
+                <div class="grid grid-cols-1">
+                  <div class="flex justify-center mb-1">
+                    <el-badge class="item">
+                      <el-icon :size="30">
+                        <Comment/>
+                      </el-icon>
+                    </el-badge>
+                  </div>
+                  <h3 class="font-arial">Inbox</h3>
+                </div>
+              </div>
+            </router-link>
           <router-link to="/helpcenter">
             <div
                 class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
@@ -114,6 +128,9 @@
 
 import {mapStores} from "pinia";
 import useUserStore from "@/stores/user";
+import authService from "@/services/authService.js";
+import {ElMessage} from "element-plus";
+import errorHandler from "@/utils/errorHandler.js";
 
 export default {
   data() {
@@ -121,8 +138,7 @@ export default {
       dialogVisible: false,
       confirmLogout: false,
       courseCount: 3,
-      notificationCount: 12,
-      role: null,
+      isTeacher: false,
     };
   },
   computed: {
@@ -132,12 +148,23 @@ export default {
     this.role = this.userStore.user.role
   },
   methods: {
-    logout() {
-      this.confirmLogout = true
-      this.dialogVisible = false
-      console.log('Logging out...')
-      this.$router.push('/login');
-      // TODO LOGOUT LOGIC TO BE ADDED
+    async logout() {
+      try
+      {
+        await authService.logout()
+        this.confirmLogout = true
+        this.dialogVisible = false
+        this.userStore.user = null
+        this.userStore.token = null
+        console.log('Logging out...')
+        this.$router.push('/login');
+        ElMessage({
+          message: 'Logged out successfully',
+          type: 'success'
+        })
+      }
+      catch(err) {
+        errorHandler(err)}
     }
   },
 };

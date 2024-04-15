@@ -1,7 +1,5 @@
 <template>
   <div class="w-screen h-screen flex bg-gray-200">
-    <el-button v-if="!isTeacher" @click="showJoin" type="primary" class="fixed right-5 top-5 mr-10 mt-4 z-50">Join Course</el-button>
-
     <JoinCourse @refresh="getCourses" v-if="showJoinCourse" @close="close"></JoinCourse>
 
     <!-- Sidebar -->
@@ -35,23 +33,24 @@
     </div>
     <el-dialog v-if="isTeacher" v-model="dialogFormVisible" title="Create Course" width="500">
       <el-form :model="courseForm">
-        <el-form-item label="Course Name:" class="text-black">
-          <el-input v-model="courseForm.name" autocomplete="off" />
+        <el-form-item class="courses">
+          <el-input v-model="courseForm.name" autocomplete="off"/>
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer flex items-center justify-center">
           <el-button @click="dialogFormVisible = false">Cancel</el-button>
           <el-button class="custom-button" @click="addCourse">
-            Confirm
+            Create
           </el-button>
         </div>
       </template>
     </el-dialog>
 
 
-    <el-button v-if="isTeacher" size="large" @click="dialogFormVisible = true" circle class="fixed right-10 bottom-10 z-20">
-      <el-icon><Plus /></el-icon>
+    <el-button v-if="isTeacher" size="large" @click="dialogFormVisible = true" round class="fixed right-10 bottom-10 z-20 custom-button">
+      <el-icon class="mr-2"><Plus/></el-icon>
+      Create a course
     </el-button>
   </div>
 </template>
@@ -61,7 +60,7 @@
 import PageHeader from '../components/Header.vue';
 import courseService from "@/services/courseService.js";
 import assignmentsService from "@/services/assignmentsService.js";
-import { mapStores} from "pinia";
+import {mapStores} from "pinia";
 import useUserStore from "@/stores/user.js";
 import {ElMessage} from "element-plus";
 import userService from "@/services/userService";
@@ -70,6 +69,7 @@ import Sidebar from "@/components/Sidebar.vue";
 import Itemcard from "@/components/Itemcard.vue";
 import Header from "@/components/Header.vue";
 import joinCourse from "@/components/JoinCourse.vue";
+import errorHandler from "@/utils/errorHandler.js";
 
 export default {
   components: {
@@ -105,15 +105,8 @@ export default {
         this.dialogFormVisible = false
         this.courseForm.name = ''
         this.getCourses()
-      }
-      catch(err){
-        // TODO handle error
-        console.log(err)
-
-        ElMessage({
-          message: err.message,
-          type: 'fail',
-        })
+      } catch (err) {
+        errorHandler(err)
       }
     },
     async getCourses() {
@@ -121,14 +114,8 @@ export default {
         const res = await courseService.getCourses();
         const courses = res.data.data;
         this.courses = courses;
-      }
-      catch(err){
-        // TODO handle error
-        console.log(err)
-        ElMessage({
-          message: err.message,
-          type: 'fail',
-        })
+      } catch (err) {
+        errorHandler(err)
       }
     },
     openCourse(id) {
@@ -142,14 +129,8 @@ export default {
           message: 'Course successfully deleted.',
           type: 'success',
         })
-      }
-      catch(err){
-        // TODO handle error
-        console.log(err)
-        ElMessage({
-          message: err.name,
-          type: 'fail',
-        })
+      } catch (err) {
+        errorHandler(err)
       }
     },
     async deEnroll(id) {
@@ -161,11 +142,8 @@ export default {
         })
         this.getCourses()
       } catch (err) {
-        console.log(err)
-        ElMessage({
-          message: err.name,
-          type: 'fail',
-        })
+        errorHandler(err)
+        this.getCourses()
       }
     },
     showJoin() {
@@ -195,3 +173,26 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.transparent-delete-button {
+  background-color: transparent;
+  border-color: transparent;
+  height: 60px;
+  width: 60px;
+  font-size: 30px;
+}
+
+.transparent-delete-button:hover {
+  background-color: lightcoral;
+  color: white;
+  border-color: transparent;
+}
+
+.custom-button {
+  background-color: #cf0072; /* This is for pink background */
+  color: white; /* This is for white text */
+  font-weight: bold;
+  border-color: #cf0072;
+}
+</style>
