@@ -81,6 +81,16 @@ const routes = [
         component: bot
     }
 ];
+
+
+function Router() {
+    const router = new createRouter({
+        history: createWebHistory(),
+        routes,
+    });
+    return router;
+}
+
 const router = Router();
 
 router.beforeEach(async (to, from, next) => {
@@ -97,12 +107,3 @@ router.beforeEach(async (to, from, next) => {
 })
 
 export default router;
-let isAuthenticated = true; // todo implement login authentication
-
-function Router() {
-    const router = new createRouter({
-        history: createWebHistory(),
-        routes,
-    });
-    return router;
-}

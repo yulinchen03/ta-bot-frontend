@@ -69,6 +69,7 @@ import Sidebar from "@/components/Sidebar.vue";
 import Itemcard from "@/components/Itemcard.vue";
 import Header from "@/components/Header.vue";
 import joinCourse from "@/components/JoinCourse.vue";
+import errorHandler from "@/utils/errorHandler.js";
 
 export default {
   components: {
@@ -105,13 +106,7 @@ export default {
         this.courseForm.name = ''
         this.getCourses()
       } catch (err) {
-        // TODO handle error
-        console.log(err)
-
-        ElMessage({
-          message: err.message,
-          type: 'fail',
-        })
+        errorHandler(err)
       }
     },
     async getCourses() {
@@ -120,12 +115,7 @@ export default {
         const courses = res.data.data;
         this.courses = courses;
       } catch (err) {
-        // TODO handle error
-        console.log(err)
-        ElMessage({
-          message: err.message,
-          type: 'fail',
-        })
+        errorHandler(err)
       }
     },
     openCourse(id) {
@@ -140,12 +130,7 @@ export default {
           type: 'success',
         })
       } catch (err) {
-        // TODO handle error
-        console.log(err)
-        ElMessage({
-          message: err.name,
-          type: 'fail',
-        })
+        errorHandler(err)
       }
     },
     async deEnroll(id) {
@@ -157,11 +142,8 @@ export default {
         })
         this.getCourses()
       } catch (err) {
-        console.log(err)
-        ElMessage({
-          message: err.name,
-          type: 'fail',
-        })
+        errorHandler(err)
+        this.getCourses()
       }
     },
     showJoin() {

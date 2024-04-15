@@ -105,6 +105,7 @@ import {mapStores} from "pinia";
 
 import useUserStore from "@/stores/user";
 import authService from "@/services/authService.js";
+import errorHandler from "@/utils/errorHandler.js";
 export default {
   setup: () => ({ v$: useVuelidate() }),
   data: () => ({firstName: '', lastName: '', email: '', password: 'Password123', confirmation: 'Password123', confirmData: false}),
@@ -140,7 +141,7 @@ export default {
         })
       } else {
         try {
-          await authService.register(this.firstName, this.lastName, this.email, this.password, this.confirm_password)
+          await authService.register(this.firstName, this.lastName, this.email, this.password, this.confirmation)
           ElMessage({
             message: 'Signup successful.',
             type: 'success',
@@ -148,14 +149,8 @@ export default {
           })
           this.$router.push('/login')
         }
-        catch(err)
-        {
-          ElMessage({
-            message: err.response.data.message,
-            type: 'error',
-            plain: true,
-          })
-          console.log(err)
+        catch(err) {
+          errorHandler(err)
         }
 
       }

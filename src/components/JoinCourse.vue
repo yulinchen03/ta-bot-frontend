@@ -32,6 +32,7 @@
 <script>
 import userService from '@/services/userService';
 import {ElMessage} from "element-plus";
+import errorHandler from "@/utils/errorHandler.js";
 
 export default {
   emits: ['close'],
@@ -61,18 +62,11 @@ export default {
                     })
                   this.$emit('refresh')
                 }
-                catch (error) {
-                    ElMessage({
-                        message: 'Error joining course',
-                        type: 'error'
-                    })
-                    console.log(error);
+                catch (err) {
+                  errorHandler(err)
                 }
 
-            } 
-            // TODO - Add the logic to join the course
-            console.log(this.courseCode);
-
+            }
             this.$emit('close');
         },
         
