@@ -112,6 +112,8 @@ import errorHandler from "@/utils/errorHandler.js";
                   type: 'success',
                   plain: true,
                 })
+
+                if(res.data.data.role === 'admin') return this.$router.push('/courses-admin')
                 this.$router.push('/courses')
               }
               else {
