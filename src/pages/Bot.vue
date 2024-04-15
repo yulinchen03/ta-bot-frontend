@@ -120,7 +120,7 @@ export default {
 
 
         this.first_question = {
-          question: this.hints[0].name,
+          question: this.hints[0].description,
           id: this.hints[0].id
         }
         for(let option of this.hints[0].outgoing_edges) {
@@ -154,7 +154,7 @@ export default {
         this.options.push(opt)
       }
       this.questions.push({
-            question: nextQuestion.name,
+            question: nextQuestion.description,
             id: nextQuestion.id
           })
     },

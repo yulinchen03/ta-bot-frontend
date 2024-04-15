@@ -9,7 +9,7 @@ export default {
         return Api().get(`courses/${courseId}/assignments/${assignmentId}/exercises/${exerciseId}`)
     },
     addExercises(courseId, assignmentId, exercise) {
-        return Api().post(`courses/${courseId}/assignments/${assignmentId}/exercises`, exercise)
+        return Api().post(`courses/${courseId}/assignments/${assignmentId}/exercises?with_start_node=true`, exercise)
     },
     changeExercises(courseId, assignmentId, exerciseId,exercise) {
         return Api().put(`courses/${courseId}/assignments/${assignmentId}/exercises/${exerciseId}`, exercise)
@@ -19,5 +19,10 @@ export default {
     },
     getTreeStructure(courseId, assignmentId, exerciseId) {
         return Api().get(`/courses/${courseId}/assignments/${assignmentId}/exercises/${exerciseId}/tree`)
+    },
+    renameExercise(courseId, assignmentId, exerciseId, name) {
+        return Api().patch(`/courses/${courseId}/assignments/${assignmentId}/exercises/${exerciseId}`, {
+            "identifier": name
+        })
     }
 }

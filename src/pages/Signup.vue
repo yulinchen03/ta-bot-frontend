@@ -116,9 +116,9 @@ export default {
       password: {
         required,
         minLength: minLength(8),
-        hasUpperCase: value => /[A-Z]/.test(value),
-        hasLowerCase: value => /[a-z]/.test(value),
-        hasNumber: value => /[0-9]/.test(value)
+        // hasUpperCase: value => /[A-Z]/.test(value),
+        // hasLowerCase: value => /[a-z]/.test(value),
+        // hasNumber: value => /[0-9]/.test(value)
       },
       confirmation: {required, sameAsPassword: sameAs(this.password)}
     }

@@ -12,7 +12,7 @@
           <div v-if="isTeacher" class="flex items-center mb-3">
             <h2 class="mr-3">Invite code: {{ invite_code }}</h2>
             <el-alert v-if="showCopySuccess" title="Success alert" type="success" show-icon @close="showCopySuccess=false"/>
-            <el-button :size="'small'" round class="custom-button" @click="copy()" :plain="true">Copy</el-button>
+            <el-button :size="'default'" round class="custom-button" @click="copy()" :plain="true"><el-icon class="mr-2"><CopyDocument /></el-icon>Copy</el-button>
           </div>
         </div>
         <div class="flex space-x-10 justify-between items-center text-gray-200 font-arial px-10 font-semibold xl:text-lg 2xl:text-2xl">
@@ -118,12 +118,18 @@
               </el-table-column>
               <el-table-column v-if="isTeacher" prop="completed" label="Publish">
                 <template #default="scope">
-                  <el-button
-                      size="large"
-                      type="Default"
-                      @click="publish(scope.row, item)">
-                    <el-icon><Promotion /></el-icon></el-button
-                  >
+                  <el-switch
+                      @change="publish(scope.row, item)"
+                      v-model="scope.row.completed"
+                      class="ml-2"
+                      style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+                  />
+<!--                  <el-button-->
+<!--                      size="large"-->
+<!--                      type="Default"-->
+<!--                      @click="publish(scope.row, item)">-->
+<!--                    <el-icon><Promotion /></el-icon></el-button-->
+<!--                  >-->
                   <!--                    TODO GET THIS TO WORK-->
                 </template>
               </el-table-column>
@@ -201,9 +207,9 @@ export default {
 
 
         for (let assignment of assignments) {
-          const exercises = assignment.exercises.reverse()
+          const exercises = assignment.exercises
 
-          assignmentsArray.unshift({
+          assignmentsArray.push({
             id: assignment.id,
             name: assignment.name,
             exercises: exercises.map(exercise => {
@@ -301,10 +307,9 @@ export default {
 
     async publish(exercise, assignment) {
       try {
-        await exercisesService.changeExercises(this.courseid, assignment.id, exercise.id, {is_published: !exercise.completed})
-
+        await exercisesService.changeExercises(this.courseid, assignment.id, exercise.id, {is_published: exercise.completed})
         ElMessage({
-          message: !exercise.completed ? 'Exercise published' : 'Exercise unpublished',
+          message: exercise.completed ? 'Exercise published' : 'Exercise unpublished',
           type: 'success',
         })
       } catch (err) {
@@ -315,9 +320,7 @@ export default {
           type: 'fail',
         })
       }
-
       await this.fetchData()
-
     },
 
     async handleDelete(exercise, assignment) {
@@ -346,6 +349,10 @@ export default {
 
       this.$router.push({path: 'bot', query: {courseId: this.courseid, assignmentId: assignment.id, exerciseId: (assignment.exercises[parseInt(exercise_idx)]).id }});
 
+    },
+
+    edit(exercise_idx, assignment_idx) {
+      this.$router.push({path: 'editor', query: {c: this.courseid, a: this.assignments[assignment_idx].id, e: this.assignments[assignment_idx].exercises[exercise_idx].id}});
     }
   }
 }
