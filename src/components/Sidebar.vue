@@ -100,6 +100,8 @@
 
 import {mapStores} from "pinia";
 import useUserStore from "@/stores/user";
+import authService from "@/services/authService.js";
+import {ElMessage} from "element-plus";
 
 export default {
   data() {
@@ -117,12 +119,26 @@ export default {
     this.isTeacher = this.userStore.user.role === 'teacher'
   },
   methods: {
-    logout() {
-      this.confirmLogout = true
-      this.dialogVisible = false
-      console.log('Logging out...')
-      this.$router.push('/login');
-      // TODO LOGOUT LOGIC TO BE ADDED
+    async logout() {
+      try
+      {
+        await authService.logout()
+        this.confirmLogout = true
+        this.dialogVisible = false
+        this.userStore.user = null
+        this.userStore.token = null
+        console.log('Logging out...')
+        this.$router.push('/login');
+        ElMessage({
+          message: 'Logged out successfully',
+          type: 'success'
+        })
+      }
+      catch(error) {
+        ElMessage({
+              message: error.response.data.message,
+              type: 'error'
+            })}
     }
   },
 };
