@@ -3,13 +3,15 @@
     <!-- Sidebar -->
     <Sidebar></Sidebar>
     <!-- Main content -->
-    <div class="grid grid-cols-1 relative h-screen w-screen">
+    <div class="grid grid-cols-1 relative h-screen w-screen overflow-x-clip">
       <Header :title="pageTitle"></Header>
-      <div class="mx-20 overflow-y-auto w-[calc(100vw-200px)] h-[calc(100vh-100px)] flex flex-col gap-3 ">
+      <div class="mx-10 w-[calc(100vw-120px)] h-[calc(100vh-100px)] flex flex-col gap-3">
         <!-- Search Bar -->
-        <input class="p-2 w-full rounded-lg" type="text" v-model="searchQuery" placeholder="Search by name, or access_id">
+        <el-input class="p-2 rounded-lg" type="text" v-model="searchQuery" placeholder="Search by name, or access_id" style="width: 85vw"/>
         <!-- List of Course Cards -->
-        <CourseCard @deleteCourse="deleteCourse(course.id)" @editCourseAdmin="editCourseAdmin"  v-for="course in filteredCourses" :key="course.access_id" :course="course" />
+        <div class="overflow-y-scroll flex flex-col gap-3">
+          <CourseCard @deleteCourse="deleteCourse(course.id)" @editCourseAdmin="editCourseAdmin"  v-for="course in filteredCourses" :key="course.access_id" :course="course" />
+        </div>
       </div>
     </div>
   </div>
@@ -35,46 +37,9 @@ export default {
   },
   data() {
     return {
-      pageTitle: 'My Courses',
+      pageTitle: 'Course Management',
       searchQuery: '',
       courses: [],
-      // courses: [
-      //   {
-      //     name: 'Software System',
-      //     access_id: '3ds72',
-      //     instructor: 'Steve Jobs'
-      //   },
-      //   {
-      //     name: 'Computer Networks',
-      //     access_id: '9ejd2',
-      //     instructor: 'Grace Hopper'
-      //   },
-      //   {
-      //     name: 'Algorithms and Data Structures',
-      //     access_id: 'kxj89',
-      //     instructor: 'Donald Knuth'
-      //   },
-      //   {
-      //     name: 'Machine Learning',
-      //     access_id: 'pqr45',
-      //     instructor: 'Andrew Ng'
-      //   },
-      //   {
-      //     name: 'Database Systems',
-      //     access_id: 'lmo37',
-      //     instructor: 'Edgar Codd'
-      //   },
-      //   {
-      //     name: 'Operating Systems',
-      //     access_id: 'vxy91',
-      //     instructor: 'Linus Torvalds'
-      //   },
-      //   {
-      //     name: 'Web Development',
-      //     access_id: 'abc123',
-      //     instructor: 'Tim Berners-Lee'
-      //   }
-      // ],
       editCourse: {
         course_name: '',
         access_id: ''
@@ -98,6 +63,7 @@ export default {
     async refresh() {
       try {
         const res = (await courseService.getCourses()).data.data
+        console.log(res)
         this.courses = res
       } catch (err) {
         ElMessage({

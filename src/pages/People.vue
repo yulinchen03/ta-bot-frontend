@@ -3,13 +3,15 @@
     <!-- Sidebar -->
     <Sidebar></Sidebar>
     <!-- Main content -->
-    <div class="grid grid-cols-1 relative h-screen w-screen">
+    <div class="grid grid-cols-1 relative h-screen w-screen overflow-x-clip">
       <Header :title="pageTitle"></Header>
-      <div class="mx-20 overflow-y-auto w-[calc(100vw-200px)] h-[calc(100vh-100px)] flex flex-col gap-3 ">
+      <div class="mx-10 w-[calc(100vw-120px)] h-[calc(100vh-100px)] flex flex-col gap-3">
         <!-- Search Bar -->
-        <input class="p-2 w-full rounded-lg" type="text" v-model="searchQuery" placeholder="Search by name, email, or role">
+        <el-input class="p-2 rounded-lg" type="text" v-model="searchQuery" placeholder="Search by name, email, or role" style="width: 85vw"/>
         <!-- List of Person Cards -->
-        <PersonCard @editUserAdmin="editUserAdmin" @switchRole="switchRole(user.id, user.role)" @deleteUser="deleteUser(user.id)" v-for="user in filteredUsers" :key="user.email" :user="user" />
+        <div class="overflow-y-scroll flex flex-col gap-3">
+          <PersonCard @editUserAdmin="editUserAdmin" @switchRole="switchRole(user.id, user.role)" @deleteUser="deleteUser(user.id)" v-for="user in filteredUsers" :key="user.email" :user="user" />
+        </div>
       </div>
     </div>
   </div>
@@ -32,51 +34,9 @@ export default {
   },
   data() {
     return {
-      pageTitle: 'My People',
+      pageTitle: 'User Management',
       searchQuery: '',
       users: [],
-      // users: [
-      //   {
-      //     name: 'John Doe',
-      //     email: 'example@gmail.com',
-      //     role: 'teacher'
-      //   },
-      //   {
-      //     name: 'Jane Doe',
-      //     email: 'jane@example.com',
-      //     role: 'student'
-      //   },
-      //   {
-      //     name: 'Alice Smith',
-      //     email: 'alice@example.com',
-      //     role: 'student'
-      //   },
-      //   {
-      //     name: 'Bob Johnson',
-      //     email: 'bob@example.com',
-      //     role: 'teacher'
-      //   },
-      //   {
-      //     name: 'Charlie Brown',
-      //     email: 'charlie@example.com',
-      //     role: 'student'
-      //   },
-      //   {
-      //     name: 'David Lee',
-      //     email: 'david@example.com',
-      //     role: 'teacher'
-      //   },
-      //   {
-      //     name: 'Eva Taylor',
-      //     email: 'eva@example.com',
-      //     role: 'student'
-      //   },
-      //   {
-      //     name: 'Franklin Martinez',
-      //     email: 'franklin@example.com',
-      //     role: 'teacher'
-      //   }
-      // ],
     }
   },
   computed: {
