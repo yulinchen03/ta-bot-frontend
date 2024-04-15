@@ -5,9 +5,11 @@
            style="background-color: rgba(0, 0, 0, 0.6)">
         <div class="flex h-full items-center justify-center">
           <div class="text-white bg-ut-dark-gray h-[55vh] w-[33vw] bg-opacity-50 flex justify-center">
-            <div class="grid grid-rows-5">
-              <div class="row-start-1 row-end-1 mx-auto object-scale-down w-1/2">
-                <img src="/favicon.ico">
+            <div class="grid grid-rows-5 justify-center">
+              <div class="row-start-1 row-end-1 object-scale-down flex items-center justify-center gap-3">
+                <img src="/logo.png" width="96" height="96" class="mt-5">
+                <div class="vertical-divider mt-5"></div>
+                <img src="/UTlogo.png" width="192" height="96" class="mt-5">
               </div>
               <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                 <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
@@ -159,5 +161,10 @@ import errorHandler from "@/utils/errorHandler.js";
 
   .login .el-form .el-form-item__label {
     color: white;
+  }
+
+  .vertical-divider {
+    border-left: 3px solid gray;
+    height: 80px;
   }
 </style>

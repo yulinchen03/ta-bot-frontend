@@ -1,7 +1,7 @@
 <template>
   <div class="w-[120px] h-full bg-white text-black">
     <div class="h-[120px] w-full flex justify-center items-center">
-      <img src="https://www.utwente.nl/logo-stacked.png" class="object-scale-down max-h-full">
+      <img src="/logoBlack.png" class="object-scale-down max-h-full">
     </div>
     <div class="h-[calc(100vh-120px)] bg-white py-[20px]">
       <div class="flex flex-col justify-between h-full">
