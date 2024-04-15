@@ -37,7 +37,7 @@
                   class="flex justify-center items-center py-[10px] px-[5px] w-full text-sm font-medium rounded-xl border-gray-200 hover:bg-black hover:text-white">
                 <div class="grid grid-cols-1">
                   <div class="flex justify-center mb-1">
-                    <el-badge :value="notificationCount" class="item">
+                    <el-badge class="item">
                       <el-icon :size="30">
                         <Comment/>
                       </el-icon>
@@ -107,7 +107,6 @@ export default {
       dialogVisible: false,
       confirmLogout: false,
       courseCount: 3,
-      notificationCount: 12,
       isTeacher: false,
     };
   },
