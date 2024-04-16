@@ -9,7 +9,7 @@
         <!-- Search Bar -->
         <el-input class="p-2 rounded-lg" type="text" v-model="searchQuery" placeholder="Search by name, or access_id" style="width: 85vw"/>
         <!-- List of Course Cards -->
-        <div class="overflow-y-scroll flex flex-col gap-3">
+        <div class="overflow-y-scroll flex flex-col gap-3 mb-2">
           <CourseCard @refresh="refresh" @deleteCourse="deleteCourse(course.id)" @editCourseAdmin="editCourseAdmin"  v-for="course in filteredCourses" :key="course.access_id" :course="course" />
         </div>
       </div>

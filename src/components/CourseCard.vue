@@ -1,6 +1,6 @@
 <template>
-  <div @click="openCourse(course.id)" class="hover:cursor-pointer w-[85vw] mt-2 box-border border border-1 align-middle flex justify-between p-3 bg-white rounded-3xl shadow-md overflow-hidden transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-102 hover:shadow-glow border-ut-pink">
-    <div class="w-full items-center p-2 grid grid-cols-1">
+  <div @click="openCourse(course.id)" class="h-fit hover:cursor-pointer w-[85vw] mt-2 box-border border border-1 align-middle flex justify-between p-3 bg-white rounded-3xl shadow-md transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-102 hover:shadow-glow border-ut-pink">
+    <div class="w-full h-fit items-center p-2 grid grid-cols-1">
       <div @click.stop class="w-fit h-fit flex">
         <b v-if="!showEdit" class="mr-4 text-lg">{{course.name}}</b>
         <el-form :inline="true" style="width: 25vw" v-if="showEdit">
