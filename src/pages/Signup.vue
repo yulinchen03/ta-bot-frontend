@@ -5,11 +5,11 @@
          style="background-color: rgba(0, 0, 0, 0.6)">
       <div class="flex h-full items-center justify-center">
         <div class="text-white bg-ut-dark-gray h-[80vh] w-[33vw] bg-opacity-50 flex justify-center">
-          <div class="grid grid-rows-8">
-            <div class="row-start-1 row-end-1 mx-auto object-scale-down w-1/2">
-              <img src="/favicon.ico">
+          <div class="grid grid-rows-5">
+            <div class="row-start-1 row-end-1 object-scale-down flex justify-center items-center mt-10">
+              <img src="/logo.png" width="128" height="128">
             </div>
-            <div class="p-4 space-y-4 md:space-y-6 sm:p-8 row-start-2 row-end-7">
+            <div class="p-4 space-y-4 md:space-y-6 sm:p-8 row-start-2 row-end-5">
               <div class="grid grid-cols-5">
                 <div class="flex justify-start col-span-2">
                   <el-button @click="back" type="primary" class="custom-button" :round="true">
@@ -65,8 +65,9 @@
                       focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700
                        dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
                         dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Password">
-                    <button @click.prevent="showPassword = !showPassword" class="absolute inset-y-0 right-7 flex items-center justify-center w-7 h-full">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="M512 160c320 0 512 352 512 352S832 864 512 864 0 512 0 512s192-352 512-352m0 64c-225.28 0-384.128 208.064-436.8 288 52.608 79.872 211.456 288 436.8 288 225.28 0 384.128-208.064 436.8-288-52.608-79.872-211.456-288-436.8-288zm0 64a224 224 0 1 1 0 448 224 224 0 0 1 0-448m0 64a160.192 160.192 0 0 0-160 160c0 88.192 71.744 160 160 160s160-71.808 160-160-71.744-160-160-160"></path></svg>
+                    <button @click.prevent="showPassword = !showPassword" class="absolute inset-y-0 right-0 flex items-center justify-center w-7 h-full">
+                      <el-icon v-if="!showPassword" size="large"><View /></el-icon>
+                      <el-icon v-if="showPassword" size="large"><Hide /></el-icon>
                     </button>
                     <div v-if="v$.password.$error" class="text-xs text-red-500 flex justify-end">Password is less than 8 characters.
                     </div>
@@ -77,8 +78,9 @@
                     <input :type="showConfirmation ? 'text' : 'password'" @change="this.v$.confirmation.$touch()" type="password" v-model="confirmation"
                            class="mx-3 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                            placeholder="Confirm Password">
-                    <button @click.prevent="showConfirmation = !showConfirmation" class="absolute inset-y-0 right-7 flex items-center justify-center w-7 h-full">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="M512 160c320 0 512 352 512 352S832 864 512 864 0 512 0 512s192-352 512-352m0 64c-225.28 0-384.128 208.064-436.8 288 52.608 79.872 211.456 288 436.8 288 225.28 0 384.128-208.064 436.8-288-52.608-79.872-211.456-288-436.8-288zm0 64a224 224 0 1 1 0 448 224 224 0 0 1 0-448m0 64a160.192 160.192 0 0 0-160 160c0 88.192 71.744 160 160 160s160-71.808 160-160-71.744-160-160-160"></path></svg>
+                    <button @click.prevent="showConfirmation = !showConfirmation" class="absolute inset-y-0 right-0 flex items-center justify-center w-7 h-full">
+                      <el-icon v-if="!showConfirmation" size="large"><View /></el-icon>
+                      <el-icon v-if="showConfirmation" size="large"><Hide /></el-icon>
                     </button>
                     <div v-if="v$.confirmation.$error" class="text-xs text-red-500 flex justify-end">Passwords do not match!</div>
                   </div>

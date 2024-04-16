@@ -5,13 +5,13 @@
            style="background-color: rgba(0, 0, 0, 0.6)">
         <div class="flex h-full items-center justify-center">
           <div class="text-white bg-ut-dark-gray h-[55vh] w-[33vw] bg-opacity-50 flex justify-center">
-            <div class="grid grid-rows-5 justify-center">
+            <div class="grid grid-rows-4 justify-center">
               <div class="row-start-1 row-end-1 object-scale-down flex items-center justify-center gap-3">
                 <img src="/logo.png" width="96" height="96" class="mt-5">
                 <div class="vertical-divider mt-5"></div>
                 <img src="/UTlogo.png" width="192" height="96" class="mt-5">
               </div>
-              <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+              <div class="row-start-2 row-end-5 p-6 space-y-4 md:space-y-6 sm:p-8">
                 <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Sign in
                 </h1>
@@ -34,8 +34,9 @@
                       dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                              placeholder="Password">
 
-                      <button @click.prevent=" this.showPassword = !this.showPassword;" class="absolute inset-y-0 right-7 flex items-center justify-center w-7 h-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="M512 160c320 0 512 352 512 352S832 864 512 864 0 512 0 512s192-352 512-352m0 64c-225.28 0-384.128 208.064-436.8 288 52.608 79.872 211.456 288 436.8 288 225.28 0 384.128-208.064 436.8-288-52.608-79.872-211.456-288-436.8-288zm0 64a224 224 0 1 1 0 448 224 224 0 0 1 0-448m0 64a160.192 160.192 0 0 0-160 160c0 88.192 71.744 160 160 160s160-71.808 160-160-71.744-160-160-160"></path></svg>
+                      <button @click.prevent=" this.showPassword = !this.showPassword;" class="absolute inset-y-0 right-6 flex items-center justify-center w-7 h-full">
+                        <el-icon v-if="!showPassword" size="large"><View /></el-icon>
+                        <el-icon v-if="showPassword" size="large"><Hide /></el-icon>
                       </button>
                       <div v-if="v$.loginForm.password.$error" class="text-xs text-red-500 flex justify-end">Please enter your password.</div>
                     </div>
@@ -43,7 +44,7 @@
                 </el-form>
                 <div class="flex items-center justify-between">
                 </div>
-                <el-button @click="login" class="custom-button w-3/4 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign in</el-button>
+                <el-button @click="login" class="custom-button w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign in</el-button>
                 <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                   Don’t have an account yet? <a @click="goToSignup" class="font-medium text-primary-600 hover:underline hover:cursor-pointer dark:text-primary-500">Sign up</a>
                 </p>

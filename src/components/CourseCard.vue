@@ -1,11 +1,11 @@
 <template>
-  <div @click="openCourse(course.id)" class="hover:cursor-pointer w-[85vw] box-border border border-1 align-middle flex justify-between p-3 bg-white rounded-3xl shadow-md overflow-hidden transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-102 hover:shadow-glow border-ut-pink">
+  <div @click="openCourse(course.id)" class="hover:cursor-pointer w-[85vw] mt-2 box-border border border-1 align-middle flex justify-between p-3 bg-white rounded-3xl shadow-md overflow-hidden transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-102 hover:shadow-glow border-ut-pink">
     <div class="w-full items-center p-2 grid grid-cols-1">
       <div @click.stop class="w-fit h-fit flex">
         <b v-if="!showEdit" class="mr-4 text-lg">{{course.name}}</b>
-        <el-form  :inline="true" style="width: 25vw" v-if="showEdit">
+        <el-form :inline="true" style="width: 25vw" v-if="showEdit">
           <el-form-item label="Course name" class="editUserFormItem" label-width="auto">
-            <el-input v-model="course.name" v-if="showEdit" placeholder="name" style="width: 20vw"/>
+            <el-input @keydown="preventEnter" v-model="course.name" v-if="showEdit" placeholder="name" style="width: 20vw"/>
           </el-form-item>
         </el-form>
         <el-button class="custom-button " v-if="showEdit" @click.stop="editCourseAdmin(course.id, { name: course.name })">Save</el-button>
@@ -20,8 +20,8 @@
     </div>
     <div class="flex items-center gap-4">
       <el-button
-
-          @click.stop="showEdit = !showEdit"
+          @keydown="onKeyDown"
+          @click.stop="refresh"
           type="primary"
           text
       >Rename Course</el-button>
@@ -42,7 +42,7 @@ import {ElMessage} from "element-plus";
 export default
 {
   props: ['course'],
-  emits: ['deleteCourse', 'editCourseAdmin'],
+  emits: ['deleteCourse', 'editCourseAdmin', 'refresh'],
   data() {
     return {
       showEdit: false,
@@ -62,6 +62,22 @@ export default
     },
     openCourse(id) {
       this.$router.push({path: 'course', query: {id: id}});
+    },
+    preventEnter(event) {
+      if (event.code === 'Enter') {
+        event.preventDefault();
+      }
+    },
+    onKeyDown(event) {
+      if (event.code === 'Space' || event.code === 'Enter') {
+        event.preventDefault();
+      }
+    },
+    refresh() {
+      if(this.showEdit){
+        this.$emit('refresh')
+      }
+      this.showEdit = !this.showEdit
     },
   }
 }
