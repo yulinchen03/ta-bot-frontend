@@ -8,7 +8,6 @@ import help from '../pages/Help.vue'
 import login from '../pages/Login.vue'
 import course from "@/pages/Course.vue";
 import editor from "@/pages/DecisionTreeEditor.vue";
-import reset from "@/pages/Reset.vue"
 import signup from "@/pages/Signup.vue"
 import useUserStore from "@/stores/user";
 import bot from "@/pages/Bot.vue";
@@ -21,11 +20,6 @@ const routes = [
         path:'/',
         alias: '/login',
         component:login,
-    },
-    {
-        name:'Reset',
-        path:'/reset',
-        component: reset,
     },
     {
         name:'Signup',
