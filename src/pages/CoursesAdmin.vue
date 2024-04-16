@@ -10,7 +10,7 @@
         <el-input class="p-2 rounded-lg" type="text" v-model="searchQuery" placeholder="Search by name, or access_id" style="width: 85vw"/>
         <!-- List of Course Cards -->
         <div class="overflow-y-scroll flex flex-col gap-3">
-          <CourseCard @deleteCourse="deleteCourse(course.id)" @editCourseAdmin="editCourseAdmin"  v-for="course in filteredCourses" :key="course.access_id" :course="course" />
+          <CourseCard   @deleteCourse="deleteCourse(course.id)" @editCourseAdmin="editCourseAdmin"  v-for="course in filteredCourses" :key="course.access_id" :course="course" />
         </div>
       </div>
     </div>
@@ -96,7 +96,7 @@ export default {
       } catch (err) {
         errorHandler(err)
       }
-    }
+    },
   }
 }
 </script>

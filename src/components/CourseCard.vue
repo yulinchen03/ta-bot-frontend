@@ -1,5 +1,5 @@
 <template>
-  <div class="w-[85vw] box-border border border-1 align-middle rounded-3xl border-ut-light-gray flex justify-between p-3">
+  <div @click="openCourse(course.id)" class="hover:cursor-pointer w-[85vw] box-border border border-1 align-middle flex justify-between p-3 bg-white rounded-3xl shadow-md overflow-hidden transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-102 hover:shadow-glow border-ut-pink">
     <div class="w-full items-center p-2 grid grid-cols-1">
       <div class="w-fit h-fit flex">
         <b v-if="!showEdit" class="mr-4 text-lg">{{course.name}}</b>
@@ -8,26 +8,28 @@
             <el-input v-model="course.name" v-if="showEdit" placeholder="name" style="width: 20vw"/>
           </el-form-item>
         </el-form>
-        <el-button class="custom-button" v-if="showEdit" @click="editCourseAdmin(course.id, { name: course.name })">Save</el-button>
+        <el-button class="custom-button " v-if="showEdit" @click.stop="editCourseAdmin(course.id, { name: course.name })">Save</el-button>
       </div>
       <div>
         <i class="text-md">Instructor: {{course.teacher}}</i>
         <div class="flex gap-2">
           <b class="text-md text-ut-gold">Access code: {{course.access_id}}</b>
-          <el-button @click="copy" round size="small" class="custom-button"><el-icon><DocumentCopy /></el-icon></el-button>
+          <el-button @click.stop="copy" round size="small" class="custom-button"><el-icon><DocumentCopy /></el-icon></el-button>
         </div>
       </div>
     </div>
     <div class="flex items-center gap-4">
       <el-button
-          @click="showEdit = !showEdit"
+
+          @click.stop="showEdit = !showEdit"
           type="primary"
           text
       >Rename Course</el-button>
       <el-button
-          @click="this.$emit('deleteCourse')"
+          @click.stop="this.$emit('deleteCourse')"
           type="danger"
           text
+
       >Delete Course</el-button>
     </div>
     <!-- END -->
@@ -37,7 +39,8 @@
 <script>
 import {ElMessage} from "element-plus";
 
-export default {
+export default
+{
   props: ['course'],
   emits: ['deleteCourse', 'editCourseAdmin'],
   data() {
@@ -56,6 +59,9 @@ export default {
         message: 'Access code copied to clipboard',
         type: 'success'
       })
+    },
+    openCourse(id) {
+      this.$router.push({path: 'course', query: {id: id}});
     },
   }
 }
