@@ -169,7 +169,7 @@ export default {
   created() {
     this.fetchData();
 
-    this.isTeacher = this.userStore.user.role === 'teacher'
+    this.isTeacher = this.userStore.user.role === 'teacher' || this.userStore.user.role === 'admin'
   },
   data() {
     return {
