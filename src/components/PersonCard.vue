@@ -8,15 +8,15 @@
           <div v-if="!showEdit" class="text-lg w-fit h-fit text-ut-light-gray"><i>{{user.email}}</i></div>
         </div>
         <div>
-          <el-form :inline="true" style="width: 40vw" v-if="showEdit">
+          <el-form :inline="true" style="width: 40vw" v-if="showEdit" @submit.prevent="preventEnter">
             <el-form-item label="Name" class="editUserFormItem" label-width="auto">
-              <el-input v-model="user.name" v-if="showEdit" placeholder="name" style="width: 10vw"/>
+              <el-input @keydown="preventEnter" v-model="user.name" v-if="showEdit" placeholder="name" style="width: 10vw"/>
             </el-form-item>
-            <el-form-item label="Surname" class="editUserFormItem" label-width="auto">
-              <el-input v-model="user.surname" v-if="showEdit" placeholder="surname" style="width: 10vw"/>
+            <el-form-item  label="Surname" class="editUserFormItem" label-width="auto">
+              <el-input @keydown="preventEnter" v-model="user.surname" v-if="showEdit" placeholder="surname" style="width: 10vw"/>
             </el-form-item>
             <el-form-item label="Email address" class="editUserFormItem" label-width="auto">
-              <el-input class="w-full" v-model="user.email" v-if="showEdit" placeholder="email" style="width: 20vw"/>
+              <el-input @keydown="preventEnter" v-model="user.email" v-if="showEdit" placeholder="email" style="width: 23vw"/>
             </el-form-item>
           </el-form>
         </div>
@@ -26,24 +26,25 @@
     <div class="flex justify-end">
       <div class="flex items-center gap-4">
         <el-button
-            @click="showEdit = !showEdit"
+            @keydown="onKeyDown"
+            @click.stop="refresh"
             type="primary"
             text
         >Edit User</el-button>
         <el-button
             v-if="user.role === 'student'"
-            @click="this.$emit('switchRole')"
+            @click.stop="this.$emit('switchRole')"
             type="success"
             text
         >Set as teacher</el-button>
         <el-button
             v-if="user.role === 'teacher'"
-            @click="this.$emit('switchRole')"
+            @click.stop="this.$emit('switchRole')"
             type="warning"
             text
         >Set as student</el-button>
         <el-button
-            @click="this.$emit('deleteUser')"
+            @click.stop="this.$emit('deleteUser')"
             type="danger"
             text
         >Delete User</el-button>
@@ -63,12 +64,29 @@ export default {
     }
     },
   props: ['user'],
-  emits: ['deleteUser', 'switchRole', 'editUserAdmin'],
+  emits: ['deleteUser', 'switchRole', 'editUserAdmin', 'refresh'],
   methods: {
     editUserAdmin(id, user) {
       this.$emit('editUserAdmin', id, user);
       this.showEdit = false;
-    }
+    },
+    refresh() {
+      if(this.showEdit){
+        this.$emit('refresh')
+      }
+      this.showEdit = !this.showEdit
+    },
+    preventEnter(event) {
+      if (event.code === 'Enter') {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    },
+    onKeyDown(event) {
+      if (event.code === 'Space' || event.code === 'Enter') {
+        event.preventDefault();
+      }
+    },
   }
 }
 
