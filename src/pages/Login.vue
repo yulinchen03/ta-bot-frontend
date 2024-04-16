@@ -28,11 +28,15 @@
                   </el-form-item>
                   <el-form-item label="Password">
                     <div :class="{ 'error': v$.loginForm.password.$error }">
-                      <input @keyup.enter="login" @change="this.v$.loginForm.password.$touch()" type="password" v-model="loginForm.password" class="mx-3 bg-gray-50
+                      <input @keyup.enter="login" @change="this.v$.loginForm.password.$touch()" :type="showPassword ? 'text' : 'password'" v-model="loginForm.password" class="mx-3 bg-gray-50
                     border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
                      focus:border-primary-600 block w-[20vw] p-2.5 dark:bg-gray-700 dark:border-gray-600
                       dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                              placeholder="Password">
+
+                      <button @click.prevent="togglePasswordVisibility" class="absolute inset-y-0 right-7 flex items-center justify-center w-7 h-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" data-v-ea893728=""><path fill="currentColor" d="M512 160c320 0 512 352 512 352S832 864 512 864 0 512 0 512s192-352 512-352m0 64c-225.28 0-384.128 208.064-436.8 288 52.608 79.872 211.456 288 436.8 288 225.28 0 384.128-208.064 436.8-288-52.608-79.872-211.456-288-436.8-288zm0 64a224 224 0 1 1 0 448 224 224 0 0 1 0-448m0 64a160.192 160.192 0 0 0-160 160c0 88.192 71.744 160 160 160s160-71.808 160-160-71.744-160-160-160"></path></svg>
+                      </button>
                       <div v-if="v$.loginForm.password.$error" class="text-xs text-red-500 flex justify-end">Please enter your password.</div>
                     </div>
                   </el-form-item>
@@ -65,6 +69,7 @@ import errorHandler from "@/utils/errorHandler.js";
       return {
         // loginForm: {email: 'studentBotTest@student.utwente.nl', password: 'Password123', rememberMe: false},
         loginForm: {email: '', password: 'Password123', rememberMe: false},
+        showPassword: false,
       }
     },
     computed: {
@@ -127,7 +132,10 @@ import errorHandler from "@/utils/errorHandler.js";
       },
       goToSignup(){
         this.$router.push('/signup');
-      }
+      },
+      togglePasswordVisibility() {
+        this.showPassword = !this.showPassword;
+      },
     }
   }
 </script>
