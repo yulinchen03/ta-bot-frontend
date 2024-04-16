@@ -73,7 +73,7 @@ export default {
     async deleteCourse(courseId) {
       try {
         await courseService.deleteCourse(courseId)
-        this.refresh()
+        await this.refresh()
         ElMessage({
           showClose: true,
           message: 'Course deleted successfully',
@@ -87,7 +87,7 @@ export default {
       try {
         const {name} = body
         await courseService.changeCourse(courseId, {name})
-        this.refresh()
+        await this.refresh()
         ElMessage({
           showClose: true,
           message: 'Course edited successfully',
@@ -97,11 +97,6 @@ export default {
         errorHandler(err)
       }
     },
-    onKeydown(event) {
-      if (event.code === 'Space' || event.code === 'Enter') {
-        event.preventDefault();
-      }
-    }
   }
 }
 </script>

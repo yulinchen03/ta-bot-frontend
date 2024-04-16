@@ -4,7 +4,6 @@
     <el-button @click="showJoin" v-if="isCoursesStudent()" type="primary" class="mr-10 mt-4 custom-button">Join Course</el-button>
   </div>
   <!-- POPUP -->
-  <JoinCourse v-if="showJoinCourse" @close="close"></JoinCourse>
 </template>
 
 <script>
@@ -25,7 +24,7 @@ export default {
   },
   methods: {
     showJoin() {
-      this.showJoinCourse = true
+      this.$emit('showJoin')
     },
     close() {
       this.showJoinCourse = false

@@ -6,18 +6,21 @@
     <div class="grid grid-cols-1 relative h-full w-full overflow-y-auto">
       <div class="relative grid grid-cols-1 overflow-visible bg-cover bg-no-repeat h-[25vh] w-full"
            style="background-image: url('https://cdn.rit.edu/images/program/2020-06/ai-banner.jpg');">
-        <div>
-          <div v-if="isTeacher & !editCourseName" class="flex items-center">
-            <Header :title="pageTitle" class="text-gray-200 italic font-semibold"></Header>
-            <el-button @click="editCourseName=!editCourseName" class="custom-button" circle><el-icon><Edit /></el-icon></el-button>
+        <div class="grid grid-cols-1">
+          <div class="flex items-center">
+            <Header v-if="!editCourseName" :title="pageTitle" class="text-gray-200 italic font-semibold"></Header>
+            <el-button v-if="isTeacher & !editCourseName" @click="editCourseName=!editCourseName" class="custom-button" circle><el-icon><Edit /></el-icon></el-button>
           </div>
-          <div v-if="isTeacher & editCourseName" class="flex items-center h-[100px]">
+          <div v-if="isTeacher & editCourseName" class="flex items-center h-[80px]">
             <el-input v-if="editCourseName" placeholder="Course name" v-model="pageTitle" style="width: 20vw" class="pl-10 pr-5"></el-input>
             <el-button v-if="isTeacher & editCourseName" @click="renameCourse(courseid, pageTitle)" class="custom-button" round>Save</el-button>
           </div>
+          <div class="text-gray-200 xl:text-lg 2xl:text-2xl font-arial px-10 font-semibold">
+            <h2 class="my-1 text-white">Instructor: {{instructor}}</h2>
+          </div>
         </div>
         <div class="text-gray-200 xl:text-lg 2xl:text-2xl font-arial px-10 font-semibold">
-          <div v-if="isTeacher" class="flex items-center mb-3">
+          <div class="flex items-center mb-1">
             <h2 class="mr-3">Invite code: {{ invite_code }}</h2>
             <el-alert v-if="showCopySuccess" title="Success alert" type="success" show-icon @close="showCopySuccess=false"/>
             <el-button :size="'default'" round class="custom-button" @click="copy()" :plain="true"><el-icon class="mr-2"><CopyDocument /></el-icon>Copy</el-button>
@@ -200,7 +203,9 @@ export default {
       this.exerciseCount = 0
 
       const course = (await courseService.getCourse(this.courseid)).data.data;
+      console.log(course)
       this.invite_code = course.access_id
+      this.instructor = course.teacher
 
       try {
         const assignmentsArray = []

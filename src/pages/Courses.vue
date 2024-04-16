@@ -1,15 +1,15 @@
 <template>
   <div class="w-screen h-screen flex bg-gray-200">
-    <JoinCourse @refresh="getCourses" v-if="showJoinCourse" @close="close"></JoinCourse>
+    <JoinCourse @join="joinCourse" @close="close" v-if="showJoinCourse"></JoinCourse>
 
     <!-- Sidebar -->
     <Sidebar></Sidebar>
     <!-- Main content -->
     <div class="grid grid-cols-1 relative h-screen w-screen">
-      <Header :title="pageTitle"></Header>
+      <Header @showJoin="showJoinCourse=true" :title="pageTitle"></Header>
       <div class="mx-20 overflow-y-auto w-[calc(100vw-200px)] h-[calc(100vh-100px)]">
         <!-- Dynamic rows -->
-        <div v-if="isTeacher" v-for="(row, rowIndex) in coursesRows" :key="rowIndex" class="flex justify-start">
+        <div v-if="isTeacher" v-for="(row, rowIndexTeacher) in coursesRows" :key="rowIndexTeacher" class="flex justify-start">
           <Itemcard
               v-for="item in row"
               :key="item.id"
@@ -19,14 +19,14 @@
               @deleteCourse="deleteCourse(item.id)"
           />
         </div>
-        <div v-else class="flex justify-start">
+        <div v-else v-for="(row, rowIndexStudent) in coursesRows" :key="rowIndexStudent" class="flex justify-start">
           <Itemcard
-              v-for="course in courses"
-              :key="course.id"
-              :courseData="course"
+              v-for="item in row"
+              :key="item.id"
+              :courseData="item"
               class="w-[calc(25vw-100px)]"
-              @courseSelected="openCourse(course.id)"
-              @deEnroll="deEnroll(course.access_id)"
+              @courseSelected="openCourse(item.id)"
+              @deEnroll="deEnroll(item.access_id)"
           />
         </div>
       </div>
@@ -64,17 +64,16 @@ import {mapStores} from "pinia";
 import useUserStore from "@/stores/user.js";
 import {ElMessage} from "element-plus";
 import userService from "@/services/userService";
-import JoinCourse from "@/components/JoinCourse.vue";
 import Sidebar from "@/components/Sidebar.vue";
 import Itemcard from "@/components/Itemcard.vue";
 import Header from "@/components/Header.vue";
-import joinCourse from "@/components/JoinCourse.vue";
+import JoinCourse from "@/components/JoinCourse.vue";
 import errorHandler from "@/utils/errorHandler.js";
 
 export default {
   components: {
     PageHeader,
-    joinCourse,
+    JoinCourse,
     Header,
     Sidebar,
     Itemcard,
@@ -95,25 +94,39 @@ export default {
   methods: {
     async addCourse() {
       try {
-        const res = await courseService.addCourse({name: this.courseForm.name});
-        const course = res.data.data;
-
+        await courseService.addCourse({name: this.courseForm.name});
+        await this.getCourses()
         ElMessage({
           message: 'Course successfully created.',
           type: 'success',
         })
         this.dialogFormVisible = false
         this.courseForm.name = ''
-        this.getCourses()
       } catch (err) {
         errorHandler(err)
       }
     },
+    async joinCourse(courseCode) {
+        try {
+          console.log('Joining course...')
+          const response = await userService.joinCourse(courseCode);
+          ElMessage({
+            message: 'Course joined successfully',
+            type: 'success'
+
+          })
+          await this.getCourses()
+        }
+        catch (err) {
+          errorHandler(err)
+        }
+        this.showJoinCourse = false
+    },
     async getCourses() {
       try {
+        console.log('fetching course...')
         const res = await courseService.getCourses();
-        const courses = res.data.data;
-        this.courses = courses;
+        this.courses = res.data.data;
       } catch (err) {
         errorHandler(err)
       }
@@ -150,8 +163,12 @@ export default {
       this.showJoinCourse = true
     },
     close() {
+      console.log('closing')
       this.showJoinCourse = false
     },
+    test(){
+      console.log('join course')
+    }
   },
   computed: {
     // Divide courses into rows (each row has 4 items)
