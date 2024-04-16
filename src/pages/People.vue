@@ -10,7 +10,7 @@
         <el-input class="p-2 rounded-lg" type="text" v-model="searchQuery" placeholder="Search by name, email, or role" style="width: 85vw"/>
         <!-- List of Person Cards -->
         <div class="overflow-y-scroll flex flex-col gap-3">
-          <PersonCard @editUserAdmin="editUserAdmin" @switchRole="switchRole(user.id, user.role)" @deleteUser="deleteUser(user.id)" @refresh="refresh" v-for="user in filteredUsers" :key="user.email" :user="user" />
+          <PersonCard @editUserAdmin="editUserAdmin" @switchRole="switchRole(user.id, user.role)" @deleteUser="deleteUser(user.id)" @refresh="refresh" v-for="user in filteredUsers" :user="user" />
         </div>
       </div>
     </div>
@@ -107,6 +107,7 @@ export default {
         })
       } catch (err) {
         errorHandler(err)
+        this.refresh()
       }
     }
   }

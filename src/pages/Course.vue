@@ -6,8 +6,16 @@
     <div class="grid grid-cols-1 relative h-full w-full overflow-y-auto">
       <div class="relative grid grid-cols-1 overflow-visible bg-cover bg-no-repeat h-[25vh] w-full"
            style="background-image: url('https://cdn.rit.edu/images/program/2020-06/ai-banner.jpg');">
-        <Header :title="pageTitle" class="text-gray-200 italic font-semibold">
-        </Header>
+        <div>
+          <div v-if="isTeacher & !editCourseName" class="flex items-center">
+            <Header :title="pageTitle" class="text-gray-200 italic font-semibold"></Header>
+            <el-button @click="editCourseName=!editCourseName" class="custom-button" circle><el-icon><Edit /></el-icon></el-button>
+          </div>
+          <div v-if="isTeacher & editCourseName" class="flex items-center h-[100px]">
+            <el-input v-if="editCourseName" placeholder="Course name" v-model="pageTitle" style="width: 20vw" class="pl-10 pr-5"></el-input>
+            <el-button v-if="isTeacher & editCourseName" @click="renameCourse(courseid, pageTitle)" class="custom-button" round>Save</el-button>
+          </div>
+        </div>
         <div class="text-gray-200 xl:text-lg 2xl:text-2xl font-arial px-10 font-semibold">
           <div v-if="isTeacher" class="flex items-center mb-3">
             <h2 class="mr-3">Invite code: {{ invite_code }}</h2>
@@ -124,13 +132,6 @@
                       class="ml-2"
                       style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
                   />
-<!--                  <el-button-->
-<!--                      size="large"-->
-<!--                      type="Default"-->
-<!--                      @click="publish(scope.row, item)">-->
-<!--                    <el-icon><Promotion /></el-icon></el-button-->
-<!--                  >-->
-                  <!--                    TODO GET THIS TO WORK-->
                 </template>
               </el-table-column>
               <el-table-column v-if="isTeacher" label="Remove">
@@ -168,7 +169,6 @@ export default {
   },
   created() {
     this.fetchData();
-
     this.isTeacher = this.userStore.user.role === 'teacher' || this.userStore.user.role === 'admin'
   },
   data() {
@@ -187,7 +187,8 @@ export default {
         name: '',
         number_of_exercises: null
       },
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      editCourseName: false,
     }
   },
   watch: {
@@ -319,7 +320,6 @@ export default {
       } catch (err) {
         errorHandler(err)
       }
-
       await this.fetchData()
     },
 
@@ -335,10 +335,22 @@ export default {
       this.$router.push({path: 'bot', query: {courseId: this.courseid, assignmentId: assignment.id, exerciseId: (assignment.exercises[parseInt(exercise_idx)]).id }});
 
     },
-
     edit(exercise_idx, assignment_idx) {
       this.$router.push({path: 'editor', query: {c: this.courseid, a: this.assignments[assignment_idx].id, e: this.assignments[assignment_idx].exercises[exercise_idx].id}});
-    }
+    },
+    async renameCourse(courseId, body) {
+      try {
+        await courseService.changeCourse(courseId, {name: body})
+        ElMessage({
+          showClose: true,
+          message: 'Course renamed successfully',
+          type: 'success'
+        })
+        this.editCourseName = !this.editCourseName
+      } catch (err) {
+        errorHandler(err)
+      }
+    },
   }
 }
 </script>
