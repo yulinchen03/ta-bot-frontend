@@ -25,6 +25,7 @@ import useUserStore from "@/stores/user.js";
 import PersonCard from "@/components/PersonCard.vue";
 import userService from "@/services/userService.js";
 import { ElMessage } from "element-plus";
+import errorHandler from "@/utils/errorHandler.js";
 
 export default {
   components: {
@@ -60,11 +61,7 @@ export default {
         console.log(res)
         this.users = res
       } catch (err) {
-        ElMessage({
-          showClose: true,
-          message: err.response.data.message,
-          type: 'error'
-        })
+        errorHandler(err)
       }
     },
     async deleteUser(userId) {
@@ -77,11 +74,7 @@ export default {
           type: 'success'
         })
       } catch (err) {
-        ElMessage({
-          showClose: true,
-          message: err.response.data.message,
-          type: 'error'
-        })
+        errorHandler(err)
       }
     },
     async switchRole(userId, role) {
@@ -97,11 +90,7 @@ export default {
         })
         this.refresh()
       } catch (err) {
-        ElMessage({
-          showClose: true,
-          message: err.response.data.message,
-          type: 'error'
-        })
+        errorHandler(err)
       }
     },
     async editUserAdmin(userId, body) {
@@ -117,11 +106,7 @@ export default {
           type: 'success'
         })
       } catch (err) {
-        ElMessage({
-          showClose: true,
-          message: err.response.data.message,
-          type: 'error'
-        })
+        errorHandler(err)
       }
     }
   }

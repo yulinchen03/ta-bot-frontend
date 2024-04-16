@@ -27,6 +27,7 @@ import userService from "@/services/userService.js";
 import { ElMessage } from "element-plus";
 import CourseCard from "@/components/CourseCard.vue";
 import courseService from "@/services/courseService.js";
+import errorHandler from "@/utils/errorHandler.js";
 
 export default {
   components: {
@@ -66,11 +67,7 @@ export default {
         console.log(res)
         this.courses = res
       } catch (err) {
-        ElMessage({
-          showClose: true,
-          message: err.response.data.message,
-          type: 'error'
-        })
+        errorHandler(err)
       }
     },
     async deleteCourse(courseId) {
@@ -83,11 +80,7 @@ export default {
           type: 'success'
         })
       } catch (err) {
-        ElMessage({
-          showClose: true,
-          message: err.response.data.message,
-          type: 'error'
-        })
+        errorHandler(err)
       }
     },
     async editCourseAdmin(courseId, body) {
@@ -101,12 +94,7 @@ export default {
           type: 'success'
         })
       } catch (err) {
-        console.log(err)
-        ElMessage({
-          showClose: true,
-          message: err.response.data.message,
-          type: 'error'
-        })
+        errorHandler(err)
       }
     }
   }
