@@ -12,7 +12,7 @@
             <el-button v-if="isTeacher & !editCourseName" @click="editCourseName=!editCourseName" class="custom-button" circle><el-icon><Edit /></el-icon></el-button>
           </div>
           <div v-if="isTeacher & editCourseName" class="flex items-center h-[80px]">
-            <el-input v-if="editCourseName" placeholder="Course name" v-model="pageTitle" style="width: 20vw" class="pl-10 pr-5"></el-input>
+            <el-input v-if="editCourseName" placeholder="Course name" v-model="pageTitle" style="width: 30vw" class="pl-10 pr-5"></el-input>
             <el-button v-if="isTeacher & editCourseName" @click="renameCourse(courseid, pageTitle)" class="custom-button" round>Save</el-button>
           </div>
           <div class="text-gray-200 xl:text-lg 2xl:text-2xl font-arial px-10 font-semibold">
