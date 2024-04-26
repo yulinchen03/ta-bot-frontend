@@ -7,10 +7,23 @@
       <Header :title="pageTitle"></Header>
       <div class="mx-10 w-[calc(100vw-120px)] h-[calc(100vh-100px)] flex flex-col gap-3">
         <!-- Search Bar -->
-        <el-input class="p-2 rounded-lg" type="text" v-model="searchQuery" placeholder="Search by name, or access_id" style="width: 85vw"/>
+        <el-input
+          class="p-2 rounded-lg"
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search by name, or access_id"
+          style="width: 85vw"
+        />
         <!-- List of Course Cards -->
         <div class="overflow-y-scroll flex flex-col gap-3 mb-2">
-          <CourseCard @refresh="refresh" @deleteCourse="deleteCourse(course.id)" @editCourseAdmin="editCourseAdmin"  v-for="course in filteredCourses" :key="course.access_id" :course="course" />
+          <CourseCard
+            @refresh="refresh"
+            @deleteCourse="deleteCourse(course.id)"
+            @editCourseAdmin="editCourseAdmin"
+            v-for="course in filteredCourses"
+            :key="course.access_id"
+            :course="course"
+          />
         </div>
       </div>
     </div>
@@ -18,23 +31,18 @@
 </template>
 
 <script>
-import Header from "@/components/Header.vue";
-import Sidebar from "@/components/Sidebar.vue";
-import { mapStores } from "pinia";
-import useUserStore from "@/stores/user.js";
-import PersonCard from "@/components/PersonCard.vue";
-import userService from "@/services/userService.js";
-import { ElMessage } from "element-plus";
-import CourseCard from "@/components/CourseCard.vue";
-import courseService from "@/services/courseService.js";
-import errorHandler from "@/utils/errorHandler.js";
+import Header from '@/components/Header.vue';
+import Sidebar from '@/components/Sidebar.vue';
+import { ElMessage } from 'element-plus';
+import CourseCard from '@/components/CourseCard.vue';
+import courseService from '@/services/courseService.js';
+import errorHandler from '@/utils/errorHandler.js';
 
 export default {
   components: {
     CourseCard,
-    PersonCard,
     Header,
-    Sidebar,
+    Sidebar
   },
   data() {
     return {
@@ -45,58 +53,60 @@ export default {
         course_name: '',
         access_id: ''
       }
-    }
+    };
   },
   computed: {
     filteredCourses() {
       const query = this.searchQuery.toLowerCase();
-      return this.courses.filter(course => {
-        return course.name.toLowerCase().includes(query) ||
-            course.access_id.toLowerCase().includes(query)
-            //  || course.teacherName.toLowerCase().includes(query);
+      return this.courses.filter((course) => {
+        return (
+          course.name.toLowerCase().includes(query) ||
+          course.access_id.toLowerCase().includes(query)
+        );
+        //  || course.teacherName.toLowerCase().includes(query);
       });
     }
   },
   created() {
-    this.refresh()
+    this.refresh();
   },
   methods: {
     async refresh() {
       try {
-        const res = (await courseService.getCourses()).data.data
-        console.log(res)
-        this.courses = res
+        const res = (await courseService.getCourses()).data.data;
+        console.log(res);
+        this.courses = res;
       } catch (err) {
-        errorHandler(err)
+        errorHandler(err);
       }
     },
     async deleteCourse(courseId) {
       try {
-        await courseService.deleteCourse(courseId)
-        await this.refresh()
+        await courseService.deleteCourse(courseId);
+        await this.refresh();
         ElMessage({
           showClose: true,
           message: 'Course deleted successfully',
           type: 'success'
-        })
+        });
       } catch (err) {
-        errorHandler(err)
+        errorHandler(err);
       }
     },
     async editCourseAdmin(courseId, body) {
       try {
-        const {name} = body
-        await courseService.changeCourse(courseId, {name})
-        await this.refresh()
+        const { name } = body;
+        await courseService.changeCourse(courseId, { name });
+        await this.refresh();
         ElMessage({
           showClose: true,
           message: 'Course edited successfully',
           type: 'success'
-        })
+        });
       } catch (err) {
-        errorHandler(err)
+        errorHandler(err);
       }
-    },
+    }
   }
-}
+};
 </script>

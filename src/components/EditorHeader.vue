@@ -12,9 +12,17 @@
         <i class="text-sm">{{ assignmentname }}</i>
       </div>
       <div class="flex justify-center items-center mx-20">
-        <el-input :disabled="!editName" v-model="exercise" :placeholder="exercisename" style="width: 40vw" class="mr-3" />
-          <el-button v-if="!editName" @click="editName=!editName" class="custom-button">Edit</el-button>
-          <el-button v-if="editName" @click="renameExercise" class="custom-button">Rename</el-button>
+        <el-input
+          :disabled="!editName"
+          v-model="exercise"
+          :placeholder="exercisename"
+          style="width: 40vw"
+          class="mr-3"
+        />
+        <el-button v-if="!editName" @click="editName = !editName" class="custom-button"
+          >Edit</el-button
+        >
+        <el-button v-if="editName" @click="renameExercise" class="custom-button">Rename</el-button>
       </div>
     </div>
     <div class="flex justify-end w-[25vw] p-5">
@@ -27,8 +35,8 @@
 </template>
 
 <script>
-import exercisesService from "@/services/exercisesService.js";
-import {ElMessage} from "element-plus";
+import exercisesService from '@/services/exercisesService.js';
+import { ElMessage } from 'element-plus';
 
 export default {
   props: {
@@ -40,33 +48,38 @@ export default {
     exerciseId: Number
   },
   mounted() {
-    this.exercise = this.exercisename
+    this.exercise = this.exercisename;
   },
   data() {
     return {
       exercise: '', // Initialize as needed
-      editName: false,
+      editName: false
     };
   },
   methods: {
     async renameExercise() {
-      try{
-        await exercisesService.renameExercise(this.courseId, this.assignmentId, this.exerciseId, this.exercise);
+      try {
+        await exercisesService.renameExercise(
+          this.courseId,
+          this.assignmentId,
+          this.exerciseId,
+          this.exercise
+        );
         ElMessage({
           message: 'Successfully renamed exercise.',
-          type: 'success',
-        })
+          type: 'success'
+        });
       } catch (err) {
         ElMessage({
           message: 'Could not rename exercise. (' + err.name + ')',
-          type: 'fail',
-        })
+          type: 'fail'
+        });
       }
-      this.editName=!this.editName
+      this.editName = !this.editName;
     },
     publishExercise() {
-      this.$emit('publish')
-    },
+      this.$emit('publish');
+    }
   }
 };
 </script>
