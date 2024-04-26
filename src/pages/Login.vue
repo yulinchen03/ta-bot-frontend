@@ -69,7 +69,7 @@ import errorHandler from "@/utils/errorHandler.js";
     data() {
       return {
         // loginForm: {email: 'studentBotTest@student.utwente.nl', password: 'Password123', rememberMe: false},
-        loginForm: {email: '', password: 'Password123', rememberMe: false},
+        loginForm: {email: '', password: '', rememberMe: false},
         showPassword: false,
       }
     },

@@ -116,7 +116,7 @@ import authService from "@/services/authService.js";
 import errorHandler from "@/utils/errorHandler.js";
 export default {
   setup: () => ({ v$: useVuelidate() }),
-  data: () => ({firstName: '', lastName: '', email: '', password: 'Password123', confirmation: 'Password123', confirmData: false,  showPassword: false,
+  data: () => ({firstName: '', lastName: '', email: '', password: '', confirmation: '', confirmData: false,  showPassword: false,
     showConfirmation: false}),
   validations() {
     return {
@@ -126,9 +126,6 @@ export default {
       password: {
         required,
         minLength: minLength(8),
-        // hasUpperCase: value => /[A-Z]/.test(value),
-        // hasLowerCase: value => /[a-z]/.test(value),
-        // hasNumber: value => /[0-9]/.test(value)
       },
       confirmation: {required, sameAsPassword: sameAs(this.password)},
 
