@@ -1,7 +1,7 @@
 import axios from 'axios';
 import useUserStore from '../stores/user.js';
 
-const baseURL = 'https://tabot-backend-to7n.onrender.com';
+const baseURL = 'https://tabot-backend-to7n.onrender.com'; // backend server url, replace if there are changes
 
 export default () => {
   const userStore = useUserStore();
