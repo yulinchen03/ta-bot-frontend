@@ -1,4 +1,8 @@
-# ta-bot
+# RoboTA
+<p align="center">
+  <img src="public/logo.png" width="200">
+  <img src="public/UTlogo.png" width="400">
+</p>
 
 Our project investigates whether a decision-tree-based hint system approach can reduce teacher workload while providing students with engaging and timely feedback. The core challenge is to find a way of creating a new user-friendly system where teachers can efficiently interact with their students.
 
