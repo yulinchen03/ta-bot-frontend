@@ -9,7 +9,11 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 // https://vitejs.dev/config/
 export default defineConfig({
   test: {
-    globals: true
+    globals: true,
+    environment: 'jsdom',
+    deps: {
+      inline: [`element-plus`]
+    },
   },
   plugins: [
     vue(),
