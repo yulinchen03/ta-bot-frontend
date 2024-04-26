@@ -6,7 +6,7 @@ Our project investigates whether a decision-tree-based hint system approach can 
 1. Vue 3 (JS)
 2. TailwindCSS (CSS)
 3. Element-Plus (UI)
-4. Pinia（Authentication)
+4. Pinia（State management)
 
 
 ## Getting Started
