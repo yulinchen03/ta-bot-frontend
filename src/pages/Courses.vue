@@ -116,7 +116,6 @@ export default {
     },
     async joinCourse(courseCode) {
       try {
-        console.log('Joining course...');
         await userService.joinCourse(courseCode);
         ElMessage({
           message: 'Course joined successfully',
@@ -130,7 +129,6 @@ export default {
     },
     async getCourses() {
       try {
-        console.log('fetching course...');
         const res = await courseService.getCourses();
         this.courses = res.data.data;
       } catch (err) {
@@ -169,11 +167,7 @@ export default {
       this.showJoinCourse = true;
     },
     close() {
-      console.log('closing');
       this.showJoinCourse = false;
-    },
-    test() {
-      console.log('join course');
     }
   },
   computed: {
@@ -191,7 +185,6 @@ export default {
 
   created() {
     this.getCourses();
-    console.log(this.userStore.user);
     this.isTeacher = this.userStore.user.role === 'teacher';
   }
 };

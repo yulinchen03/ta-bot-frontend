@@ -144,7 +144,6 @@ export default {
               role: res.data.data.role
             };
 
-            console.log('token: ', this.userStore.token);
             if (res.status === 200) {
               ElMessage({
                 message: 'Login successful.',

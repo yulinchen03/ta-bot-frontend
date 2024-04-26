@@ -98,26 +98,22 @@ export default {
   emits: ['deleteUser', 'switchRole', 'editUserAdmin', 'refresh'],
   methods: {
     editUserAdmin(id, user) {
-      console.log(this.showEdit);
       this.$emit('editUserAdmin', id, user);
       this.showEdit = false;
     },
     refresh() {
-      console.log(this.showEdit);
       if (this.showEdit) {
         this.$emit('refresh');
       }
       this.showEdit = !this.showEdit;
     },
     preventEnter(event) {
-      console.log(this.showEdit);
       if (event.code === 'Enter') {
         event.preventDefault();
         event.stopPropagation();
       }
     },
     onKeyDown(event) {
-      console.log(this.showEdit);
       if (event.code === 'Space' || event.code === 'Enter') {
         event.preventDefault();
         event.stopPropagation();

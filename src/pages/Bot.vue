@@ -221,7 +221,7 @@ export default {
           this.exerciseId
         );
         this.hints = res.data.data.hint_nodes;
-        console.log(this.hints);
+
         if (this.hints.length === 0) return;
 
         this.first_question = {
@@ -318,13 +318,13 @@ export default {
 svg {
   @apply transition-transform duration-200;
 }
-/* Custom scrollbar styling */
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background-color: transparent; /* Set track background color to transparent */
+  background-color: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {

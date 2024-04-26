@@ -232,7 +232,6 @@ export default {
       this.editing = !this.editing;
     },
     async deleteNode(nodeId) {
-      console.log(nodeId);
       try {
         await editorService.deleteNode(this.courseid, this.assignmentid, this.exerciseid, nodeId);
         ElMessage({

@@ -72,7 +72,6 @@ export default {
   methods: {
     async toggleRead(id, read) {
       try {
-        console.log(id);
         await feedbackService.toggleFeedback(id, read);
 
         await this.refresh();
@@ -83,8 +82,6 @@ export default {
     async refresh() {
       try {
         const data = (await feedbackService.getFeedbackPerTeacher()).data.data;
-
-        console.log(data);
 
         const feedback = data.map((object) => ({
           id: object.id,

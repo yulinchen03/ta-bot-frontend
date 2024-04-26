@@ -164,7 +164,7 @@ export default {
         this.dialogVisible = false;
         this.userStore.user = null;
         this.userStore.token = null;
-        console.log('Logging out...');
+
         this.$router.push('/login');
         ElMessage({
           message: 'Logged out successfully',

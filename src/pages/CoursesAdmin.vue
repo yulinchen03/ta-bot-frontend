@@ -74,7 +74,7 @@ export default {
     async refresh() {
       try {
         const res = (await courseService.getCourses()).data.data;
-        console.log(res);
+
         this.courses = res;
       } catch (err) {
         errorHandler(err);

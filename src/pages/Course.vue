@@ -163,13 +163,11 @@
                     </el-icon>
                     View / Edit
                   </el-button>
-                  <!--                    TODO GET THIS TO WORK-->
                 </template>
               </el-table-column>
               <el-table-column v-else label="Open">
                 <template v-slot:default="scope">
                   <el-button size="large" type="Default" @click="view(item, scope.$index)">
-                    <!-- TODO GET THIS TO WORK -->
                     <el-icon class="mr-2">
                       <View />
                     </el-icon>
@@ -248,7 +246,7 @@ export default {
       this.exerciseCount = 0;
 
       const course = (await courseService.getCourse(this.courseid)).data.data;
-      console.log(course);
+
       this.invite_code = course.access_id;
       this.instructor = course.teacher;
 
@@ -278,8 +276,6 @@ export default {
       }
 
       this.pageTitle = course.name;
-      // this.instructor = this.userStore.username;
-      // TODO add instructor
       this.assignmentCount = this.assignments.length;
       this.exerciseCount = 0;
       this.todo = 0;
@@ -292,7 +288,6 @@ export default {
           }
         }
       }
-      // todo Query your database with courseId
     },
     async deleteAssignment(assignment_id) {
       try {

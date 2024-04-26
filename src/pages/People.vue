@@ -73,7 +73,7 @@ export default {
     async refresh() {
       try {
         const res = (await userService.getUsers()).data.data;
-        console.log(res);
+
         this.users = res;
       } catch (err) {
         errorHandler(err);
@@ -109,7 +109,6 @@ export default {
       }
     },
     async editUserAdmin(userId, body) {
-      console.log(userId, body);
       try {
         const { name, surname, email } = body;
 

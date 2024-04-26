@@ -63,6 +63,7 @@ import HintNodeEditor from '@/components/HintNodeEditor.vue';
 import EditorHeader from '@/components/EditorHeader.vue';
 import exercisesService from '@/services/exercisesService.js';
 import { ElMessage } from 'element-plus';
+import errorHandler from '@/utils/errorHandler.js';
 export default {
   components: {
     EditorHeader,
@@ -135,8 +136,7 @@ export default {
         }
         this.loadReady = true;
       } catch (err) {
-        // TODO handle error
-        console.log(err);
+        errorHandler(err);
       }
     },
     async getCourse() {
@@ -184,12 +184,7 @@ export default {
           type: 'success'
         });
       } catch (err) {
-        //TODO handle error
-        console.log(err);
-        ElMessage({
-          message: err.message,
-          type: 'fail'
-        });
+        errorHandler(err);
       }
       this.back();
     }
