@@ -53,36 +53,50 @@ import Header from '@/components/Header.vue';
 </template>
 
 <script>
-import PageHeader from '../components/Header.vue';
-import feedbackService from '@/services/feedbackService.js';
-import errorHandler from '@/utils/errorHandler.js';
+// Importing necessary dependencies and services
+import PageHeader from '../components/Header.vue'; // Importing the PageHeader component
+import feedbackService from '@/services/feedbackService.js'; // Service for feedback-related operations
+import errorHandler from '@/utils/errorHandler.js'; // Utility function for error handling
+
 export default {
   components: {
-    PageHeader
+    PageHeader // Registering PageHeader as a component
   },
+  // Data properties for the component
   data() {
     return {
-      pageTitle: 'My Notifications',
-      notifications: []
+      // Initializing data properties
+      pageTitle: 'My Notifications', // Title of the page
+      notifications: [] // Array to store notifications
     };
   },
+  // Method called when the component is created
   created() {
+    // Refresh notifications when the component is created
     this.refresh();
   },
+  // Methods for the component
   methods: {
+    // Method to toggle the read status of a notification
     async toggleRead(id, read) {
       try {
+        // Call feedback service to toggle the read status
         await feedbackService.toggleFeedback(id, read);
 
+        // Refresh notifications after toggling read status
         await this.refresh();
       } catch (err) {
+        // Handle errors gracefully
         errorHandler(err);
       }
     },
+    // Method to refresh notifications
     async refresh() {
       try {
+        // Get feedback data from the feedback service
         const data = (await feedbackService.getFeedbackPerTeacher()).data.data;
 
+        // Map feedback data to a more structured format
         const feedback = data.map((object) => ({
           id: object.id,
           from: object.student,
@@ -93,18 +107,20 @@ export default {
           read: object.is_read
         }));
 
+        // Sort notifications based on read status
         feedback.sort((a, b) => a.read - b.read);
 
-        // console.log(feedback)
-
+        // Update notifications array with sorted feedback
         this.notifications = feedback;
       } catch (err) {
+        // Handle errors gracefully
         errorHandler(err);
       }
     }
   }
 };
 </script>
+
 
 <style>
 .custom-button {

@@ -64,25 +64,35 @@
 
 <script>
 export default {
-  // ...
+  // Data properties for the component
   data() {
     return {
+      // Flag to control visibility of the modal
       showModal: false,
+      // Input fields for old and new passwords
       oldPassword: '',
       newPassword: ''
     };
   },
+  // Methods for the component
   methods: {
+    // Method to handle password change
     changePassword() {
+      // Check if both old and new passwords are filled
       if (this.newPassword === '' || this.oldPassword === '') {
+        // Show alert if any field is empty
         alert('Please fill in all the fields.');
         return;
       }
+      // Emit 'newPass' event with old and new passwords
       this.$emit('newPass', this.newPassword, this.oldPassword);
     },
+    // Method to cancel password change operation
     cancel() {
+      // Emit 'cancel' event
       this.$emit('cancel');
     }
   }
 };
 </script>
+

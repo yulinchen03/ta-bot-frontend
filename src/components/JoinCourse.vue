@@ -55,31 +55,41 @@
 </template>
 
 <script>
-import { ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus'; // Importing ElMessage component from Element Plus library
 
 export default {
+  // Data properties for the component
   data() {
     return {
+      // Initializing data property to store course code
       courseCode: ''
     };
   },
+  // Methods for the component
   methods: {
+    // Method to handle joining a course
     joinCourse(courseCode) {
+      // Check if the course code is empty
       if (courseCode === '') {
+        // Show error message if course code is empty
         ElMessage({
           message: 'Please enter a course code',
           type: 'error'
         });
       } else {
+        // Emit 'join' event with the provided course code
         this.$emit('join', courseCode);
       }
     },
+    // Method to cancel joining a course
     cancel() {
+      // Emit 'close' event to cancel the operation
       this.$emit('close');
     }
   }
 };
 </script>
+
 
 <style>
 .custom-button {

@@ -89,31 +89,46 @@
 
 <script>
 export default {
+  // Data properties for the component
   data() {
     return {
+      // Initializing data property to control edit mode
       showEdit: false
     };
   },
+  // Props received by the component
   props: ['user'],
+  // Events emitted by the component
   emits: ['deleteUser', 'switchRole', 'editUserAdmin', 'refresh'],
+  // Methods for the component
   methods: {
+    // Method to trigger edit mode for admin user
     editUserAdmin(id, user) {
+      // Emit 'editUserAdmin' event with id and user data
       this.$emit('editUserAdmin', id, user);
+      // Hide edit mode after emitting event
       this.showEdit = false;
     },
+    // Method to toggle refresh action and show/hide edit mode
     refresh() {
+      // Toggle refresh action
       if (this.showEdit) {
         this.$emit('refresh');
       }
+      // Toggle showEdit flag to show/hide edit mode
       this.showEdit = !this.showEdit;
     },
+    // Method to prevent default action when pressing Enter key
     preventEnter(event) {
+      // Prevent default action if Enter key is pressed
       if (event.code === 'Enter') {
         event.preventDefault();
         event.stopPropagation();
       }
     },
+    // Method to prevent default action when pressing Space or Enter key
     onKeyDown(event) {
+      // Prevent default action if Space or Enter key is pressed
       if (event.code === 'Space' || event.code === 'Enter') {
         event.preventDefault();
         event.stopPropagation();
@@ -122,6 +137,7 @@ export default {
   }
 };
 </script>
+
 
 <style>
 .custom-button {

@@ -13,39 +13,52 @@
 </template>
 
 <script>
-import { mapStores } from 'pinia';
-import useUserStore from '@/stores/user.js';
+// Importing necessary libraries and components
+import { mapStores } from 'pinia'; // Importing mapStores function from pinia for accessing store
+import useUserStore from '@/stores/user.js'; // Importing user store for accessing user data
 
 export default {
+  // Props received by the component
   props: ['title'],
+  // Data properties for the component
   data() {
     return {
-      isTeacher: null,
-      showJoinCourse: false
+      // Initializing data properties
+      isTeacher: null, // Flag to indicate if the user is a teacher
+      showJoinCourse: false // Flag to control visibility of join course option
     };
   },
+  // Methods for the component
   methods: {
+    // Method to show join course option
     showJoin() {
-      this.$emit('showJoin');
+      this.$emit('showJoin'); // Emitting 'showJoin' event to parent component
     },
+    // Method to close join course option
     close() {
-      this.showJoinCourse = false;
+      this.showJoinCourse = false; // Setting showJoinCourse flag to false to hide join course option
     },
+    // Method to check if the user is a student and title is 'My Courses'
     isCoursesStudent() {
+      // Checking if the user role is 'student' and title is 'My Courses'
       if (this.userStore.user.role === 'student' && this.title === 'My Courses') {
-        return true;
+        return true; // Return true if user is a student and title is 'My Courses'
       }
-      return false;
+      return false; // Return false otherwise
     }
   },
+  // Computed properties for the component
   computed: {
-    ...mapStores(useUserStore)
+    ...mapStores(useUserStore) // Mapping user store to computed property for accessing user data
   },
+  // Lifecycle hook called when the component is created
   created() {
+    // Setting isTeacher flag based on user role when component is created
     this.isTeacher = this.userStore.user.role === 'teacher';
   }
 };
 </script>
+
 
 <script setup></script>
 

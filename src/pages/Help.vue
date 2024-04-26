@@ -7,24 +7,7 @@
       <div class="grid grid-cols-1">
         <Header :title="pageTitle"></Header>
         <p class="mx-20 text-justify mb-10">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas
-          vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum
-          quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident
-          similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias
-          architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt
-          quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit,
-          quia. Quo neque error repudiandae fuga? Ipsa laudantium molestias eos sapiente officiis
-          modi at sunt excepturi expedita sint? Sed quibusdam recusandae alias error harum maxime
-          adipisci amet laborum. Perspiciatis minima nesciunt dolorem! Officiis iure rerum
-          voluptates a cumque velit quibusdam sed amet tempora. Sit laborum ab, eius fugit doloribus
-          tenetur fugiat, temporibus enim commodi iusto libero magni deleniti quod quam
-          consequuntur! Commodi minima excepturi repudiandae velit hic maxime doloremque. Quaerat
-          provident commodi consectetur veniam similique ad earum omnis ipsum saepe, voluptas, hic
-          voluptates pariatur est explicabo fugiat, dolorum eligendi quam cupiditate excepturi
-          mollitia maiores labore suscipit quas? Nulla, placeat. Voluptatem quaerat non architecto
-          ab laudantium modi minima sunt esse temporibus sint culpa, recusandae aliquam numquam
-          totam ratione voluptas quod exercitationem fuga. Possimus quis earum veniam quasi aliquam
-          eligendi, placeat qui corporis!
+          Replace this content with your own.
         </p>
         <div class="flex justify-center items-center">
           <img
@@ -33,24 +16,7 @@
           />
         </div>
         <p class="mx-20 text-justify mt-10">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas
-          vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum
-          quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident
-          similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias
-          architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt
-          quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit,
-          quia. Quo neque error repudiandae fuga? Ipsa laudantium molestias eos sapiente officiis
-          modi at sunt excepturi expedita sint? Sed quibusdam recusandae alias error harum maxime
-          adipisci amet laborum. Perspiciatis minima nesciunt dolorem! Officiis iure rerum
-          voluptates a cumque velit quibusdam sed amet tempora. Sit laborum ab, eius fugit doloribus
-          tenetur fugiat, temporibus enim commodi iusto libero magni deleniti quod quam
-          consequuntur! Commodi minima excepturi repudiandae velit hic maxime doloremque. Quaerat
-          provident commodi consectetur veniam similique ad earum omnis ipsum saepe, voluptas, hic
-          voluptates pariatur est explicabo fugiat, dolorum eligendi quam cupiditate excepturi
-          mollitia maiores labore suscipit quas? Nulla, placeat. Voluptatem quaerat non architecto
-          ab laudantium modi minima sunt esse temporibus sint culpa, recusandae aliquam numquam
-          totam ratione voluptas quod exercitationem fuga. Possimus quis earum veniam quasi aliquam
-          eligendi, placeat qui corporis!
+          Replace this content with your own.
         </p>
         <div class="flex justify-center mt-10">
           <el-image
@@ -71,31 +37,36 @@
 </template>
 
 <script>
-import Header from '@/components/Header.vue';
-import Sidebar from '@/components/Sidebar.vue';
+import Header from '@/components/Header.vue'; // Imports the Header component from the components directory
+import Sidebar from '@/components/Sidebar.vue'; // Imports the Sidebar component from the components directory
 
 export default {
-  components: { Sidebar, Header },
+  components: {
+    Sidebar, // Registers the Sidebar component for use in this component
+    Header // Registers the Header component for use in this component
+  },
   created() {
-    this.fetchData();
+    this.fetchData(); // Calls fetchData method when the component is created
   },
   data() {
     return {
-      helpid: -1,
-      pageTitle: 'Lorem ipsum dolor'
+      helpid: -1, // Initializes helpid with a default value
+      pageTitle: 'Lorem ipsum dolor' // Static title for the page
     };
   },
   watch: {
-    $route: 'fetchData'
+    $route: 'fetchData' // Watches for changes in the route and calls fetchData when a change occurs
   },
   methods: {
     fetchData() {
-      this.helpid = this.$route.query.id;
-      // Query your database with helpid
+      this.helpid = this.$route.query.id; // Updates helpid from the route query parameters
+      // Here you would typically include a call to fetch data from a database or another service
+      // using the helpid to query relevant help or support information.
     }
   }
 };
 </script>
+
 
 <script setup>
 const url = 'https://image.isu.pub/210305085437-97200a61da6e877cd7ffc0f9b8c52298/jpg/page_1.jpg';

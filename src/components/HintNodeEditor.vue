@@ -110,146 +110,181 @@
 </template>
 
 <script>
-import { VueDraggableNext } from 'vue-draggable-next';
-import editorService from '@/services/editorService.js';
-import { ElMessage } from 'element-plus';
+// Importing necessary components and services
+import { VueDraggableNext } from 'vue-draggable-next'; // Importing VueDraggableNext component for drag-and-drop functionality
+import editorService from '@/services/editorService.js'; // Importing editorService for handling editor-related requests
+import { ElMessage } from 'element-plus'; // Importing ElMessage component from Element Plus for displaying messages
 
 export default {
+  // Components used in the template
   components: {
-    draggable: VueDraggableNext
+    draggable: VueDraggableNext // Using VueDraggableNext component for drag-and-drop functionality
   },
+  // Props received by the component
   props: ['courseid', 'assignmentid', 'exerciseid', 'currentNode', 'originNode'],
+  // Lifecycle hook called when the component is created
   created() {
+    // Call method to fetch hint node data for the current node when component is created
     this.getHintNode(this.currentNode);
   },
+  // Watcher for changes in currentNode prop
   watch: {
     currentNode: function (newVal) {
-      // watch change of selected node
+      // Watch for changes in selected node and fetch hint node data for the new node
       this.getHintNode(newVal);
     }
   },
+  // Data properties for the component
   data() {
     return {
-      isOrigin: false,
-      nodeId: -1,
-      identifier: '',
-      incomingNodeId: -1,
-      incomingOption: '',
-      incomingEdgeId: -1,
-      hintdescription: '',
-      outgoingOption: [],
-      editing: false
+      // Initialize data properties
+      isOrigin: false, // Flag to indicate if the node is the origin node
+      nodeId: -1, // ID of the hint node
+      identifier: '', // Identifier of the hint node
+      incomingNodeId: -1, // ID of the incoming hint node
+      incomingOption: '', // Incoming option for the hint node
+      incomingEdgeId: -1, // ID of the incoming edge
+      hintdescription: '', // Description of the hint node
+      outgoingOption: [], // Outgoing options for the hint node
+      editing: false // Flag to indicate if the node is being edited
     };
   },
+  // Methods for the component
   methods: {
+    // Method to fetch hint node data for the specified node
     async getHintNode(currentNode) {
+      // Call editorService to fetch hint node data for the specified node
       const res = await editorService.getHintNode(
-        this.courseid,
-        this.assignmentid,
-        this.exerciseid,
-        currentNode
+          this.courseid,
+          this.assignmentid,
+          this.exerciseid,
+          currentNode
       );
+      // Update data properties with fetched hint node data
       this.isOrigin = res.data.data.is_start_node;
       this.nodeId = res.data.data.id;
       this.identifier = res.data.data.name;
       this.hintdescription = res.data.data.description;
       this.incomingNodeId =
-        res.data.data.incoming_option.length === 0
-          ? -1
-          : res.data.data.incoming_option[0].origin_hint_node_id;
+          res.data.data.incoming_option.length === 0
+              ? -1
+              : res.data.data.incoming_option[0].origin_hint_node_id;
       this.incomingOption =
-        res.data.data.incoming_option.length === 0 ? '' : res.data.data.incoming_option[0].option;
+          res.data.data.incoming_option.length === 0 ? '' : res.data.data.incoming_option[0].option;
       this.incomingEdgeId =
-        res.data.data.incoming_option.length === 0 ? -1 : res.data.data.incoming_option[0].id;
+          res.data.data.incoming_option.length === 0 ? -1 : res.data.data.incoming_option[0].id;
       this.outgoingOption = res.data.data.outgoing_options;
-      this.updateCurrentNode(currentNode);
+      this.updateCurrentNode(currentNode); // Update the current selected node
     },
+    // Method to add a new option for the hint node
     async addOption() {
       try {
+        // Call editorService to create a new hint node option
         await editorService.createHintNode(
-          this.courseid,
-          this.assignmentid,
-          this.exerciseid,
-          this.nodeId,
-          'Specify the option here'
+            this.courseid,
+            this.assignmentid,
+            this.exerciseid,
+            this.nodeId,
+            'Specify the option here'
         );
+        // Fetch updated hint node data after adding option
         const res = await editorService.getHintNode(
-          this.courseid,
-          this.assignmentid,
-          this.exerciseid,
-          this.currentNode
+            this.courseid,
+            this.assignmentid,
+            this.exerciseid,
+            this.currentNode
         );
+        // Update outgoing options with the updated data
         this.outgoingOption = res.data.data.outgoing_options;
+        // Display success message
         ElMessage({
-          message: 'Option successfuly added',
+          message: 'Option successfully added',
           type: 'success'
         });
       } catch (err) {
+        // Display error message if option creation fails
         ElMessage({
           message: 'Error creating option. (' + err.name + ')',
           type: 'fail'
         });
       }
+      // Update the tree after adding option
       await this.updateTree();
     },
+    // Method to emit 'updateCurrent' event with the current node
     updateCurrentNode(currentNode) {
       this.$emit('updateCurrent', currentNode);
     },
+    // Method to emit 'updateTree' event to update the tree
     updateTree() {
       this.$emit('updateTree');
     },
+    // Method to edit the hint node
     async editNode() {
       try {
+        // Call editorService to edit the hint node
         await editorService.editNode(
-          this.courseid,
-          this.assignmentid,
-          this.exerciseid,
-          this.nodeId,
-          this.identifier,
-          this.hintdescription
-        );
-        if (!this.isOrigin) {
-          await editorService.editEdge(
             this.courseid,
             this.assignmentid,
             this.exerciseid,
-            this.incomingNodeId,
-            this.incomingEdgeId,
-            this.incomingOption
+            this.nodeId,
+            this.identifier,
+            this.hintdescription
+        );
+        // If the node is not the origin node, edit the incoming edge as well
+        if (!this.isOrigin) {
+          await editorService.editEdge(
+              this.courseid,
+              this.assignmentid,
+              this.exerciseid,
+              this.incomingNodeId,
+              this.incomingEdgeId,
+              this.incomingOption
           );
         }
+        // Display success message
         ElMessage({
           message: 'Node successfully updated.',
           type: 'success'
         });
       } catch (err) {
+        // Display error message if node editing fails
         ElMessage({
           message: 'Error editing node. (' + err.name + ')',
           type: 'fail'
         });
       }
+      // Update the tree after editing node
       await this.updateTree();
+      // Toggle editing flag
       this.editing = !this.editing;
     },
+    // Method to delete the hint node
     async deleteNode(nodeId) {
       try {
+        // Call editorService to delete the hint node
         await editorService.deleteNode(this.courseid, this.assignmentid, this.exerciseid, nodeId);
+        // Display success message
         ElMessage({
           message: 'Successfully deleted node',
           type: 'success'
         });
+        // Fetch hint node data for the current node after deletion
         await this.getHintNode(this.currentNode);
       } catch (err) {
+        // Display error message if node deletion fails
         ElMessage({
           message: 'Error deleting node. (' + err.name + ')',
           type: 'fail'
         });
       }
+      // Update the tree after deleting node
       await this.updateTree();
     }
   }
 };
 </script>
+
 
 <style scoped>
 .transparent-add-button {

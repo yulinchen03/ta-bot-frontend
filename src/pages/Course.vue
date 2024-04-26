@@ -201,63 +201,80 @@
 </template>
 
 <script>
-import { ElMessage } from 'element-plus';
-import courseService from '@/services/courseService.js';
-import exercisesService from '@/services/exercisesService.js';
-import assignmentsService from '@/services/assignmentsService.js';
-import { mapStores } from 'pinia';
-import useUserStore from '@/stores/user.js';
-import errorHandler from '@/utils/errorHandler.js';
+// Importing necessary dependencies and services
+import { ElMessage } from 'element-plus'; // Element Plus for displaying messages
+import courseService from '@/services/courseService.js'; // Service for course-related operations
+import exercisesService from '@/services/exercisesService.js'; // Service for exercise-related operations
+import assignmentsService from '@/services/assignmentsService.js'; // Service for assignment-related operations
+import { mapStores } from 'pinia'; // Pinia for state management
+import useUserStore from '@/stores/user.js'; // Store for user-related data
+import errorHandler from '@/utils/errorHandler.js'; // Utility function for error handling
 
 export default {
+  // Using computed properties from the user store
   computed: {
     ...mapStores(useUserStore)
   },
+  // Initialization on component creation
   created() {
+    // Fetch initial data when the component is created
     this.fetchData();
+    // Determine if the user is a teacher or admin
     this.isTeacher = this.userStore.user.role === 'teacher' || this.userStore.user.role === 'admin';
   },
+  // Data properties for the component
   data() {
     return {
-      isTeacher: null,
-      courseid: -1,
-      pageTitle: '',
-      instructor: '',
-      assignmentCount: 0,
-      exerciseCount: 0,
-      todo: 0,
-      activeIndex: null,
-      assignments: [],
-      invite_code: null,
-      assignmentForm: {
-        name: '',
-        number_of_exercises: null
+      // Initializing data properties
+      isTeacher: null, // Flag to indicate if the user is a teacher or admin
+      courseid: -1, // ID of the course
+      pageTitle: '', // Title of the page
+      instructor: '', // Name of the instructor
+      assignmentCount: 0, // Count of assignments
+      exerciseCount: 0, // Count of exercises
+      todo: 0, // Count of incomplete exercises
+      activeIndex: null, // Index of the active item
+      assignments: [], // Array to store assignments
+      invite_code: null, // Invite code for the course
+      assignmentForm: { // Form for creating assignments
+        name: '', // Name of the assignment
+        number_of_exercises: null // Number of exercises in the assignment
       },
-      dialogFormVisible: false,
-      editCourseName: false
+      dialogFormVisible: false, // Flag to control visibility of dialog form
+      editCourseName: false // Flag to indicate if course name is being edited
     };
   },
+  // Watchers to react to route changes
   watch: {
-    $route: 'fetchData'
+    $route: 'fetchData' // Watch for route changes and trigger data fetching
   },
+  // Methods for the component
   methods: {
+    // Method to fetch data for the component
     async fetchData() {
+      // Get the course ID from the route query parameters
       this.courseid = this.$route.query.id;
+      // Reset exercise count
       this.exerciseCount = 0;
 
+      // Get course details from the course service
       const course = (await courseService.getCourse(this.courseid)).data.data;
 
+      // Populate data properties with course details
       this.invite_code = course.access_id;
       this.instructor = course.teacher;
 
       try {
         const assignmentsArray = [];
+        // Get assignments with associated exercises from the assignments service
         const res = await assignmentsService.getAssignmentsWithExercises(this.courseid);
         const assignments = res.data.data;
 
+        // Process assignments and exercises
         for (let assignment of assignments) {
           const exercises = assignment.exercises;
 
+          // Map exercises to a more structured format
           assignmentsArray.push({
             id: assignment.id,
             name: assignment.name,
@@ -272,9 +289,11 @@ export default {
           this.assignments = assignmentsArray;
         }
       } catch (err) {
+        // Handle errors gracefully
         errorHandler(err);
       }
 
+      // Update page title and counts
       this.pageTitle = course.name;
       this.assignmentCount = this.assignments.length;
       this.exerciseCount = 0;
@@ -289,99 +308,130 @@ export default {
         }
       }
     },
+    // Method to delete an assignment
     async deleteAssignment(assignment_id) {
       try {
+        // Call assignments service to delete the assignment
         await assignmentsService.deleteAssignment(this.courseid, assignment_id);
+        // Display success message
         ElMessage({
           message: 'Successfuly deleted',
           type: 'success'
         });
       } catch (err) {
+        // Handle errors gracefully
         errorHandler(err);
       }
+      // Refresh data after deletion
       await this.fetchData();
     },
 
+    // Method to create an exercise
     async createExercise(assignment, assignmentIntheList) {
       try {
+        // Call exercises service to add exercises to an assignment
         await exercisesService.addExercises(this.courseid, assignment.id, {
           identifier: 'Exercise ' + (this.assignments[assignmentIntheList].exercises.length + 1)
         });
 
+        // Display success message
         ElMessage({
           message: 'Exercise successfully created.',
           type: 'success'
         });
       } catch (err) {
+        // Handle errors gracefully
         errorHandler(err);
       }
+      // Refresh data after creation
       this.fetchData();
     },
 
+    // Method to toggle active index
     toggle(i) {
       this.activeIndex = this.activeIndex === i ? null : i;
     },
 
+    // Method to create an assignment
     async createAssignment() {
       try {
+        // Call assignments service to add an assignment
         const assignment = await assignmentsService.addAssignment(this.courseid, {
           name: this.assignmentForm.name
         });
 
+        // Add exercises to the assignment
         for (let i = 0; i < this.assignmentForm.number_of_exercises; i++) {
           await exercisesService.addExercises(this.courseid, assignment.data.data.id, {
             identifier: 'Exercise ' + (i + 1)
           });
         }
 
+        // Display success message
         ElMessage({
           message: 'Assignment successfully created.',
           type: 'success'
         });
       } catch (err) {
+        // Handle errors gracefully
         errorHandler(err);
       }
+      // Reset form and refresh data after creation
       this.dialogFormVisible = false;
       this.assignmentForm.name = '';
       this.assignmentForm.number_of_exercises = 0;
       await this.fetchData();
     },
 
+    // Method to publish/unpublish an exercise
     async publish(exercise, assignment) {
       try {
+        // Call exercises service to change exercise publication status
         await exercisesService.changeExercises(this.courseid, assignment.id, exercise.id, {
           is_published: exercise.completed
         });
+        // Display success message
         ElMessage({
           message: exercise.completed ? 'Exercise published' : 'Exercise unpublished',
           type: 'success'
         });
       } catch (err) {
+        // Handle errors gracefully
         errorHandler(err);
       }
+      // Refresh data after change
       await this.fetchData();
     },
 
+    // Method to handle deletion of an exercise
     async handleDelete(exercise, assignment) {
       try {
+        // Call exercises service to delete an exercise
         await exercisesService.deleteExercises(this.courseid, assignment.id, exercise.id);
+        // Display success message
         ElMessage({
           message: 'Exercise successfully deleted',
           type: 'success'
         });
       } catch (err) {
+        // Handle errors gracefully
         errorHandler(err);
       }
+      // Refresh data after deletion
       await this.fetchData();
     },
 
+    // Method to copy invite code to clipboard
     copy() {
       navigator.clipboard.writeText(this.invite_code);
+      // Display success message
       ElMessage({
         message: 'Invite code copied to clipboard',
         type: 'success'
       });
     },
+
+    // Method to view an exercise
     view(assignment, exercise_idx) {
       this.$router.push({
         path: 'bot',
@@ -392,6 +442,8 @@ export default {
         }
       });
     },
+
+    // Method to edit an exercise
     edit(exercise_idx, assignment_idx) {
       this.$router.push({
         path: 'editor',
@@ -402,22 +454,29 @@ export default {
         }
       });
     },
+
+    // Method to rename a course
     async renameCourse(courseId, body) {
       try {
+        // Call course service to rename the course
         await courseService.changeCourse(courseId, { name: body });
+        // Display success message
         ElMessage({
           showClose: true,
           message: 'Course renamed successfully',
           type: 'success'
         });
+        // Toggle edit mode for course name
         this.editCourseName = !this.editCourseName;
       } catch (err) {
+        // Handle errors gracefully
         errorHandler(err);
       }
     }
   }
 };
 </script>
+
 
 <script setup>
 import Sidebar from '@/components/Sidebar.vue';

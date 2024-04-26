@@ -173,7 +173,9 @@ import exercisesService from '@/services/exercisesService.js';
 import { ElMessage } from 'element-plus';
 import feedbackService from '@/services/feedbackService.js';
 import errorHandler from '@/utils/errorHandler.js';
+
 export default {
+  // Component data
   data() {
     return {
       options: [],
@@ -193,86 +195,92 @@ export default {
       hints: null
     };
   },
+  // Lifecycle hook for refreshing data when component is created
   async created() {
     this.refresh();
   },
   methods: {
+    // Refresh the component data
     async refresh() {
+      // Fetch course and assignment IDs from the route query parameters
       this.courseId = this.$route.query.courseId;
       this.assignmentId = this.$route.query.assignmentId;
       this.exerciseId = this.$route.query.exerciseId;
 
-      this.first_question = {
-        question: null,
-        id: null
-      };
+      // Reset question-related data
+      this.first_question = { question: null, id: null };
       this.questions = [];
       this.answers = [];
       this.options = [];
 
+      // Fetch hints and exercises
       this.getHints();
       this.getExercises();
     },
+    // Fetch hints for the exercise
     async getHints() {
       try {
         const res = await exercisesService.getTreeStructure(
-          this.courseId,
-          this.assignmentId,
-          this.exerciseId
+            this.courseId,
+            this.assignmentId,
+            this.exerciseId
         );
         this.hints = res.data.data.hint_nodes;
 
+        // Initialize first question if hints are available
         if (this.hints.length === 0) return;
 
         this.first_question = {
           question: this.hints[0].description,
           id: this.hints[0].id
         };
-        for (let option of this.hints[0].outgoing_edges) {
-          const opt = {
+        // Prepare the options for the first question
+        this.hints[0].outgoing_edges.forEach(option => {
+          this.options.push({
             option: option.option,
             next_hint: option.destination_hint_node_id
-          };
-          this.options.push(opt);
-        }
+          });
+        });
       } catch (err) {
         errorHandler(err);
       }
     },
+    // Handle selection of an answer
     async pickAnswer(option) {
-      const nextQuestion = this.hints.find((hint) => hint.id === option.next_hint);
+      const nextQuestion = this.hints.find(hint => hint.id === option.next_hint);
 
+      // Record the selected answer and reset options
       this.answers.push(option);
       this.options = [];
-      for (let option of nextQuestion.outgoing_edges) {
-        const opt = {
+      nextQuestion.outgoing_edges.forEach(option => {
+        this.options.push({
           option: option.option,
           next_hint: option.destination_hint_node_id
-        };
-        this.options.push(opt);
-      }
+        });
+      });
+      // Update the current question
       this.questions.push({
         question: nextQuestion.description,
         id: nextQuestion.id
       });
     },
+    // Fetch exercise data
     async getExercises() {
       try {
         const res = await exercisesService.getExercises(this.courseId, this.assignmentId);
         this.exercises = res.data.data;
-
-        // const exercise = this.exercises.find(exercise => exercise.id === parseInt(this.exerciseId)).identifier
       } catch (err) {
         errorHandler(err);
       }
     },
+    // Send feedback for the exercise
     async sendFeedback() {
       try {
         await feedbackService.addFeedback(
-          this.courseId,
-          this.assignmentId,
-          this.exerciseId,
-          this.feedback
+            this.courseId,
+            this.assignmentId,
+            this.exerciseId,
+            this.feedback
         );
         ElMessage({
           message: 'Feedback successfully sent.',
@@ -285,24 +293,26 @@ export default {
         errorHandler(err);
       }
     },
+    // Navigate to the previous question
     async previous() {
       this.questions.pop();
       this.answers.pop();
       this.options = [];
       const lastQuestion = this.questions[this.questions.length - 1] || this.first_question;
 
-      for (let option of this.hints.find((hint) => hint.id === lastQuestion.id).outgoing_edges) {
-        const opt = {
+      lastQuestion.outgoing_edges.forEach(option => {
+        this.options.push({
           option: option.option,
           next_hint: option.destination_hint_node_id
-        };
-        this.options.push(opt);
-      }
+        });
+      });
     },
+    // External navigation helper
     toHorus() {
       window.open('https://horus.apps.utwente.nl/login');
     }
   },
+  // Watch route changes to refresh component
   watch: {
     $route() {
       this.refresh();
@@ -313,6 +323,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 svg {

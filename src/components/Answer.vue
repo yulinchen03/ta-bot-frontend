@@ -14,8 +14,12 @@
   </div>
 </template>
 <script>
+// Component definition for displaying an answer
 export default {
+  // Name of the component
   name: 'Answer',
+  // Props received by the component
   props: ['answer']
 };
 </script>
+

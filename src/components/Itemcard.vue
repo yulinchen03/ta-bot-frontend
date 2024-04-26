@@ -34,41 +34,57 @@
 </template>
 
 <script>
-import { mapStores } from 'pinia';
-import useUserStore from '@/stores/user.js';
+import { mapStores } from 'pinia'; // Importing mapStores function from Pinia
+import useUserStore from '@/stores/user.js'; // Importing useUserStore from user store module
 
 export default {
+  // Props received by the component
   props: ['courseData'],
+  // Events emitted by the component
   emits: ['courseSelected', 'deleteCourse', 'deEnroll'],
+  // Lifecycle hook called when the component is mounted
   mounted() {
+    // Call method to load data when the component is mounted
     this.loadData();
   },
+  // Data properties for the component
   data() {
     return {
-      courseTitle: '',
-      code: '',
-      join_code: '',
-      isTeacher: null
+      // Initialize data properties
+      courseTitle: '', // Title of the course
+      code: '', // Course code
+      join_code: '', // Join code for the course
+      isTeacher: null // Flag to indicate if the user is a teacher
     };
   },
+  // Methods for the component
   methods: {
+    // Method to load data from props
     loadData() {
-      this.courseTitle = this.courseData['name'];
-      this.code = this.courseData['code'];
-      this.join_code = this.courseData['join_code'];
+      // Assign values from props to data properties
+      this.courseTitle = this.courseData['name']; // Assign course name
+      this.code = this.courseData['code']; // Assign course code
+      this.join_code = this.courseData['join_code']; // Assign join code
     },
+    // Method to emit 'courseSelected' event
     emitClickEvent() {
+      // Emit 'courseSelected' event
       this.$emit('courseSelected');
     }
   },
+  // Computed properties for the component
   computed: {
+    // Mapping user store to computed properties
     ...mapStores(useUserStore)
   },
+  // Lifecycle hook called when the component is created
   created() {
+    // Determine if the user is a teacher
     this.isTeacher = this.userStore.user.role === 'teacher';
   }
 };
 </script>
+
 
 <style scoped>
 .hover\:shadow-glow:hover {

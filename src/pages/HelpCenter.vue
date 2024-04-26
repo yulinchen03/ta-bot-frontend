@@ -50,68 +50,49 @@ import Header from '@/components/Header.vue';
 </template>
 
 <script>
+// Importing the PageHeader component
 import PageHeader from '../components/Header.vue';
 
 export default {
+  // Registering PageHeader as a component
   components: {
     PageHeader
   },
+  // Data properties for the component
   data() {
     return {
-      pageTitle: 'Help',
-      topics: [
+      // Initializing data properties
+      pageTitle: 'Help', // Title of the page
+      topics: [ // Array of help topics
         {
           id: 1,
           title: 'Help topic 1',
           description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,\n' +
-            '          molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum\n'
+              'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,\n' +
+              '          molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum\n'
         },
         {
           id: 2,
           title: 'help 2',
           description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,\n' +
-            '          molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum\n'
+              'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,\n' +
+              '          molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum\n'
         },
-        {
-          id: 3,
-          title: 'help 3',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,\n' +
-            '          molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum\n'
-        },
-        {
-          id: 4,
-          title: 'help 4',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,\n' +
-            '          molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum\n'
-        },
-        {
-          id: 5,
-          title: 'help 5',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,\n' +
-            '          molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum\n'
-        },
-        {
-          id: 6,
-          title: 'help 6',
-          description:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,\n' +
-            '          molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum\n'
-        }
+        // More help topics with titles and descriptions
       ]
     };
   },
+  // Methods for the component
   methods: {
+    // Method to open a help topic
     openHelp(id) {
+      // Navigate to the help page with the specified topic ID
       this.$router.push({ path: 'help', query: { id: id } });
     }
   }
 };
 </script>
+
 
 <style scoped>
 .custom-button {

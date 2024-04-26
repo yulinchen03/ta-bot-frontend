@@ -15,16 +15,20 @@ import Header from '@/components/Header.vue';
 </template>
 
 <script>
+// Importing the PageHeader component
 import PageHeader from '../components/Header.vue';
 
 export default {
   components: {
-    PageHeader
+    PageHeader // Registering PageHeader as a component
   },
+  // Data properties for the component
   data() {
     return {
-      pageTitle: 'Settings'
+      // Initializing data properties
+      pageTitle: 'Settings' // Title of the page
     };
   }
 };
 </script>
+

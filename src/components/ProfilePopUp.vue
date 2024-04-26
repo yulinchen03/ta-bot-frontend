@@ -73,22 +73,30 @@
 
 <script>
 export default {
+  // Component props definition
   props: {
+    // Prop for specifying the type of action ('save', 'delete', etc.)
     type: String
   },
+  // Methods for the component
   methods: {
+    // Method to emit 'update' event when saving edits
     saveEdit() {
       this.$emit('update');
     },
+    // Method to emit 'delete' event when deleting an item
     deleteAc() {
       this.$emit('delete');
     },
+    // Method to emit 'cancel' event when canceling an action
     cancel() {
       this.$emit('cancel');
     },
+    // Method to check if the type of action is 'delete'
     isDelete() {
-      return this.type === 'delete';
+      return this.type === 'delete'; // Return true if type is 'delete', otherwise false
     }
   }
 };
 </script>
+

@@ -135,45 +135,58 @@
 </template>
 
 <script>
-import { mapStores } from 'pinia';
-import useUserStore from '@/stores/user';
-import authService from '@/services/authService.js';
-import { ElMessage } from 'element-plus';
-import errorHandler from '@/utils/errorHandler.js';
+// Importing necessary dependencies and services
+import { mapStores } from 'pinia'; // Pinia for state management
+import useUserStore from '@/stores/user'; // Store for user-related data
+import authService from '@/services/authService.js'; // Service for authentication
+import { ElMessage } from 'element-plus'; // Element Plus for displaying messages
+import errorHandler from '@/utils/errorHandler.js'; // Utility function for error handling
 
 export default {
+  // Data properties for the component
   data() {
     return {
-      dialogVisible: false,
-      confirmLogout: false,
-      courseCount: 3,
-      isTeacher: false
+      // Initializing data properties
+      dialogVisible: false, // Flag to control the visibility of a dialog
+      confirmLogout: false, // Flag to confirm logout action
+      courseCount: 3, // Placeholder for course count
+      isTeacher: false // Flag to indicate if user is a teacher
     };
   },
   computed: {
-    ...mapStores(useUserStore, 'user')
+    ...mapStores(useUserStore, 'user') // Mapping user store as a computed property
   },
+  // Method called when the component is created
   created() {
+    // Assigning the role from the user store to a local variable
     this.role = this.userStore.user.role;
   },
+  // Methods for the component
   methods: {
+    // Method to handle user logout
     async logout() {
       try {
+        // Call authentication service to logout the user
         await authService.logout();
+        // Set confirmLogout flag to true and hide the dialog
         this.confirmLogout = true;
         this.dialogVisible = false;
+        // Clear user data from the user store
         this.userStore.user = null;
         this.userStore.token = null;
-
+        // Redirect user to the login page after logout
         this.$router.push('/login');
+        // Display success message
         ElMessage({
           message: 'Logged out successfully',
           type: 'success'
         });
       } catch (err) {
+        // Handle errors gracefully
         errorHandler(err);
       }
     }
   }
 };
 </script>
+

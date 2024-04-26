@@ -39,48 +39,58 @@ import ProfileDetails from '@/components/ProfileDetails.vue';
 </template>
 
 <script>
-import PageHeader from '../components/Header.vue';
-import authService from '@/services/authService.js';
-import errorHandler from '@/utils/errorHandler.js';
+// Importing necessary components and services
+import PageHeader from '../components/Header.vue'; // Importing the PageHeader component
+import authService from '@/services/authService.js'; // Service for authentication
+import errorHandler from '@/utils/errorHandler.js'; // Utility function for error handling
 
 export default {
   components: {
-    PageHeader
+    PageHeader // Registering PageHeader as a component
   },
+  // Data properties for the component
   data() {
     return {
-      pageTitle: 'My Profile',
-      isEditing: false,
-      userDetails: {
-        id: '',
-        name: '',
-        surname: '',
-        email: ''
+      // Initializing data properties
+      pageTitle: 'My Profile', // Title of the page
+      isEditing: false, // Flag to indicate if profile is being edited
+      userDetails: { // Object to store user details
+        id: '', // User ID
+        name: '', // User's first name
+        surname: '', // User's last name
+        email: '' // User's email address
       }
     };
   },
+  // Methods for the component
   methods: {
+    // Method to toggle editing mode
     toggleEdit() {
-      this.isEditing = !this.isEditing;
+      this.isEditing = !this.isEditing; // Toggle the value of isEditing
     },
+    // Method to save profile changes
     saveProfile() {
       // Here you can handle saving the profile data to a server or elsewhere
       this.toggleEdit(); // Turn off editing mode after saving
     },
+    // Method to refresh user details
     async refresh() {
       try {
+        // Get current user data from the authentication service
         const user = (await authService.getCurrentUser()).data;
-
+        // Update userDetails with fetched user data
         this.userDetails = {
-          id: user.id,
-          name: user.name,
-          surname: user.surname,
-          email: user.email
+          id: user.id, // User ID
+          name: user.name, // User's first name
+          surname: user.surname, // User's last name
+          email: user.email // User's email address
         };
       } catch (err) {
+        // Handle errors gracefully
         errorHandler(err);
       }
     }
   }
 };
 </script>
+

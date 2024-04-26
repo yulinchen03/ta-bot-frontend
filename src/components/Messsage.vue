@@ -22,35 +22,47 @@
 
 <script>
 export default {
+  // Props received by the component
   props: ['description'],
+  // Data properties for the component
   data() {
     return {
-      typedDescription: '',
-      currentIndex: 0,
-      typingSpeed: 1000
+      // Initialize data properties
+      typedDescription: '', // String to hold typed description
+      currentIndex: 0, // Index to track current character being typed
+      typingSpeed: 1000 // Typing speed in milliseconds
     };
   },
+  // Lifecycle hook called when the component is mounted
   mounted() {
+    // Call method to simulate typing the description
     this.typeDescription();
   },
+  // Methods for the component
   methods: {
-    // Simulate typing the description
+    // Method to simulate typing the description
     typeDescription() {
+      // Set interval to type characters
       const interval = setInterval(
-        () => {
-          if (this.currentIndex < this.description.length) {
-            this.typedDescription += this.description[this.currentIndex];
-            this.currentIndex++;
-          } else {
-            clearInterval(interval); // Stop typing when all characters are typed
-          }
-        },
-        parseInt(this.typingSpeed / this.description.length)
+          () => {
+            // Check if there are characters left to type
+            if (this.currentIndex < this.description.length) {
+              // Append next character to typedDescription and increment currentIndex
+              this.typedDescription += this.description[this.currentIndex];
+              this.currentIndex++;
+            } else {
+              // Stop typing when all characters are typed
+              clearInterval(interval);
+            }
+          },
+          // Calculate interval duration based on typing speed and description length
+          parseInt(this.typingSpeed / this.description.length)
       );
     }
   }
 };
 </script>
+
 
 <style scoped>
 .typing-animation {

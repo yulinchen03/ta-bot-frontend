@@ -12,18 +12,25 @@
 </el-dialog>
 
 <script setup>
-import { ElMessageBox } from 'element-plus';
-import errorHandler from '@/utils/errorHandler.js';
+// Importing necessary components and utilities
+import { ElMessageBox } from 'element-plus'; // Importing ElMessageBox component from Element Plus library
+import errorHandler from '@/utils/errorHandler.js'; // Importing errorHandler utility function
 
-const dialogVisible = ref();
+// Defining reactive state
+const dialogVisible = ref(); // Reactive reference for dialog visibility
 
+// Handling dialog closure
 const handleClose = (done) => {
+  // Showing confirmation dialog using ElMessageBox
   ElMessageBox.confirm('Are you sure to close this dialog?')
-    .then(() => {
-      done();
-    })
-    .catch((err) => {
-      errorHandler(err);
-    });
+      .then(() => {
+        // Executed when user confirms closing the dialog
+        done(); // Invoke done callback to close the dialog
+      })
+      .catch((err) => {
+        // Executed if there's an error while handling dialog closure
+        errorHandler(err); // Handle error using errorHandler utility function
+      });
 };
 </script>
+

@@ -151,47 +151,50 @@
 </template>
 
 <script>
-import { useVuelidate } from '@vuelidate/core';
-import { required, minLength, email, sameAs } from '@vuelidate/validators';
-import { ElMessage } from 'element-plus';
-import { mapStores } from 'pinia';
+// Importing necessary dependencies and services
+import { useVuelidate } from '@vuelidate/core'; // Vuelidate for form validation
+import { required, minLength, email, sameAs } from '@vuelidate/validators'; // Validators for form fields
+import { ElMessage } from 'element-plus'; // Element Plus for displaying messages
+import { mapStores } from 'pinia'; // Pinia for state management
+import useUserStore from '@/stores/user'; // Store for user-related data
+import authService from '@/services/authService.js'; // Service for authentication
+import errorHandler from '@/utils/errorHandler.js'; // Utility function for error handling
 
-import useUserStore from '@/stores/user';
-import authService from '@/services/authService.js';
-import errorHandler from '@/utils/errorHandler.js';
 export default {
-  setup: () => ({ v$: useVuelidate() }),
+  setup: () => ({ v$: useVuelidate() }), // Setup function for using Vuelidate
   data: () => ({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmation: '',
-    confirmData: false,
-    showPassword: false,
-    showConfirmation: false
+    // Initializing data properties
+    firstName: '', // User's first name
+    lastName: '', // User's last name
+    email: '', // User's email address
+    password: '', // User's password
+    confirmation: '', // Confirmation of password
+    confirmData: false, // Flag to confirm form data submission
+    showPassword: false, // Flag to toggle password visibility
+    showConfirmation: false // Flag to toggle confirmation visibility
   }),
+  // Form validations using Vuelidate
   validations() {
     return {
-      firstName: { required, minLength: minLength(2) },
-      lastName: { required, minLength: minLength(2) },
-      email: { required, email },
-      password: {
-        required,
-        minLength: minLength(8)
-      },
-      confirmation: { required, sameAsPassword: sameAs(this.password) }
+      // Define validations for each form field
+      firstName: { required, minLength: minLength(2) }, // First name validation
+      lastName: { required, minLength: minLength(2) }, // Last name validation
+      email: { required, email }, // Email validation
+      password: { required, minLength: minLength(8) }, // Password validation
+      confirmation: { required, sameAsPassword: sameAs(this.password) } // Password confirmation validation
     };
   },
   computed: {
-    ...mapStores(useUserStore)
+    ...mapStores(useUserStore) // Mapping user store as a computed property
   },
+  // Methods for the component
   methods: {
+    // Method to handle user signup
     async signup() {
-      const validity = await this.v$.$validate();
-      this.confirmData = false;
+      const validity = await this.v$.$validate(); // Validate form fields
+      this.confirmData = false; // Reset confirmData flag
       if (!validity) {
-        // handle error
+        // If form is not valid, show warning message
         ElMessage({
           showClose: true,
           message: 'Something is not right. Please check your details.',
@@ -200,30 +203,36 @@ export default {
         });
       } else {
         try {
+          // Call authentication service to register the user
           await authService.register(
-            this.firstName,
-            this.lastName,
-            this.email,
-            this.password,
-            this.confirmation
+              this.firstName,
+              this.lastName,
+              this.email,
+              this.password,
+              this.confirmation
           );
+          // Display success message
           ElMessage({
             message: 'Signup successful.',
             type: 'success',
             plain: true
           });
+          // Redirect user to the login page after successful signup
           this.$router.push('/login');
         } catch (err) {
+          // Handle errors gracefully
           errorHandler(err);
         }
       }
     },
+    // Method to navigate back to the login page
     back() {
       this.$router.push('/login');
     }
   }
 };
 </script>
+
 
 <style>
 .custom-button {

@@ -35,11 +35,14 @@
 </template>
 
 <script>
-import exercisesService from '@/services/exercisesService.js';
-import { ElMessage } from 'element-plus';
+// Importing necessary libraries and components
+import exercisesService from '@/services/exercisesService.js'; // Importing exercises service for exercise-related operations
+import { ElMessage } from 'element-plus'; // Importing ElMessage component from element-plus for displaying messages
 
 export default {
+  // Props received by the component
   props: {
+    // Defining props with their respective types
     coursename: String,
     assignmentname: String,
     exercisename: String,
@@ -47,42 +50,52 @@ export default {
     assignmentId: Number,
     exerciseId: Number
   },
+  // Lifecycle hook called when the component is mounted
   mounted() {
-    this.exercise = this.exercisename;
+    this.exercise = this.exercisename; // Initializing 'exercise' data property with 'exercisename' prop value
   },
+  // Data properties for the component
   data() {
     return {
-      exercise: '', // Initialize as needed
-      editName: false
+      // Initializing data properties
+      exercise: '', // Current exercise name
+      editName: false // Flag to control edit mode for exercise name
     };
   },
+  // Methods for the component
   methods: {
+    // Method to rename the exercise
     async renameExercise() {
       try {
+        // Calling exercises service to rename the exercise
         await exercisesService.renameExercise(
-          this.courseId,
-          this.assignmentId,
-          this.exerciseId,
-          this.exercise
+            this.courseId,
+            this.assignmentId,
+            this.exerciseId,
+            this.exercise
         );
+        // Showing success message if exercise is renamed successfully
         ElMessage({
           message: 'Successfully renamed exercise.',
           type: 'success'
         });
       } catch (err) {
+        // Showing error message if exercise renaming fails
         ElMessage({
           message: 'Could not rename exercise. (' + err.name + ')',
           type: 'fail'
         });
       }
-      this.editName = !this.editName;
+      this.editName = !this.editName; // Toggling edit mode for exercise name
     },
+    // Method to emit 'publish' event
     publishExercise() {
-      this.$emit('publish');
+      this.$emit('publish'); // Emitting 'publish' event to parent component
     }
   }
 };
 </script>
+
 
 <style>
 .custom-button {

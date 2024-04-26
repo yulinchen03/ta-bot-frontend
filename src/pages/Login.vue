@@ -94,40 +94,44 @@
 </template>
 
 <script>
-import { useVuelidate } from '@vuelidate/core';
-import { required, email } from '@vuelidate/validators';
-import { ElMessage } from 'element-plus';
-import useUserStore from '@/stores/user';
-import { mapStores } from 'pinia';
-import authService from '@/services/authService.js';
-import errorHandler from '@/utils/errorHandler.js';
+// Importing necessary dependencies and services
+import { useVuelidate } from '@vuelidate/core'; // Vuelidate for form validation
+import { required, email } from '@vuelidate/validators'; // Validators for form fields
+import { ElMessage } from 'element-plus'; // Element Plus for displaying messages
+import useUserStore from '@/stores/user'; // Store for user-related data
+import { mapStores } from 'pinia'; // Pinia for state management
+import authService from '@/services/authService.js'; // Service for authentication
+import errorHandler from '@/utils/errorHandler.js'; // Utility function for error handling
+
 export default {
-  setup: () => ({ v$: useVuelidate() }),
+  setup: () => ({ v$: useVuelidate() }), // Setup function for using Vuelidate
   data() {
     return {
-      // loginForm: {email: 'studentBotTest@student.utwente.nl', password: 'Password123', rememberMe: false},
+      // Initializing data properties
+      // loginForm with email, password, and rememberMe fields
+      // Set initial values to empty string and false for rememberMe
       loginForm: { email: '', password: '', rememberMe: false },
-      showPassword: false
+      showPassword: false // Flag to toggle password visibility
     };
   },
   computed: {
-    ...mapStores(useUserStore)
+    ...mapStores(useUserStore) // Mapping user store as a computed property
   },
+  // Form validations using Vuelidate
   validations() {
     return {
       loginForm: {
-        email: { required, email },
-        password: {
-          required
-        }
+        email: { required, email }, // Email field validation
+        password: { required } // Password field validation
       }
     };
   },
   methods: {
+    // Method to handle user login
     async login() {
-      const validity = await this.v$.$validate();
+      const validity = await this.v$.$validate(); // Validate form fields
       if (!validity) {
-        // handle error
+        // If form is not valid, show warning message
         ElMessage({
           showClose: true,
           message: 'Something is not right. Please check your credentials.',
@@ -136,7 +140,9 @@ export default {
         });
       } else {
         try {
+          // Call authentication service to log in
           await authService.login(this.loginForm.email, this.loginForm.password).then((res) => {
+            // Update user store with token and user data
             this.userStore.token = res.headers.authorization.split(' ')[1];
             this.userStore.user = {
               email: res.data.data.email,
@@ -144,6 +150,7 @@ export default {
               role: res.data.data.role
             };
 
+            // If login is successful, show success message and redirect based on user role
             if (res.status === 200) {
               ElMessage({
                 message: 'Login successful.',
@@ -151,9 +158,11 @@ export default {
                 plain: true
               });
 
+              // Redirect user based on role
               if (res.data.data.role === 'admin') return this.$router.push('/courses-admin');
               this.$router.push('/courses');
             } else {
+              // If login fails, show warning message
               ElMessage({
                 message: 'Incorrect credentials',
                 type: 'warning',
@@ -162,16 +171,19 @@ export default {
             }
           });
         } catch (err) {
+          // Handle errors gracefully
           errorHandler(err);
         }
       }
     },
+    // Method to navigate to the signup page
     goToSignup() {
       this.$router.push('/signup');
     }
   }
 };
 </script>
+
 
 <style scoped>
 .custom-button {

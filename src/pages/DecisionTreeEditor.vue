@@ -56,72 +56,63 @@
 </template>
 
 <script>
-import VueTree from '@ssthouse/vue3-tree-chart';
-import '@ssthouse/vue3-tree-chart/dist/vue3-tree-chart.css';
-import editorService from '@/services/editorService.js';
-import HintNodeEditor from '@/components/HintNodeEditor.vue';
-import EditorHeader from '@/components/EditorHeader.vue';
-import exercisesService from '@/services/exercisesService.js';
-import { ElMessage } from 'element-plus';
-import errorHandler from '@/utils/errorHandler.js';
+import VueTree from '@ssthouse/vue3-tree-chart'; // Imports the tree chart component for Vue 3
+import '@ssthouse/vue3-tree-chart/dist/vue3-tree-chart.css'; // Imports styles for the tree chart component
+import editorService from '@/services/editorService.js'; // Service layer for editor-related interactions
+import HintNodeEditor from '@/components/HintNodeEditor.vue'; // Component for editing hint nodes
+import EditorHeader from '@/components/EditorHeader.vue'; // Header component for the editor layout
+import exercisesService from '@/services/exercisesService.js'; // API services for exercise data handling
+import { ElMessage } from 'element-plus'; // Notification component from Element UI
+import errorHandler from '@/utils/errorHandler.js'; // Utility function for error handling
+
 export default {
   components: {
-    EditorHeader,
-    HintNodeEditor,
-    VueTree
+    EditorHeader, // Registers EditorHeader component
+    HintNodeEditor, // Registers HintNodeEditor component
+    VueTree // Registers VueTree component for rendering tree structures
   },
   created() {
-    this.initializeData();
-    this.getTree(false);
-    this.getCourse();
-    this.getAssignment();
-    this.getExercise();
-    window.addEventListener('beforeunload', this.beforeUnload);
+    this.initializeData(); // Initializes data when component is created
+    this.getTree(false); // Fetches the initial tree structure without refresh flag
+    this.getCourse(); // Fetches course details
+    this.getAssignment(); // Fetches assignment details
+    this.getExercise(); // Fetches exercise details
+    window.addEventListener('beforeunload', this.beforeUnload); // Adds event listener to handle the browser unload event
   },
   beforeUnmount() {
-    window.removeEventListener('beforeunload', this.beforeUnload);
+    window.removeEventListener('beforeunload', this.beforeUnload); // Removes the unload event listener before component is destroyed
   },
   beforeRouteLeave(to, from, next) {
-    // called when the route that renders this component is about to be navigated away from.
-    // As with `beforeRouteUpdate`, it has access to `this` component instance.
+    // Hook called when the route that renders this component is about to change
     const answer = window.confirm('Do you really want to leave? you may have unsaved changes!');
-    if (!answer) return false;
-    next();
+    if (!answer) return false; // Prevents navigation if the user chooses to stay
+    next(); // Continues with the routing if confirmed
   },
   data() {
     return {
-      courseid: -1,
-      assignmentid: -1,
-      exerciseid: -1,
-      currentNode: -1,
-      originNode: -1,
-      coursename: '',
-      assignmentname: '',
-      exercisename: '',
-      hintdescription:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam quis lectus dapibus, faucibus sem a, venenatis lectus. Maecenas laoreet, turpis sit amet luctus vehicula, risus urna efficitur magna, euismod semper ipsum nunc sed mi. Nunc id eleifend leo. ',
-      loadReady: false, // check if the tree data has been received properly before loading the HintNodeEditor component
-      treeData: {},
-      treeConfig: { nodeWidth: 120, nodeHeight: 80, levelHeight: 200 },
-      branchingCondition: '',
-      enabled: true,
-      sampleDraggable: [
-        {
-          name: 'vue.js 3.0',
-          order: 1
-        },
-        {
-          name: 'vue.draggable',
-          order: 2
-        },
-        {
-          name: 'draggable',
-          order: 3
-        },
-        {
-          name: 'component',
-          order: 4
-        }
+      courseid: -1, // Placeholder for course ID
+      assignmentid: -1, // Placeholder for assignment ID
+      exerciseid: -1, // Placeholder for exercise ID
+      currentNode: -1, // Tracks the current node within the tree
+      originNode: -1, // Tracks the origin node of the tree
+      coursename: '', // Stores the name of the course
+      assignmentname: '', // Stores the name of the assignment
+      exercisename: '', // Stores the name of the exercise
+      hintdescription: 'Sample text for hint descriptions.', // Default hint description
+      loadReady: false, // Flag to check if the tree data is ready to be rendered
+      treeData: {}, // Object to store the tree data
+      treeConfig: {
+        nodeWidth: 120, // Width of each node in the tree
+        nodeHeight: 80, // Height of each node in the tree
+        levelHeight: 200 // Vertical spacing between levels of the tree
+      },
+      branchingCondition: '', // Stores conditions for branching logic
+      enabled: true, // Flag to enable or disable UI components
+      sampleDraggable: [ // Sample data for draggable components
+        { name: 'vue.js 3.0', order: 1 },
+        { name: 'vue.draggable', order: 2 },
+        { name: 'draggable', order: 3 },
+        { name: 'component', order: 4 }
       ]
     };
   },
@@ -129,68 +120,65 @@ export default {
     async getTree(refresh) {
       try {
         const res = await editorService.getTree(this.courseid, this.assignmentid, this.exerciseid);
-        this.treeData = res.data.data;
-        this.originNode = this.treeData.id;
+        this.treeData = res.data.data; // Sets the tree data from response
+        this.originNode = this.treeData.id; // Sets the origin node ID
         if (!refresh) {
-          this.currentNode = this.originNode;
+          this.currentNode = this.originNode; // Updates current node if not a refresh operation
         }
-        this.loadReady = true;
+        this.loadReady = true; // Marks the component as ready to load
       } catch (err) {
-        errorHandler(err);
+        errorHandler(err); // Handles errors from the API call
       }
     },
     async getCourse() {
       const res = await editorService.getCourse(this.courseid);
-      this.coursename = res.data.data.name;
+      this.coursename = res.data.data.name; // Sets the course name from response
     },
     async getAssignment() {
       const res = await editorService.getAssignment(this.courseid, this.assignmentid);
-      this.assignmentname = res.data.data.name;
+      this.assignmentname = res.data.data.name; // Sets the assignment name from response
     },
     async getExercise() {
-      const res = await editorService.getExercise(
-        this.courseid,
-        this.assignmentid,
-        this.exerciseid
-      );
-      this.exercisename = res.data.data.identifier;
+      const res = await editorService.getExercise(this.courseid, this.assignmentid, this.exerciseid);
+      this.exercisename = res.data.data.identifier; // Sets the exercise identifier from response
     },
     initializeData() {
-      this.courseid = Number(this.$route.query.c);
-      this.assignmentid = Number(this.$route.query.a);
-      this.exerciseid = Number(this.$route.query.e);
+      this.courseid = Number(this.$route.query.c); // Initializes course ID from route query
+      this.assignmentid = Number(this.$route.query.a); // Initializes assignment ID from route query
+      this.exerciseid = Number(this.$route.query.e); // Initializes exercise ID from route query
     },
     beforeUnload(e) {
-      e.preventDefault();
-      e.returnValue = '';
+      e.preventDefault(); // Prevents the default unload behavior
+      e.returnValue = ''; // Sets a return value for the unload event
     },
     back() {
-      this.$router.push({ path: 'course', query: { id: this.courseid } });
+      this.$router.push({ path: 'course', query: { id: this.courseid } }); // Navigates back to the course page
     },
     updateCurrentNode(current) {
-      this.currentNode = current;
+      this.currentNode = current; // Updates the current node
     },
     updateTree() {
-      this.getTree(true);
+      this.getTree(true); // Refreshes the tree data
     },
     async publish(exercise, assignment) {
       try {
         await exercisesService.changeExercises(this.courseid, assignment, exercise, {
-          is_published: !exercise.completed
+          is_published: !exercise.completed // Toggles the published state
         });
 
         ElMessage({
-          message: !exercise.completed ? 'Exercise published' : 'Exercise unpublished',
+          message: exercise.completed ? 'Exercise published' : 'Exercise unpublished',
           type: 'success'
         });
       } catch (err) {
-        errorHandler(err);
+        errorHandler(err); // Handles errors during the publish operation
       }
-      this.back();
+      this.back(); // Navigates back after publishing
     }
   }
 };
 </script>
+
 
 <style>
 .tree-node {
